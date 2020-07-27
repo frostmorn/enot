@@ -1814,21 +1814,7 @@ void CBaseGame :: EventPlayerDisconnectConnectionClosed( CGamePlayer *player )
 }
 
 void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinPlayer *joinPlayer )
-{
-	// Color nickname
-	
-	// if( joinPlayer->GetName( ) == "(^_^)==\\~" ){
-	// 	joinPlayer->SetName("|CFF00A72BKirA" );
-	// }
-	
-	// if( joinPlayer->GetName( ) == "OZ-LustEspada" ){
-	// 	joinPlayer->SetName("|CFF4499EEYammy" );
-	// }
-
-	// if( joinPlayer->GetName( ) == "Lis_fox" ){
-	// 	joinPlayer->SetName("|CFFF48222FoX" );
-	// }
-	
+{	
 	// check if the new player's name is empty or too long
 	if( joinPlayer->GetName( ).empty( ) || joinPlayer->GetName( ).size( ) > 15 )
 	{
