@@ -60,13 +60,13 @@ commandpacket.o: ghost.h includes.h commandpacket.h
 config.o: ghost.h includes.h config.h
 crc32.o: ghost.h includes.h crc32.h
 csvparser.o: csvparser.h
-game.o: ghost.h includes.h util.h config.h language.h socket.h ghostdb.h bnet.h map.h packed.h savegame.h gameplayer.h gameprotocol.h game_base.h game.h stats.h statsdota.h statsw3mmd.h
+game.o: discord.h ghost.h includes.h util.h config.h language.h socket.h ghostdb.h bnet.h map.h packed.h savegame.h gameplayer.h gameprotocol.h game_base.h game.h stats.h statsdota.h statsw3mmd.h
 game_admin.o: ghost.h includes.h util.h config.h language.h socket.h ghostdb.h bnet.h map.h packed.h savegame.h replay.h gameplayer.h gameprotocol.h game_base.h game_admin.h
 game_base.o: ghost.h includes.h util.h config.h language.h socket.h ghostdb.h bnet.h map.h packed.h savegame.h replay.h gameplayer.h gameprotocol.h game_base.h next_combination.h
 gameplayer.o: ghost.h includes.h util.h language.h socket.h commandpacket.h bnet.h map.h gameplayer.h gameprotocol.h gpsprotocol.h game_base.h
 gameprotocol.o: ghost.h includes.h util.h crc32.h gameplayer.h gameprotocol.h game_base.h
 gameslot.o: ghost.h includes.h gameslot.h
-ghost.o: ghost.h includes.h util.h crc32.h sha1.h csvparser.h config.h language.h socket.h ghostdb.h ghostdbsqlite.h ghostdbmysql.h bnet.h map.h packed.h savegame.h gameplayer.h gameprotocol.h gpsprotocol.h game_base.h game.h game_admin.h
+ghost.o: discord.o ghost.h includes.h util.h crc32.h sha1.h csvparser.h config.h language.h socket.h ghostdb.h ghostdbsqlite.h ghostdbmysql.h bnet.h map.h packed.h savegame.h gameplayer.h gameprotocol.h gpsprotocol.h game_base.h game.h game_admin.h
 ghostdb.o: ghost.h includes.h util.h config.h ghostdb.h
 ghostdbmysql.o: ghost.h includes.h util.h config.h ghostdb.h ghostdbmysql.h
 ghostdbsqlite.o: ghost.h includes.h util.h config.h ghostdb.h ghostdbsqlite.h

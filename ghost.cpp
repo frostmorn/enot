@@ -17,8 +17,8 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-
 #include "ghost.h"
+#include "discord.h"
 #include "util.h"
 #include "crc32.h"
 #include "sha1.h"
