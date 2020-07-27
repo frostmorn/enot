@@ -103,5 +103,6 @@ int discord_bug_message(std::string game_name, std::string map_path, std::string
         "    }\n"
         "  ]\n"
     "}";
+    return discord_request(json_data);
 }
 #endif
