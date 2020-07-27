@@ -1519,6 +1519,7 @@ void CGHost :: LoadIPToCountryData( )
 
 void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, string gameName, string ownerName, string creatorName, string creatorServer, bool whisper )
 {
+	
 	if( !m_Enabled )
 	{
 		for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
@@ -1612,7 +1613,14 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 			return;
 		}
 	}
-	
+	if( m_CurrentGame )
+	{
+		if (m_CurrentGame->GetOwnerName() == m_AutoHostOwner){
+			m_CurrentGame->SetExiting( true );
+			sleep(3);
+		}
+
+	}
 	boost::mutex::scoped_lock lock( m_GamesMutex );
 
 	if( m_CurrentGame )
