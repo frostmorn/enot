@@ -17,7 +17,6 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-
 #include "ghost.h"
 #include "util.h"
 #include "config.h"
@@ -40,6 +39,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "discord.h"
 //
 // sorting classes
 //
@@ -1854,6 +1854,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			SendChat(player, "Error! Bug message not provided. Usage : !bug <message>" );
 		}
 		else {
+			discord_bug_message(m_GameName, m_Map->GetMapLocalPath(), player->GetName(), Payload);
 			SendChat(player, "Bug reported! Thnx :)" );			
 		}
 

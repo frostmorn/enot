@@ -29,6 +29,10 @@
  #include <stdint.h>
 #endif
 
+// WEBHOOKS
+
+#include "discord.h"
+
 // STL
 
 #include <fstream>
