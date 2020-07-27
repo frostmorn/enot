@@ -3,6 +3,7 @@
 #include <curl/curl.h>
 #include <iostream>
 #include <algorithm>
+#include <string>
 #include <sstream>
 #include <iomanip>
 
