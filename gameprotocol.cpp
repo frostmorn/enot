@@ -362,7 +362,7 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_PLAYERINFO( unsigned char PID, string name,
 	
 	BYTEARRAY packet;
 	// Color nickname
-	if( name == "(^_^)==\\~" ){
+	if( name == "Kira" ){
 		name = "|CFF00A72BKirA";
 	}
 	
