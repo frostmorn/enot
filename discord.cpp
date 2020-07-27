@@ -71,7 +71,7 @@ int discord_bug_message(std::string game_name, std::string map_path, std::string
         "        \"icon_url\": \"https://i.imgur.com/PFe9z5O.png\"\n"
         "      },\n"
         "      \"title\": \"New bug message\",\n"
-        "      \"color\": 0,\n"
+        "      \"color\": 16711680,\n"
         "      \"fields\": [\n"
         "        {\n"
         "          \"name\": \"Game name\",\n"
