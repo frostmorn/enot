@@ -398,9 +398,9 @@ unsigned int CBaseGame :: SetFD( void *fd, void *send_fd, int *nfds )
 
 bool CBaseGame :: Update( void *fd, void *send_fd )
 {
-/*
-	
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRehostTime + 30 && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+
+	// rehost every 15 seconds
+	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRehostTime + 15 && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
 
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
@@ -427,12 +427,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		CONSOLE_Print( "Rehost game as "+m_GameName );
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
-//			(*i)->QueueGameCreate( m_GameState, m_GameName, string( ), m_Map, NULL, m_HostCounter );
+			(*i)->QueueGameCreate( m_GameState, m_GameName, string( ), m_Map, NULL, m_HostCounter );
 			// the game creation message will be sent on the next refresh
 		}
 		m_LastRehostTime = GetTime( );
 	}
-*/
 	// update callables
 
 	for( vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); )
