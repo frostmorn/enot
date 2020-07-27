@@ -399,8 +399,8 @@ unsigned int CBaseGame :: SetFD( void *fd, void *send_fd, int *nfds )
 bool CBaseGame :: Update( void *fd, void *send_fd )
 {
 
-	// rehost every 15 seconds
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRehostTime + 15 && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+	// rehost every 50 seconds
+	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRehostTime + 50 && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
 
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
