@@ -373,8 +373,8 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_PLAYERINFO( unsigned char PID, string name,
 	if( name == "Lis_Fox" ){
 		name = "|CFF660766FoX";
 	}
-	if( name == "kpoxaEHoxa" ){
-		name = "|CFFFF0000EHoT";
+	if( name == "LIMITLESS" ){
+		name = "|CFFFF0000EH0T";
 	}	
 	if( name == "MACOH_Z" ){
 		name = "|cff631b76MACOH";
