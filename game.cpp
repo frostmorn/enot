@@ -17,7 +17,10 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
+
+#include "discord.h"
 #include "ghost.h"
+#include "discord.h"
 #include "util.h"
 #include "config.h"
 #include "language.h"
@@ -38,7 +41,6 @@
 #include <cmath>
 #include <string.h>
 #include <time.h>
-#include "discord.h"
 
 //
 // sorting classes
