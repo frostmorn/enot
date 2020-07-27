@@ -1644,11 +1644,12 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 		else
 		{
 			// note that we send this chat message on all other bnet servers
-
+/*
 			if( gameState == GAME_PRIVATE )
 				(*i)->QueueChatCommand( m_Language->CreatingPrivateGame( gameName, ownerName ) );
 			else if( gameState == GAME_PUBLIC )
 				(*i)->QueueChatCommand( m_Language->CreatingPublicGame( gameName, ownerName ) );
+*/
 		}
 
 		if( saveGame )
