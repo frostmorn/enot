@@ -155,7 +155,7 @@ int discord_game_created(std::string game_name, std::string game_owner, std::str
     /* First set the URL that is about to receive our POST. This URL can
        just as well be a https:// URL if that is what should receive the
        data. */ 
-	std::string json_data = "{\"username\":\"Webhook\",\"avatar_url\":\"https:\\/\\/i.imgur.com\\/PFe9z5O.png\",\"content\":\"\",\"embeds\":[{\"author\":{\"name\":\"\\u0415\\u043d\\u043e\\u0442\\u0438\\u043a\",\"icon_url\":\"https:\\/\\/i.imgur.com\\/PFe9z5O.png\"},\"title\":\"Created public game\",\"color\":0,\"fields\":[{\"name\":\"Game name\",\"value\":\""+game_name+"\",\"inline\":true},{\"name\":\"Game owner\",\"value\":\""+game_owner+"\",\"inline\":true},{\"name\":\"Map name\",\"value\":\""+game_map+"\"}]}]}";
+	std::string json_data = "{\"username\":\"EN0T\",\"avatar_url\":\"https:\\/\\/i.imgur.com\\/PFe9z5O.png\",\"content\":\"\",\"embeds\":[{\"author\":{\"name\":\"\\u0415\\u043d\\u043e\\u0442\\u0438\\u043a\",\"icon_url\":\"https:\\/\\/i.imgur.com\\/PFe9z5O.png\"},\"title\":\"Created public game\",\"color\":0,\"fields\":[{\"name\":\"Game name\",\"value\":\""+game_name+"\",\"inline\":true},{\"name\":\"Game owner\",\"value\":\""+game_owner+"\",\"inline\":true},{\"name\":\"Map name\",\"value\":\""+game_map+"\"}]}]}";
 
 	list = curl_slist_append(list, "Content-Type: application/json");
     curl_easy_setopt(curl, CURLOPT_URL, "https://discordapp.com/api/webhooks/734409157289181197/NNA5Kwr7UuQzns3Ogy5eIxUxQXkaQ-gUKes09WgBw2nhUUHAgnBMUPzVdCRTJTCpjx_6");
