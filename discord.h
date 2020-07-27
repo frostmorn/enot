@@ -1,5 +1,4 @@
-#ifndef DISCORD_H
-#define DISCORD_H
+
 #include <curl/curl.h>
 #include <iostream>
 #include <algorithm>
