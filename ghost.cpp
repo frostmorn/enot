@@ -18,7 +18,6 @@
 
 */
 #include "ghost.h"
-#include "discord.h"
 #include "util.h"
 #include "crc32.h"
 #include "sha1.h"
@@ -39,7 +38,6 @@
 #include "game_base.h"
 #include "game.h"
 #include "game_admin.h"
-#include "discord.h"
 #include <signal.h>
 #include <stdlib.h>
 

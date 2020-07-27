@@ -18,9 +18,7 @@
 
 */
 
-#include "discord.h"
 #include "ghost.h"
-#include "discord.h"
 #include "util.h"
 #include "config.h"
 #include "language.h"
