@@ -1,3 +1,4 @@
+#include "discord.h"
 std::string escape_json(const std::string &s) {
     std::ostringstream o;
     for (auto c = s.cbegin(); c != s.cend(); c++) {
