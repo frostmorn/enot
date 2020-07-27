@@ -55,7 +55,7 @@ int discord_game_created(std::string game_name, std::string game_owner, std::str
 {
     game_name = escape_json(game_name);
     game_owner = escape_json(game_owner);
-    game_map = escape_json(map_path);
+    map_path = escape_json(map_path);
     std::string json_data = "{\"username\":\"EN0T\",\"avatar_url\":\"https:\\/\\/i.imgur.com\\/PFe9z5O.png\",\"content\":\"\",\"embeds\":[{\"author\":{\"name\":\"\\u0415\\u043d\\u043e\\u0442\\u0438\\u043a\",\"icon_url\":\"https:\\/\\/i.imgur.com\\/PFe9z5O.png\"},\"title\":\"Created public game\",\"color\":0,\"fields\":[{\"name\":\"Game name\",\"value\":\""+game_name+"\",\"inline\":true},{\"name\":\"Game owner\",\"value\":\""+game_owner+"\",\"inline\":true},{\"name\":\"Map name\",\"value\":\""+map_path+"\"}]}]}";
 	return discord_request(json_data);
 }
