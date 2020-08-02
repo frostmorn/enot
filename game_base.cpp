@@ -411,6 +411,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
+					break;
 				}
 				current_iccup_index++;
 			}
@@ -431,6 +432,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				if (current_iccup_index == m_LastICCupRehostIndex){
 					(*i)->QueueGameCreate( m_GameState, m_GameName+ "*"+ random_string(4), string( ), m_Map, NULL, m_HostCounter );
 					// the game creation message will be sent on the next refresh
+					break;
 				}
 				current_iccup_index++;
 			}
