@@ -436,7 +436,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			}
 		}
 		m_LastICCupRehostTime = GetTime( );
-		m_LastICCupRehostIndex = m_LastICCupRehostIndex + 1 > m_GHost->m_ICCupBnetCount ? 1 : +1;
+		m_LastICCupRehostIndex = m_LastICCupRehostIndex + 1 > m_GHost->m_ICCupBnetCount ? 0 : +1;
 		
 	}
 	// update callables
