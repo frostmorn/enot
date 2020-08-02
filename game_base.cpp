@@ -428,7 +428,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				if (current_iccup_index == m_LastICCupRehostIndex+1){
+				if (current_iccup_index == m_LastICCupRehostIndex){
 					(*i)->QueueGameCreate( m_GameState, m_GameName+ "*"+ random_string(4), string( ), m_Map, NULL, m_HostCounter );
 					// the game creation message will be sent on the next refresh
 				}
