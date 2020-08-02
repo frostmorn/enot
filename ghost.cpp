@@ -517,6 +517,7 @@ CGHost :: CGHost( CConfig *CFG )
 	m_LANWar3Version = CFG->GetInt( "lan_war3version", 26 );
 	m_ReplayWar3Version = CFG->GetInt( "replay_war3version", 26 );
 	m_ReplayBuildNumber = CFG->GetInt( "replay_buildnumber", 6059 );
+	m_ICCupBnetCount = 0;
 	SetConfigs( CFG );
 
 	// load the battle.net connections
@@ -539,7 +540,10 @@ CGHost :: CGHost( CConfig *CFG )
 		string Country = CFG->GetString( Prefix + "country", "United States" );
 		string Locale = CFG->GetString( Prefix + "locale", "system" );
 		uint32_t LocaleID;
-
+		// ICCup count bnet's
+		if (ServerAlias.find("ICCup") != std::string::npos){
+			m_ICCupBnetCount++;
+		}
 		if( Locale == "system" )
 		{
 #ifdef WIN32
