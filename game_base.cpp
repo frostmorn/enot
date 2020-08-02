@@ -399,38 +399,35 @@ unsigned int CBaseGame :: SetFD( void *fd, void *send_fd, int *nfds )
 bool CBaseGame :: Update( void *fd, void *send_fd )
 {
 
-	// rehost every 50 seconds
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRehostTime + 50 && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+	// rehost ICCup
+	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
-
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
-			(*i)->UnqueueGameRefreshes( );
-			(*i)->QueueGameUncreate( );
-			(*i)->QueueEnterChat( );
-
+			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
+			
+				(*i)->UnqueueGameRefreshes( );
+				(*i)->QueueGameUncreate( );
+				(*i)->QueueEnterChat( );
+			}
 			// we need to send the game creation message now because private games are not refreshed
 		}
 		m_LastGameName = m_GameName;
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
-		if (m_GameName.find("*") !=string::npos){
-			m_GameName = m_GameName.substr(0,m_GameName.size()-(m_GameName.size()-  m_GameName.find("*"))) + "*"+ random_string(4);
-		}
-		else {
-			m_GameName = m_GameName + "*"+ random_string(4);
-		}
 		CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as public game [" + m_GameName + "]" );
 		SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
 
 		CONSOLE_Print( "Rehost game as "+m_GameName );
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
-			(*i)->QueueGameCreate( m_GameState, m_GameName, string( ), m_Map, NULL, m_HostCounter );
-			// the game creation message will be sent on the next refresh
+			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
+				(*i)->QueueGameCreate( m_GameState, m_GameName+ "*"+ random_string(4), string( ), m_Map, NULL, m_HostCounter );
+				// the game creation message will be sent on the next refresh
+			}
 		}
-		m_LastRehostTime = GetTime( );
+		m_LastICCupRehostTime = GetTime( );
 	}
 	// update callables
 
