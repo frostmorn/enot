@@ -419,7 +419,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
-		CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "] on ICCup with index" );
+		CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "] on ICCup with index equal " + 
+			std::to_string(current_iccup_index ));
 		SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
 		
 		current_iccup_index = 0;
