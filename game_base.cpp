@@ -402,13 +402,16 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	// rehost ICCup
 	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
+		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-			
-				(*i)->UnqueueGameRefreshes( );
-				(*i)->QueueGameUncreate( );
-				(*i)->QueueEnterChat( );
+				current_iccup_index++;
+				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+				}
 			}
 			// we need to send the game creation message now because private games are not refreshed
 		}
@@ -416,18 +419,23 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
-		CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as public game [" + m_GameName + "]" );
+		CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "]" );
 		SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
-
-		CONSOLE_Print( "Rehost game as "+m_GameName );
+		
+		current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				(*i)->QueueGameCreate( m_GameState, m_GameName+ "*"+ random_string(4), string( ), m_Map, NULL, m_HostCounter );
-				// the game creation message will be sent on the next refresh
+				current_iccup_index++;
+				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					(*i)->QueueGameCreate( m_GameState, m_GameName+ "*"+ random_string(4), string( ), m_Map, NULL, m_HostCounter );
+					// the game creation message will be sent on the next refresh
+				}
 			}
 		}
 		m_LastICCupRehostTime = GetTime( );
+		m_LastICCupRehostIndex = m_LastICCupRehostIndex + 1 > m_GHost->m_ICCupBnetCount ? 1 : +1;
+		
 	}
 	// update callables
 
