@@ -578,8 +578,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			}
 			// we need to send the game creation message now because private games are not refreshed
 		}
-		m_LastGameName = m_GameName;
-		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
 		CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "] on ICCup with index equal " + 
