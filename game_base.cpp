@@ -535,7 +535,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		// so rehost it using the current autohost game name
 
 		string GameName = m_GHost->m_AutoHostGameName + " #" + UTIL_ToString( m_GHost->m_HostCounter );
-		CONSOLE_Print( "[GAME: " + m_GameName + "] automatically trying to rehost as public game [" + GameName + "] due to refresh failure" );
+		// CONSOLE_Print( "[GAME: " + m_GameName + "] automatically trying to rehost as public game [" + GameName + "] due to refresh failure" );
 
 		//need to synchronize here because we're using host counter variable from GHost
 		// and also gamenames are used in some functions accessed externally
@@ -580,9 +580,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		}
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
-		CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "] on ICCup with index equal " + 
+		// CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "] on ICCup with index equal " + 
 			std::to_string(current_iccup_index ));
-		SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
+		// SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
 		
 		current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
