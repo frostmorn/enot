@@ -54,7 +54,7 @@ int discord_game_created(std::string game_name, std::string game_owner, std::str
 	return discord_request(json_data);
 }
 
-int discord_bug_message(std::string game_name, std::string map_path, std::string bug_provider, std::string bug_description){
+int discord_bug_message(std::string game_name, std::string bug_provider, std::string bug_description){
     game_name = escape_json(game_name);
     bug_provider = escape_json(bug_provider);
     map_path = escape_json(map_path);

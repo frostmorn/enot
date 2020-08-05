@@ -1854,7 +1854,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			SendChat(player, "Error! Bug message not provided. Usage : !bug <message>" );
 		}
 		else {
-			discord_bug_message(m_GameName, m_Map->GetMapLocalPath(), player->GetName(), Payload);
+			discord_bug_message(m_GameName, player->GetName(), Payload);
 			SendChat(player, "Bug reported! Thnx :)" );			
 		}
 
