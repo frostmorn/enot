@@ -398,48 +398,6 @@ unsigned int CBaseGame :: SetFD( void *fd, void *send_fd, int *nfds )
 
 bool CBaseGame :: Update( void *fd, void *send_fd )
 {
-
-	// rehost ICCup
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
-	{
-		uint32_t current_iccup_index = 0;
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
-			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				current_iccup_index++;
-				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					(*i)->UnqueueGameRefreshes( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
-					break;
-				}
-			}
-			// we need to send the game creation message now because private games are not refreshed
-		}
-		m_LastGameName = m_GameName;
-		m_HostCounter = m_GHost->m_HostCounter++;
-		m_RefreshError = false;
-		m_RefreshRehosted = true;
-		CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "] on ICCup with index equal " + 
-			std::to_string(current_iccup_index ));
-		SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
-		
-		current_iccup_index = 0;
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
-			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				current_iccup_index++;
-				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					(*i)->QueueGameCreate( m_GameState, m_GameName+ "*"+ random_string(4), string( ), m_Map, NULL, m_HostCounter );
-					// the game creation message will be sent on the next refresh
-					break;
-				}
-			}
-		}
-		m_LastICCupRehostTime = GetTime( );
-		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
-		
-	}
 	// update callables
 
 	for( vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); )
@@ -577,7 +535,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		// so rehost it using the current autohost game name
 
 		string GameName = m_GHost->m_AutoHostGameName + " #" + UTIL_ToString( m_GHost->m_HostCounter );
-		CONSOLE_Print( "[GAME: " + m_GameName + "] automatically trying to rehost as public game [" + GameName + "] due to refresh failure" );
+		// CONSOLE_Print( "[GAME: " + m_GameName + "] automatically trying to rehost as public game [" + GameName + "] due to refresh failure" );
 
 		//need to synchronize here because we're using host counter variable from GHost
 		// and also gamenames are used in some functions accessed externally
@@ -602,6 +560,49 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		lock.unlock( );
 	}
 
+
+	// rehost ICCup
+	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+	{
+		uint32_t current_iccup_index = 0;
+		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
+		{
+			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
+				current_iccup_index++;
+				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+					break;
+				}
+			}
+			// we need to send the game creation message now because private games are not refreshed
+		}
+		m_RefreshError = false;
+		m_RefreshRehosted = true;
+		// CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "] on ICCup with index equal " + 
+			std::to_string(current_iccup_index ));
+		// SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
+		
+		current_iccup_index = 0;
+		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
+		{
+			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
+				current_iccup_index++;
+				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					std:: string iccup_game_name = m_GameName+ " "+ random_string(4);
+					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
+					
+					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					// the game creation message will be sent NOW
+					break;
+				}
+			}
+		}
+		m_LastICCupRehostTime = GetTime( );
+		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
+		
+	}
 	// refresh every 3 seconds
 
 	if( !m_RefreshError && !m_CountDownStarted && m_GameState == GAME_PUBLIC && GetSlotsOpen( ) > 0 && GetTime( ) - m_LastRefreshTime >= 3)
@@ -615,7 +616,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			if( (*i)->GetOutPacketsQueued( ) <= 1 )
 			{
-				(*i)->QueueGameRefresh( m_GameState, m_GameName, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+				if ((*i)->GetServerAlias().find("ICCup") == std::string::npos){
+					(*i)->QueueGameRefresh( m_GameState, m_GameName, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+				}
 				Refreshed = true;
 			}
 		}

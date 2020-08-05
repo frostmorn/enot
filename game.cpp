@@ -1336,8 +1336,8 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			{
 				if( Payload.length() < 31 )
 				{
-					CONSOLE_Print( "[GAME: " + m_GameName + "] trying to rehost as private game [" + Payload + "]" );
-					SendAllChat( m_GHost->m_Language->TryingToRehostAsPrivateGame( Payload ) );
+					// CONSOLE_Print( "[GAME: " + m_GameName + "] trying to rehost as private game [" + Payload + "]" );
+					// SendAllChat( m_GHost->m_Language->TryingToRehostAsPrivateGame( Payload ) );
 					m_GameState = GAME_PRIVATE;
 					m_LastGameName = m_GameName;
 					m_GameName = Payload;
@@ -1378,8 +1378,8 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			{
 				if( Payload.length() < 31 )
 				{
-					CONSOLE_Print( "[GAME: " + m_GameName + "] trying to rehost as public game [" + Payload + "]" );
-					SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( Payload ) );
+					// CONSOLE_Print( "[GAME: " + m_GameName + "] trying to rehost as public game [" + Payload + "]" );
+					// SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( Payload ) );
 					m_GameState = GAME_PUBLIC;
 					m_LastGameName = m_GameName;
 					m_GameName = Payload;
@@ -1854,7 +1854,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			SendChat(player, "Error! Bug message not provided. Usage : !bug <message>" );
 		}
 		else {
-			discord_bug_message(m_GameName, m_Map->GetMapLocalPath(), player->GetName(), Payload);
+			discord_bug_message(m_GameName, player->GetName(), Payload);
 			SendChat(player, "Bug reported! Thnx :)" );			
 		}
 
