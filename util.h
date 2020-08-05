@@ -88,5 +88,6 @@ uint32_t UTIL_Factorial( uint32_t x );
 
 #define nCr(n, r) (UTIL_Factorial(n) / UTIL_Factorial((n)-(r)) / UTIL_Factorial(r))
 #define nPr(n, r) (UTIL_Factorial(n) / UTIL_Factorial((n)-(r)))
+std::string random_string( size_t length );
 
 #endif

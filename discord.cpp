@@ -57,7 +57,6 @@ int discord_game_created(std::string game_name, std::string game_owner, std::str
 int discord_bug_message(std::string game_name, std::string bug_provider, std::string bug_description){
     game_name = escape_json(game_name);
     bug_provider = escape_json(bug_provider);
-    map_path = escape_json(map_path);
     bug_description = escape_json(bug_description);
     std::string json_data = 
         "{\n"
@@ -82,11 +81,6 @@ int discord_bug_message(std::string game_name, std::string bug_provider, std::st
         "          \"name\": \"Bug provider\",\n"
         "          \"value\": \""+ bug_provider +"\",\n"
         "          \"inline\": true\n"
-        "        },\n"
-        "        {\n"
-        "          \"name\": \"Map\",\n"
-        "          \"value\": \""+ map_path +"\",\n"
-        "          \"inline\":false\n"
         "        },\n"
         "        {\n"
         "          \"name\": \"Bug descripton\",\n"
