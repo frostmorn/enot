@@ -1,3 +1,7 @@
+#ifndef GHOST_H
+#define GHOST_H
+
+#include "includes.h"
 /*
 
    Copyright [2008] [Trevor Hogan]
@@ -17,11 +21,6 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-
-#ifndef GHOST_H
-#define GHOST_H
-
-#include "includes.h"
 
 //
 // CGHost

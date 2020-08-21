@@ -46,7 +46,7 @@
 #endif
 
 #define __STORMLIB_SELF__
-#include <stormlib/StormLib.h>
+#include "stormlib/StormLib.h"
 
 /*
 
