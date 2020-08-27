@@ -783,7 +783,7 @@ void CBNET :: ProcessPackets( )
 					}
 					
 					if (m_GHost->m_CurrentGame)
-						CONSOLE_Print(m_GHost->m_CurrentGame->GetGameName()+" Lobby:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()) +" In games:"+ UTIL_ToString(total_players_count));
+						CONSOLE_Print("Online Players > Lobby:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()) +" In games:"+ UTIL_ToString(total_players_count));
 				}
 				else
 				{
