@@ -781,7 +781,9 @@ void CBNET :: ProcessPackets( )
 					for (auto game:m_GHost->m_Games){
 						total_players_count = total_players_count +  game->GetNumPlayers();
 					}
-					CONSOLE_Print("[WC3]"+m_GHost->m_CurrentGame->GetGameName()+"Lobby:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()) +" Total:"+ UTIL_ToString(total_players_count));
+					
+					if (m_GHost->m_CurrentGame)
+						CONSOLE_Print(m_GHost->m_CurrentGame->GetGameName()+" Lobby:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()) +" In games:"+ UTIL_ToString(total_players_count));
 				}
 				else
 				{
