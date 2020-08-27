@@ -46,7 +46,7 @@
 #endif
 
 #define __STORMLIB_SELF__
-#include <stormlib/StormLib.h>
+#include "stormlib/StormLib.h"
 
 /*
 
@@ -1655,11 +1655,14 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 				(*i)->QueueChatCommand( m_Language->CreatingPublicGame( gameName, ownerName ) );
 */
 		}
+				
 
 		if( saveGame )
 			(*i)->QueueGameCreate( gameState, gameName, string( ), map, m_SaveGame, m_CurrentGame->GetHostCounter( ) );
 		else
+		if ((*i)->GetServerAlias().find("ICCup") == std::string::npos){
 			(*i)->QueueGameCreate( gameState, gameName, string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
+		}
 	}
 
 	if( m_AdminGame )
