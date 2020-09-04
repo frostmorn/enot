@@ -1518,8 +1518,15 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 
 		if( !m_HCLCommandString.empty( ) )
 			SendChat( player, "     HCL Command String:  " + m_HCLCommandString );
-	}
-	else
+		unsigned int total_players_count = 0;
+		for (auto game:m_GHost->m_Games){
+		total_players_count = total_players_count +  game->GetNumPlayers()-1+m_GHost->m_CurrentGame->GetNumPlayers();
+		}
+
+		if (m_GHost->m_CurrentGame){
+			SendChat(player, "Online Players > Lobby:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +"Total Players:"+ UTIL_ToString(total_players_count));
+		}
+		else
 	{
 		// custom welcome message
 		// don't print more than 8 lines
