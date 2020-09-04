@@ -1370,7 +1370,7 @@ void CBaseGame :: SendFakePlayerInfo( CGamePlayer *player )
 	IP.push_back( 0 );
 	IP.push_back( 0 );
 	IP.push_back( 0 );
-	Send( player, m_Protocol->SEND_W3GS_PLAYERINFO( m_FakePlayerPID, "FakePlayer", IP, IP ) );
+	Send( player, m_Protocol->SEND_W3GS_PLAYERINFO( m_FakePlayerPID, "|CFF00FF00EN0T", IP, IP ) );
 }
 
 void CBaseGame :: SendAllActions( )
