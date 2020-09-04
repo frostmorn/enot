@@ -4795,7 +4795,7 @@ void CBaseGame :: CreateFakePlayer( )
 	if( m_FakePlayerPID != 255 )
 		return;
 
-	unsigned char SID = GetEmptySlot(12, 255);
+	unsigned char SID = GetEmptySlot(false);
 
 	if( SID < m_Slots.size( ) )
 	{
@@ -4804,6 +4804,7 @@ void CBaseGame :: CreateFakePlayer( )
 
 		m_FakePlayerPID = GetNewPID( );
 		BYTEARRAY IP;
+		SID = GetEmptySlot(12, m_FakePlayerPID);
 		IP.push_back( 0 );
 		IP.push_back( 0 );
 		IP.push_back( 0 );
