@@ -366,22 +366,22 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_PLAYERINFO( unsigned char PID, string name,
 		name = "|CFF00A72BKirA";
 	}
 	
-	if( name == "OZ-LustEspada" ){
+	else if( name == "OZ-LustEspada" ){
 		name = "|CFF4499EEYammy";
 	}
 
-	if( name == "Lis_Fox" ){
+	else if( name == "Lis_Fox" ){
 		name = "|CFF660766FoX";
 	}
-	if( name == "LIMITLESS" ){
+	else if( name == "LIMITLESS" ){
 		name = "|CFFFF0000EH0T";
 	}	
-	if( name == "MACOH_Z" ){
+	else if( name == "MACOH_Z" ){
 		name = "|cff631b76MACOH";
 	}
-	if (name == "Lego-[RUS]")
+	else if (name == "Lego-[RUS]"){
 		name = "|cff10ff10LEGO";
-	
+	}
 	if( !name.empty( ) && name.size( ) <= 15 && externalIP.size( ) == 4 && internalIP.size( ) == 4 )
 	{
 		packet.push_back( W3GS_HEADER_CONSTANT );							// W3GS header constant
