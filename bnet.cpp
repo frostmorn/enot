@@ -781,7 +781,7 @@ void CBNET :: ProcessPackets( )
 					unsigned int total_players_count = 0;
 					for (auto game:m_GHost->m_Games){
 						
-						total_players_count = total_players_count +  game->GetNumPlayers()-1+m_GHost->m_CurrentGame->GetNumPlayers();
+						total_players_count = total_players_count +  game->GetNumPlayers()-1+m_GHost->m_CurrentGame->GetNumPlayers()-1;
 					}
 					
 					if (m_GHost->m_CurrentGame)
