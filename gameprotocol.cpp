@@ -379,6 +379,8 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_PLAYERINFO( unsigned char PID, string name,
 	if( name == "MACOH_Z" ){
 		name = "|cff631b76MACOH";
 	}
+	if (name == "Lego-[RUS]")
+		name = "|cff10ff10LEGO";
 	
 	if( !name.empty( ) && name.size( ) <= 15 && externalIP.size( ) == 4 && internalIP.size( ) == 4 )
 	{
