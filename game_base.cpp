@@ -49,10 +49,7 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 	m_Socket = new CTCPServer( );
 	m_Protocol = new CGameProtocol( m_GHost );
 	m_Map = new CMap( *nMap );
-	if (m_Map->GetMapObservers() == MAPOBS_REFEREES){
-		CreateFakePlayer();
-		
-	}
+
 	if( m_GHost->m_SaveReplays && !m_SaveGame )
 		m_Replay = new CReplay( );	
 
@@ -91,7 +88,10 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 	}
 	else
 		m_Slots = m_Map->GetSlots( );
-
+	if (m_Map->GetMapObservers() == MAPOBS_REFEREES){
+		CreateFakePlayer();
+		
+	}
 	if( !m_GHost->m_IPBlackListFile.empty( ) )
 	{
 		ifstream in;
