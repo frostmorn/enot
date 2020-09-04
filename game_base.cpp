@@ -3489,7 +3489,7 @@ void CBaseGame :: EventGameStarted( )
 			m_Replay->AddPlayer( (*i)->GetPID( ), (*i)->GetName( ) );
 
 		if( m_FakePlayerPID != 255 )
-			m_Replay->AddPlayer( m_FakePlayerPID, "FakePlayer" );
+			m_Replay->AddPlayer( m_FakePlayerPID, "|CFF00FF00EN0T" );
 
 		m_Replay->SetSlots( m_Slots );
 		m_Replay->SetRandomSeed( m_RandomSeed );
