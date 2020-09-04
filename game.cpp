@@ -979,7 +979,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !FPPAUSE
 			//
 
-			else if( Command == "fppause" && m_FakePlayerPID != 255 && m_GameLoaded )
+			else if( (Command == "fppause" || Command == "fp") && m_FakePlayerPID != 255 && m_GameLoaded )
 			{
 				BYTEARRAY CRC;
 				BYTEARRAY Action;
@@ -991,22 +991,13 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !FPRESUME
 			//
 
-			else if( Command == "fpresume" && m_FakePlayerPID != 255 && m_GameLoaded )
+			else if( (Command == "fpresume" || Command == "fr") && m_FakePlayerPID != 255 && m_GameLoaded )
 			{
 				BYTEARRAY CRC;
 				BYTEARRAY Action;
 				Action.push_back( 2 );
 				m_Actions.push( new CIncomingAction( m_FakePlayerPID, CRC, Action ) );
 			}
-
-			else if( Command == "fpresume" && m_FakePlayerPID != 255 && m_GameLoaded )
-			{
-				BYTEARRAY CRC;
-				BYTEARRAY Action;
-				Action.push_back( 2 );
-				m_Actions.push( new CIncomingAction( m_FakePlayerPID, CRC, Action ) );
-			}
-
 			//
 			// !FROM
 			//

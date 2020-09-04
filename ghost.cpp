@@ -1484,7 +1484,7 @@ void CGHost :: LoadIPToCountryData( )
 
 void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, string gameName, string ownerName, string creatorName, string creatorServer, bool whisper )
 {
-	
+
 	if( !m_Enabled )
 	{
 		for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )

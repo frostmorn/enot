@@ -88,7 +88,10 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 	}
 	else
 		m_Slots = m_Map->GetSlots( );
-
+	if (m_Map->GetMapObservers() == MAPOBS_REFEREES){
+		CreateFakePlayer();
+		
+	}
 	if( !m_GHost->m_IPBlackListFile.empty( ) )
 	{
 		ifstream in;
@@ -1367,7 +1370,7 @@ void CBaseGame :: SendFakePlayerInfo( CGamePlayer *player )
 	IP.push_back( 0 );
 	IP.push_back( 0 );
 	IP.push_back( 0 );
-	Send( player, m_Protocol->SEND_W3GS_PLAYERINFO( m_FakePlayerPID, "FakePlayer", IP, IP ) );
+	Send( player, m_Protocol->SEND_W3GS_PLAYERINFO( m_FakePlayerPID, "|CFF00FF00EN0T", IP, IP ) );
 }
 
 void CBaseGame :: SendAllActions( )
@@ -3486,7 +3489,7 @@ void CBaseGame :: EventGameStarted( )
 			m_Replay->AddPlayer( (*i)->GetPID( ), (*i)->GetName( ) );
 
 		if( m_FakePlayerPID != 255 )
-			m_Replay->AddPlayer( m_FakePlayerPID, "FakePlayer" );
+			m_Replay->AddPlayer( m_FakePlayerPID, "|CFF00FF00EN0T" );
 
 		m_Replay->SetSlots( m_Slots );
 		m_Replay->SetRandomSeed( m_RandomSeed );
@@ -4792,7 +4795,7 @@ void CBaseGame :: CreateFakePlayer( )
 	if( m_FakePlayerPID != 255 )
 		return;
 
-	unsigned char SID = GetEmptySlot( false );
+	unsigned char SID = GetEmptySlot(12, 0);
 
 	if( SID < m_Slots.size( ) )
 	{
@@ -4805,7 +4808,7 @@ void CBaseGame :: CreateFakePlayer( )
 		IP.push_back( 0 );
 		IP.push_back( 0 );
 		IP.push_back( 0 );
-		SendAll( m_Protocol->SEND_W3GS_PLAYERINFO( m_FakePlayerPID, "FakePlayer", IP, IP ) );
+		SendAll( m_Protocol->SEND_W3GS_PLAYERINFO( m_FakePlayerPID, "|CFF00FF00EN0T", IP, IP ) );
 		m_Slots[SID] = CGameSlot( m_FakePlayerPID, 100, SLOTSTATUS_OCCUPIED, 0, m_Slots[SID].GetTeam( ), m_Slots[SID].GetColour( ), m_Slots[SID].GetRace( ) );
 		SendAllSlotInfo( );
 	}
