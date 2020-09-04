@@ -1530,12 +1530,12 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		else
 	{
 		// custom welcome message
-		// don't print more than 8 lines
+		// don't print more than 7 lines
 
 		uint32_t Count = 0;
 		string Line;
 
-		while( !in.eof( ) && Count < 8 )
+		while( !in.eof( ) && Count < 7 )
 		{
 			getline( in, Line );
 
