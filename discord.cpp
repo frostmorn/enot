@@ -25,7 +25,7 @@ int discord_request(std::string webhook_url, std::string json_data){
                 just as well be a https:// URL if that is what should receive the
                 data. */ 
             list = curl_slist_append(list, "Content-Type: application/json");
-            curl_easy_setopt(curl, CURLOPT_URL, webhook_url);
+            curl_easy_setopt(curl, CURLOPT_URL, webhook_url.c_str());
             curl_easy_setopt(curl, CURLOPT_POST, 1);
             /* Now specify the POST data */ 
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
