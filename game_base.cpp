@@ -4650,7 +4650,7 @@ void CBaseGame :: StartCountDown( bool force )
 */
 			// if no problems found start the game
 
-			if( StillDownloading.empty( ) && NotSpoofChecked.empty( ) && NotPinged.empty( ) )
+			if( StillDownloading.empty( ) && NotSpoofChecked.empty( ) /*&& NotPinged.empty( ) */)
 			{
 				m_CountDownStarted = true;
 				m_CountDownCounter = 3;
