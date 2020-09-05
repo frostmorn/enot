@@ -785,7 +785,7 @@ void CBNET :: ProcessPackets( )
 					}
 					
 					if (m_GHost->m_CurrentGame)
-						CONSOLE_Print("Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count-1 +m_GHost->m_CurrentGame->GetNumPlayers()-1));
+						CONSOLE_Print("Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count-1 +m_GHost->m_CurrentGame->GetNumPlayers()));
 				}
 				else
 				{

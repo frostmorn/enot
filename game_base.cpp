@@ -1505,7 +1505,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 	if (!total_players_count==0)
 		total_players_count--;
 	if (m_GHost->m_CurrentGame)
-		CONSOLE_Print("Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame->GetNumPlayers()-1));
+		CONSOLE_Print("Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame->GetNumPlayers()));
 	ifstream in;
 	in.open( m_GHost->m_MOTDFile.c_str( ) );
 
