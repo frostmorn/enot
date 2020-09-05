@@ -89,8 +89,6 @@ protected:
 	uint32_t m_CreationTime;						// GetTime when the game was created
 	uint32_t m_LastPingTime;						// GetTime when the last ping was sent
 	uint32_t m_LastRefreshTime;						// GetTime when the last game refresh was sent
-	uint32_t m_LastICCupRehostTime;					// Get time when last time game was rehosted on ICCup
-	uint32_t m_LastRubattleRehostTime;				// Get time when last time game was rehosted on Rubattle
 	uint32_t m_LastDownloadTicks;					// GetTicks when the last map download cycle was performed
 	uint32_t m_DownloadCounter;						// # of map bytes downloaded in the last second
 	uint32_t m_LastDownloadCounterResetTicks;		// GetTicks when the download counter was last reset
@@ -132,7 +130,10 @@ protected:
 	int m_DoDelete;									// notifies thread to exit
 	uint32_t m_LastReconnectHandleTime;				// last time we tried to handle GProxy reconnects
 	uint32_t m_LastICCupRehostIndex;				// last index of iccup bnet rehosted
-	uint32_t m_LastRubattleRehostTime;				// last time of Rubbattle bnet rehost
+	uint32_t m_LastICCupRehostTime;					// Get time when last time game was rehosted on ICCup
+	uint32_t m_LastRubattleRehostTime;				// Get time when last time game was rehosted on Rubattle
+
+
 public:
 	vector<string> m_DoSayGames;					// vector of strings we should announce to the current game
 	boost::mutex m_SayGamesMutex;					// mutex for the above vector
