@@ -644,7 +644,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				m_HCLCommandString.clear( );
 				SendAllChat( m_GHost->m_Language->ClearingHCL( ) );
 				
-				std::string lia_map_mode ="map mode: ";
+				std::string lia_map_mode ="Switching to map mode: ";
 				lia_map_mode = lia_map_mode + "Выживание ";
 				SendAllChat(lia_map_mode);
 			}

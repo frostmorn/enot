@@ -1554,6 +1554,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		else if (m_HCLCommandString.find("z")!=std::string::npos){
 			lia_map_mode = lia_map_mode + "Золото поровну ";
 		}
+		SendChat(player, lia_map_mode);
 		while( !in.eof( ) && Count < 6 )
 		{
 			getline( in, Line );
