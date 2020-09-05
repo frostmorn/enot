@@ -643,6 +643,10 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			{
 				m_HCLCommandString.clear( );
 				SendAllChat( m_GHost->m_Language->ClearingHCL( ) );
+				
+				std::string lia_map_mode ="map mode: ";
+				lia_map_mode = lia_map_mode + "Выживание ";
+				SendAllChat(lia_map_mode);
 			}
 
 			//
@@ -1047,6 +1051,27 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 						{
 							m_HCLCommandString = Payload;
 							SendAllChat( m_GHost->m_Language->SettingHCL( m_HCLCommandString ) );
+							
+							std::string lia_map_mode ="map mode: ";
+							if (m_HCLCommandString.find("v")!=std::string::npos){
+								lia_map_mode = lia_map_mode + "Выживание ";
+							}
+							else if (m_HCLCommandString.find("x")!=std::string::npos){
+								lia_map_mode = lia_map_mode + "Экстрим ";
+							}
+							else if (m_HCLCommandString.find("x")!=std::string::npos){
+								lia_map_mode = lia_map_mode + "Случайные герои  ";
+							}
+							else if (m_HCLCommandString.find("e")!=std::string::npos){
+								lia_map_mode = lia_map_mode + "Легкий ";
+							}
+							else if (m_HCLCommandString.find("b")!=std::string::npos){
+								lia_map_mode = lia_map_mode + "Битва кланов ";
+							}
+							else if (m_HCLCommandString.find("z")!=std::string::npos){
+								lia_map_mode = lia_map_mode + "Экстрим ";
+							}
+							SendAllChat("Switching to "+lia_map_mode);
 						}
 						else
 							SendAllChat( m_GHost->m_Language->UnableToSetHCLInvalid( ) );

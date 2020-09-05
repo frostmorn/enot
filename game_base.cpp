@@ -1535,8 +1535,26 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 
 		uint32_t Count = 0;
 		string Line;
-
-		while( !in.eof( ) && Count < 7 )
+		std::string lia_map_mode ="Map mode: ";
+		if (m_HCLCommandString.find("v")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Выживание ";
+		}
+		else if (m_HCLCommandString.find("x")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Экстрим ";
+		}
+		else if (m_HCLCommandString.find("x")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Случайные герои  ";
+		}
+		else if (m_HCLCommandString.find("e")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Легкий ";
+		}
+		else if (m_HCLCommandString.find("b")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Битва кланов ";
+		}
+		else if (m_HCLCommandString.find("z")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Экстрим ";
+		}
+		while( !in.eof( ) && Count < 6 )
 		{
 			getline( in, Line );
 
