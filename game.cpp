@@ -647,7 +647,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				
 				
 				
-				SendAllChat("Switching to map mode: " + );
+				SendAllChat("Switching to map mode: " + detect_lia_mode(m_HCLCommandString));
 			}
 
 			//
