@@ -560,6 +560,8 @@ if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleReho
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
 					// the game creation message will be sent on next refresh
+					
+					(*i)->QueueGameCreate( m_GameState, m_GameName, string( ), m_Map, NULL, m_HostCounter );
 					break;
 				}
 			// we need to send the game creation message now because private games are not refreshed
