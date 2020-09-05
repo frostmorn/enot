@@ -1,5 +1,5 @@
 #include "discord.h"
-
+#include <iostream>
 std::string escape_json(const std::string &s) {
     std::ostringstream o;
     for (auto c = s.cbegin(); c != s.cend(); c++) {
@@ -13,6 +13,11 @@ std::string escape_json(const std::string &s) {
     return o.str();
 }
 int discord_request(std::string webhook_url, std::string json_data){
+    std::cout<< "Attempting discord request" << std::endl;
+    std::cout<< "Webhook url = " << webhook_url << std::endl;
+    if (webhook_url==""){
+        return -1;
+    }    
     CURL *curl;
         CURLcode res;
         struct curl_slist *list = NULL;
