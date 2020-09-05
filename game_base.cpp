@@ -1497,7 +1497,15 @@ void CBaseGame :: SendAllActions( )
 void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 {
 	// read from motd.txt if available (thanks to zeeg for this addition)
-
+	unsigned int total_players_count = 0;
+	for (auto game:m_GHost->m_Games){
+		
+		total_players_count = total_players_count +  game->GetNumPlayers();
+	}
+	if (!total_players_count==0)
+		total_players_count--;
+	if (m_GHost->m_CurrentGame)
+		SendChat(player, "Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame->GetNumPlayers()));
 	ifstream in;
 	in.open( m_GHost->m_MOTDFile.c_str( ) );
 
@@ -1518,16 +1526,36 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 
 		if( !m_HCLCommandString.empty( ) )
 			SendChat( player, "     HCL Command String:  " + m_HCLCommandString );
+
 	}
-	else
+		else
 	{
 		// custom welcome message
-		// don't print more than 8 lines
+		// don't print more than 7 lines
 
 		uint32_t Count = 0;
 		string Line;
-
-		while( !in.eof( ) && Count < 8 )
+		std::string lia_map_mode ="Map mode: ";
+		if (m_HCLCommandString.find("v")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Выживание ";
+		}
+		if (m_HCLCommandString.find("x")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Экстрим ";
+		}
+		if (m_HCLCommandString.find("c")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Случайные герои  ";
+		}
+		if (m_HCLCommandString.find("e")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Легкий ";
+		}
+		if (m_HCLCommandString.find("b")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Битва кланов ";
+		}
+		if (m_HCLCommandString.find("z")!=std::string::npos){
+			lia_map_mode = lia_map_mode + "Золото поровну ";
+		}
+		SendChat(player, lia_map_mode);
+		while( !in.eof( ) && Count < 6 )
 		{
 			getline( in, Line );
 
@@ -2857,6 +2885,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 		{
 			CONSOLE_Print( "[GAME: " + m_GameName + "] desync detected" );
 			SendAllChat( m_GHost->m_Language->DesyncDetected( ) );
+			discord_bug_message(this->GetGameName(), "(-_-)==\\~", "Map desync detected!");
 
 			// try to figure out who desynced
 			// this is complicated by the fact that we don't know what the correct game state is so we let the players vote
@@ -4625,7 +4654,7 @@ void CBaseGame :: StartCountDown( bool force )
 
 			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
-				if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 3 )
+				if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 2 )
 				{
 					if( NotPinged.empty( ) )
 						NotPinged = (*i)->GetName( );
@@ -4642,7 +4671,7 @@ void CBaseGame :: StartCountDown( bool force )
 			if( StillDownloading.empty( ) && NotSpoofChecked.empty( ) && NotPinged.empty( ) )
 			{
 				m_CountDownStarted = true;
-				m_CountDownCounter = 10;
+				m_CountDownCounter = 5;
 			}
 		}
 	}
@@ -4714,7 +4743,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 
 		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
-			if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 3 )
+			if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 2 )
 			{
 				if( NotPinged.empty( ) )
 					NotPinged = (*i)->GetName( );
@@ -4734,7 +4763,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 		if( StillDownloading.empty( ) && NotSpoofChecked.empty( ) && NotPinged.empty( ) )
 		{
 			m_CountDownStarted = true;
-			m_CountDownCounter = 10;
+			m_CountDownCounter = 5;
 		}
 	}
 }

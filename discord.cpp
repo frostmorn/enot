@@ -12,7 +12,7 @@ std::string escape_json(const std::string &s) {
     }
     return o.str();
 }
-int discord_request(std::string json_data){
+int discord_request(std::string webhook_url, std::string json_data){
     CURL *curl;
         CURLcode res;
         struct curl_slist *list = NULL;
@@ -25,7 +25,7 @@ int discord_request(std::string json_data){
                 just as well be a https:// URL if that is what should receive the
                 data. */ 
             list = curl_slist_append(list, "Content-Type: application/json");
-            curl_easy_setopt(curl, CURLOPT_URL, "https://discordapp.com/api/webhooks/739464707760455781/xiBR1ELF_8fsXXYOQ_ViHXuu7wDmr8ptE9uM98P5kEJQX0AXzM9FRE7J7YrJlpbM9ErW");
+            curl_easy_setopt(curl, CURLOPT_URL, webhook_url.c_str());
             curl_easy_setopt(curl, CURLOPT_POST, 1);
             /* Now specify the POST data */ 
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
@@ -51,7 +51,7 @@ int discord_game_created(std::string game_name, std::string game_owner, std::str
     game_owner = escape_json(game_owner);
     map_path = escape_json(map_path);
     std::string json_data = "{\"username\":\"EN0T\",\"avatar_url\":\"https:\\/\\/i.imgur.com\\/PFe9z5O.png\",\"content\":\"\",\"embeds\":[{\"author\":{\"name\":\"\\u0415\\u043d\\u043e\\u0442\\u0438\\u043a\",\"icon_url\":\"https:\\/\\/i.imgur.com\\/PFe9z5O.png\"},\"title\":\"Created public game\",\"color\":0,\"fields\":[{\"name\":\"Game name\",\"value\":\""+game_name+"\",\"inline\":true},{\"name\":\"Game owner\",\"value\":\""+game_owner+"\",\"inline\":true},{\"name\":\"Map name\",\"value\":\""+map_path+"\"}]}]}";
-	return discord_request(json_data);
+	return discord_request("https://discordapp.com/api/webhooks/739464707760455781/xiBR1ELF_8fsXXYOQ_ViHXuu7wDmr8ptE9uM98P5kEJQX0AXzM9FRE7J7YrJlpbM9ErW", json_data);
 }
 
 int discord_bug_message(std::string game_name, std::string bug_provider, std::string bug_description){
@@ -91,5 +91,5 @@ int discord_bug_message(std::string game_name, std::string bug_provider, std::st
         "    }\n"
         "  ]\n"
     "}";
-    return discord_request(json_data);
+    return discord_request("https://discordapp.com/api/webhooks/751543718317785160/bkzrTG4cY1t9vKMILgNJRWxHkKn2O6YwRPYRfY0nHLdocGq9jdotsJUfxE1N4NvfbtsE", json_data);
 }
