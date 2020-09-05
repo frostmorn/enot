@@ -1788,7 +1788,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
         {
             if( m_GHost->m_CurrentGame->GetLocked( ) )
             {
-                SendChat( player, " Ошибка: на старт игры потому что игра заблокирована. Владелец " + m_OwnerName );
+                SendChat( player, " Игра заблокирована. Запуск игры голосованием невозможен. Владелец " + m_OwnerName );
                 return HideCommand;
             }
  
@@ -1806,7 +1806,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
  
                 m_StartedVoteStartTime = GetTime();
            
-                CONSOLE_Print( "[Игра: " + m_GameName + "] голосования создано игроком [" + User + "]" );
+                CONSOLE_Print( "[Игра: " + m_GameName + "] голосование создано игроком [" + User + "]" );
             }
  
             player->SetStartVote(true);

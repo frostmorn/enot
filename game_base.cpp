@@ -4573,7 +4573,7 @@ void CBaseGame :: StartCountDown( bool force )
 		if( force )
 		{
 			m_CountDownStarted = true;
-			m_CountDownCounter = 10;
+			m_CountDownCounter = 0;
 		}
 		else
 		{
@@ -4631,7 +4631,7 @@ void CBaseGame :: StartCountDown( bool force )
 
 			// check if everyone has been pinged enough (3 times) that the autokicker would have kicked them by now
 			// see function EventPlayerPongToHost for the autokicker code
-
+/*
 			string NotPinged;
 
 			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
@@ -4647,13 +4647,13 @@ void CBaseGame :: StartCountDown( bool force )
 
 			if( !NotPinged.empty( ) )
 				SendAllChat( m_GHost->m_Language->PlayersNotYetPinged( NotPinged ) );
-
+*/
 			// if no problems found start the game
 
 			if( StillDownloading.empty( ) && NotSpoofChecked.empty( ) && NotPinged.empty( ) )
 			{
 				m_CountDownStarted = true;
-				m_CountDownCounter = 5;
+				m_CountDownCounter = 3;
 			}
 		}
 	}
