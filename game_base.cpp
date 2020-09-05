@@ -568,10 +568,10 @@ if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleReho
 		{
 			if ((*i)->GetServerAlias().find("rubattle") != std::string::npos){
 	
-				std:: string iccup_game_name = m_GameName+ " "+ random_string(2);
-				(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
+				std:: string rubattle_game_name = m_GameName+ " "+ random_string(2);
+				(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
 				
-				(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+				(*i)->QueueGameRefresh( m_GameState, rubattle_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 				// the game creation message will be sent NOW
 				break;	
 			}
