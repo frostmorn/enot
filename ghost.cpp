@@ -1624,7 +1624,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 	lock.unlock( );
 
 	CONSOLE_Print( "[GHOST] creating game [" + gameName + "]" );
-	discord_game_created(gameName, ownerName, map->GetMapPath());
+	discord_game_created(m_discord_g_create_webhook_url, gameName, ownerName, map->GetMapPath());
 
 	if( saveGame )
 		m_CurrentGame = new CGame( this, map, m_SaveGame, m_HostPort, gameState, gameName, ownerName, creatorName, creatorServer );
