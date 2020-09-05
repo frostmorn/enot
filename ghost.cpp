@@ -1194,14 +1194,14 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 	
 	if( m_CurrentGame )
 	{
-		for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+	/*	for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
 		{
 			(*i)->QueueChatCommand( m_Language->UnableToCreateGameTryAnotherName( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
 
 			if( (*i)->GetServer( ) == m_CurrentGame->GetCreatorServer( ) )
 				(*i)->QueueChatCommand( m_Language->UnableToCreateGameTryAnotherName( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ), m_CurrentGame->GetCreatorName( ), true );
 		}
-
+	*/
 		if( m_AdminGame )
 			m_AdminGame->SendAllChat( m_Language->BNETGameHostingFailed( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
 
