@@ -1860,7 +1860,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
  	//
 	// !VOTEKICK
 	//
-	else if( Command == "votekick" && m_GHost->m_VoteKickAllowed && !Payload.empty( ) )
+	else if( (Command == "votekick"||Command == "vk") && m_GHost->m_VoteKickAllowed && !Payload.empty( ) )
 	{
 		if( !m_KickVotePlayer.empty( ) )
 			SendChat( player, m_GHost->m_Language->UnableToVoteKickAlreadyInProgress( ) );
