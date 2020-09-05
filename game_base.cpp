@@ -559,7 +559,6 @@ if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleReho
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-					std:: string rubattleRandomName = m_GameName+ " "+ random_string(2);
 					// the game creation message will be sent on next refresh
 					break;
 				}
