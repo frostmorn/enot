@@ -560,9 +560,7 @@ if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleReho
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
 					std:: string rubattleRandomName = m_GameName+ " "+ random_string(2);
-					(*i)->QueueGameCreate( m_GameState, rubattleRandomName, string( ), m_Map, NULL, m_HostCounter );
-					(*i)->QueueGameRefresh( m_GameState, rubattleRandomName, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
-					// the game creation message will be sent NOW
+					// the game creation message will be sent on next refresh
 					break;
 				}
 			// we need to send the game creation message now because private games are not refreshed
