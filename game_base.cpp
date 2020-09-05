@@ -4634,7 +4634,7 @@ void CBaseGame :: StartCountDown( bool force )
 
 			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
-				if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 3 )
+				if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 2 )
 				{
 					if( NotPinged.empty( ) )
 						NotPinged = (*i)->GetName( );
@@ -4651,7 +4651,7 @@ void CBaseGame :: StartCountDown( bool force )
 			if( StillDownloading.empty( ) && NotSpoofChecked.empty( ) && NotPinged.empty( ) )
 			{
 				m_CountDownStarted = true;
-				m_CountDownCounter = 10;
+				m_CountDownCounter = 5;
 			}
 		}
 	}
@@ -4723,7 +4723,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 
 		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
-			if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 1 )
+			if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 2 )
 			{
 				if( NotPinged.empty( ) )
 					NotPinged = (*i)->GetName( );
