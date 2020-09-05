@@ -1536,7 +1536,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		uint32_t Count = 0;
 		string Line;
 
-		SendChat(player, detect_lia_map_mode(m_HCLCommandString));
+		SendChat(player, detect_lia_mode(m_HCLCommandString));
 		while( !in.eof( ) && Count < 6 )
 		{
 			getline( in, Line );
