@@ -781,11 +781,11 @@ void CBNET :: ProcessPackets( )
 					unsigned int total_players_count = 0;
 					for (auto game:m_GHost->m_Games){
 						
-						total_players_count = total_players_count +  game->GetNumPlayers()-1+m_GHost->m_CurrentGame->GetNumPlayers()-1;
+						total_players_count = total_players_count +  game->GetNumPlayers()-1;
 					}
 					
 					if (m_GHost->m_CurrentGame)
-						CONSOLE_Print("Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count));
+						CONSOLE_Print("Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count-1 +m_GHost->m_CurrentGame->GetNumPlayers()-1));
 				}
 				else
 				{
