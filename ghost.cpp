@@ -403,6 +403,11 @@ CGHost :: CGHost( CConfig *CFG )
 	m_CRC->Initialize( );
 	m_SHA = new CSHA1( );
 	m_CurrentGame = NULL;
+
+	//	Discord config
+	m_discord_bug_webhook_url=CFG->GetString( "discord_bug_webhook_url", string( ) );	// config value: bug report message webhook url
+	m_discord_g_create_webhook_url = CFG->GetString( "discord_g_create_webhook_url", string( ) );
+
 	string DBType = CFG->GetString( "db_type", "sqlite3" );
 	CONSOLE_Print( "[GHOST] opening primary database" );
 

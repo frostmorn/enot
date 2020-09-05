@@ -143,6 +143,8 @@ public:
 	uint16_t m_AdminGamePort;				// config value: the port to host the admin game on
 	string m_AdminGamePassword;				// config value: the admin game password
 	string m_AdminGameMap;					// config value: the admin game map config to use
+	string m_discord_bug_webhook_url;		// config value: bug report message webhook url
+	string m_discord_g_create_webhook_url;	// config value: game creation message webhook url
 	unsigned char m_LANWar3Version;			// config value: LAN warcraft 3 version
 	uint32_t m_ReplayWar3Version;			// config value: replay warcraft 3 version (for saving replays)
 	uint32_t m_ReplayBuildNumber;			// config value: replay build number (for saving replays)
