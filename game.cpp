@@ -17,6 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
+#include "lia.h"
 #include "ghost.h"
 #include "util.h"
 #include "config.h"
@@ -644,9 +645,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				m_HCLCommandString.clear( );
 				SendAllChat( m_GHost->m_Language->ClearingHCL( ) );
 				
-				std::string lia_map_mode ="Switching to map mode: ";
-				lia_map_mode = lia_map_mode + "Выживание ";
-				SendAllChat(lia_map_mode);
+				
+				
+				SendAllChat("Switching to map mode: " + );
 			}
 
 			//
@@ -1051,27 +1052,8 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 						{
 							m_HCLCommandString = Payload;
 							SendAllChat( m_GHost->m_Language->SettingHCL( m_HCLCommandString ) );
-							
-							std::string lia_map_mode ="map mode: ";
-							if (m_HCLCommandString.find("v")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Выживание ";
-							}
-							if (m_HCLCommandString.find("x")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Экстрим ";
-							}
-							if (m_HCLCommandString.find("c")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Случайные герои  ";
-							}
-							if (m_HCLCommandString.find("e")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Легкий ";
-							}
-							if (m_HCLCommandString.find("b")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Битва кланов ";
-							}
-							if (m_HCLCommandString.find("z")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Золото поровну ";
-							}
-							SendAllChat("Switching to "+lia_map_mode);
+
+							SendAllChat("Switching to "+detect_lia_mode(m_HCLCommandString));
 						}
 						else
 							SendAllChat( m_GHost->m_Language->UnableToSetHCLInvalid( ) );
