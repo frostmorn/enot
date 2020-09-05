@@ -1852,6 +1852,8 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			SendChat(player, "Error! Bug message not provided. Usage : !bug <message>" );
 		}
 		else {
+
+			CONSOLE_Print("Webhook url  = "+m_GHost->m_discord_bug_webhook_url);
 			discord_bug_message(m_GHost->m_discord_bug_webhook_url, GetGameName(), player->GetName(), Payload);
 			SendChat(player, "Bug reported! Thnx :)" );			
 		}
