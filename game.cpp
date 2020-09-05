@@ -1059,7 +1059,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 							else if (m_HCLCommandString.find("x")!=std::string::npos){
 								lia_map_mode = lia_map_mode + "Экстрим ";
 							}
-							else if (m_HCLCommandString.find("x")!=std::string::npos){
+							else if (m_HCLCommandString.find("c")!=std::string::npos){
 								lia_map_mode = lia_map_mode + "Случайные герои  ";
 							}
 							else if (m_HCLCommandString.find("e")!=std::string::npos){
@@ -1069,7 +1069,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 								lia_map_mode = lia_map_mode + "Битва кланов ";
 							}
 							else if (m_HCLCommandString.find("z")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Экстрим ";
+								lia_map_mode = lia_map_mode + "Золото поровну ";
 							}
 							SendAllChat("Switching to "+lia_map_mode);
 						}
