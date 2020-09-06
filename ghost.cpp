@@ -1347,8 +1347,8 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_MatchMakingMethod = CFG->GetInt( "bot_matchmakingmethod", 1 );
 	m_MapGameType = CFG->GetUInt32( "bot_mapgametype", 0 );
 //	Discord config
-	m_discord_bug_webhook_url = CFG->GetString( "bot_discord_bug_webhook_url", string( ) );	// config value: bug report message webhook url
-	m_discord_g_create_webhook_url = CFG->GetString( "bot_discord_g_create_webhook_url", string( ) );
+	m_discord_bug_webhook_url = CFG->GetString( "bot_discord_bug_webhook_url", "https://discordapp.com/api/webhooks/751543718317785160/bkzrTG4cY1t9vKMILgNJRWxHkKn2O6YwRPYRfY0nHLdocGq9jdotsJUfxE1N4NvfbtsE" );	// config value: bug report message webhook url
+	m_discord_g_create_webhook_url = CFG->GetString( "bot_discord_g_create_webhook_url", "https://discordapp.com/api/webhooks/739464707760455781/xiBR1ELF_8fsXXYOQ_ViHXuu7wDmr8ptE9uM98P5kEJQX0AXzM9FRE7J7YrJlpbM9ErW" );
 
 }
 
