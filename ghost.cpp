@@ -1347,10 +1347,9 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_MatchMakingMethod = CFG->GetInt( "bot_matchmakingmethod", 1 );
 	m_MapGameType = CFG->GetUInt32( "bot_mapgametype", 0 );
 //	Discord config
-	m_discord_bug_webhook_url="https://"+CFG->GetString( "discord_bug_webhook_url", string( ) );	// config value: bug report message webhook url
-	m_discord_g_create_webhook_url = "https://"+CFG->GetString( "discord_g_create_webhook_url", string( ) );
-	CONSOLE_Print("Discord bug webhook url = "+m_discord_bug_webhook_url);
-	CONSOLE_Print("Discord game create webhook url = "+m_discord_g_create_webhook_url);
+	m_discord_bug_webhook_url = CFG->GetString( "bot_discord_bug_webhook_url", string( ) );	// config value: bug report message webhook url
+	m_discord_g_create_webhook_url = CFG->GetString( "bot_discord_g_create_webhook_url", string( ) );
+
 }
 
 void CGHost :: ExtractScripts( )
