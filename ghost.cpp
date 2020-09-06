@@ -407,7 +407,9 @@ CGHost :: CGHost( CConfig *CFG )
 	//	Discord config
 	m_discord_bug_webhook_url=CFG->GetString( "discord_bug_webhook_url", string( ) );	// config value: bug report message webhook url
 	m_discord_g_create_webhook_url = CFG->GetString( "discord_g_create_webhook_url", string( ) );
-
+	CONSOLE_Print("Discord bug webhook url = "+m_discord_bug_webhook_url);
+	CONSOLE_Print("Discord game create webhook url = "+m_discord_g_create_webhook_url);
+	
 	string DBType = CFG->GetString( "db_type", "sqlite3" );
 	CONSOLE_Print( "[GHOST] opening primary database" );
 
