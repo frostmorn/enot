@@ -403,6 +403,11 @@ CGHost :: CGHost( CConfig *CFG )
 	m_CRC->Initialize( );
 	m_SHA = new CSHA1( );
 	m_CurrentGame = NULL;
+
+	//	Discord config
+	m_discord_bug_webhook_url=CFG->GetString( "discord_bug_webhook_url", string( ) );	// config value: bug report message webhook url
+	m_discord_g_create_webhook_url = CFG->GetString( "discord_g_create_webhook_url", string( ) );
+
 	string DBType = CFG->GetString( "db_type", "sqlite3" );
 	CONSOLE_Print( "[GHOST] opening primary database" );
 
@@ -1189,14 +1194,14 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 	
 	if( m_CurrentGame )
 	{
-		for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+	/*	for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
 		{
 			(*i)->QueueChatCommand( m_Language->UnableToCreateGameTryAnotherName( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
 
 			if( (*i)->GetServer( ) == m_CurrentGame->GetCreatorServer( ) )
 				(*i)->QueueChatCommand( m_Language->UnableToCreateGameTryAnotherName( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ), m_CurrentGame->GetCreatorName( ), true );
 		}
-
+	*/
 		if( m_AdminGame )
 			m_AdminGame->SendAllChat( m_Language->BNETGameHostingFailed( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
 
@@ -1619,7 +1624,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 	lock.unlock( );
 
 	CONSOLE_Print( "[GHOST] creating game [" + gameName + "]" );
-	discord_game_created(gameName, ownerName, map->GetMapPath());
+	discord_game_created(m_discord_g_create_webhook_url, gameName, ownerName, map->GetMapPath());
 
 	if( saveGame )
 		m_CurrentGame = new CGame( this, map, m_SaveGame, m_HostPort, gameState, gameName, ownerName, creatorName, creatorServer );

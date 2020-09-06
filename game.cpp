@@ -17,6 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
+#include "lia.h"
 #include "ghost.h"
 #include "util.h"
 #include "config.h"
@@ -644,9 +645,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				m_HCLCommandString.clear( );
 				SendAllChat( m_GHost->m_Language->ClearingHCL( ) );
 				
-				std::string lia_map_mode ="Switching to map mode: ";
-				lia_map_mode = lia_map_mode + "Выживание ";
-				SendAllChat(lia_map_mode);
+				
+				
+				SendAllChat("Switching to map mode: " + detect_lia_mode(m_HCLCommandString));
 			}
 
 			//
@@ -1051,27 +1052,8 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 						{
 							m_HCLCommandString = Payload;
 							SendAllChat( m_GHost->m_Language->SettingHCL( m_HCLCommandString ) );
-							
-							std::string lia_map_mode ="map mode: ";
-							if (m_HCLCommandString.find("v")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Выживание ";
-							}
-							if (m_HCLCommandString.find("x")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Экстрим ";
-							}
-							if (m_HCLCommandString.find("c")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Случайные герои  ";
-							}
-							if (m_HCLCommandString.find("e")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Легкий ";
-							}
-							if (m_HCLCommandString.find("b")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Битва кланов ";
-							}
-							if (m_HCLCommandString.find("z")!=std::string::npos){
-								lia_map_mode = lia_map_mode + "Золото поровну ";
-							}
-							SendAllChat("Switching to "+lia_map_mode);
+
+							SendAllChat("Switching to "+detect_lia_mode(m_HCLCommandString));
 						}
 						else
 							SendAllChat( m_GHost->m_Language->UnableToSetHCLInvalid( ) );
@@ -1806,7 +1788,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
         {
             if( m_GHost->m_CurrentGame->GetLocked( ) )
             {
-                SendChat( player, " Ошибка: на старт игры потому что игра заблокирована. Владелец " + m_OwnerName );
+                SendChat( player, " Игра заблокирована. Запуск игры голосованием невозможен. Владелец " + m_OwnerName );
                 return HideCommand;
             }
  
@@ -1824,7 +1806,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
  
                 m_StartedVoteStartTime = GetTime();
            
-                CONSOLE_Print( "[Игра: " + m_GameName + "] голосования создано игроком [" + User + "]" );
+                CONSOLE_Print( "[Игра: " + m_GameName + "] голосование создано игроком [" + User + "]" );
             }
  
             player->SetStartVote(true);
@@ -1870,7 +1852,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			SendChat(player, "Error! Bug message not provided. Usage : !bug <message>" );
 		}
 		else {
-			discord_bug_message(m_GameName, player->GetName(), Payload);
+
+			CONSOLE_Print("Webhook url  = "+m_GHost->m_discord_bug_webhook_url);
+			discord_bug_message(m_GHost->m_discord_bug_webhook_url, GetGameName(), player->GetName(), Payload);
 			SendChat(player, "Bug reported! Thnx :)" );			
 		}
 
@@ -1878,7 +1862,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
  	//
 	// !VOTEKICK
 	//
-	else if( Command == "votekick" && m_GHost->m_VoteKickAllowed && !Payload.empty( ) )
+	else if( (Command == "votekick"||Command == "vk") && m_GHost->m_VoteKickAllowed && !Payload.empty( ) )
 	{
 		if( !m_KickVotePlayer.empty( ) )
 			SendChat( player, m_GHost->m_Language->UnableToVoteKickAlreadyInProgress( ) );

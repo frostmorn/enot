@@ -17,7 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-
+#include "lia.h"
 #include "ghost.h"
 #include "util.h"
 #include "config.h"
@@ -44,7 +44,7 @@
 //
 
 
-CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, string nGameName, string nOwnerName, string nCreatorName, string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ),m_LastICCupRehostTime( GetTime( ) ), m_LastICCupRehostIndex(0), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 )
+CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, string nGameName, string nOwnerName, string nCreatorName, string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ),m_LastICCupRehostTime( GetTime( ) ),m_LastRubattleRehostTime(GetTime()), m_LastICCupRehostIndex(0), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 )
 {
 	m_Socket = new CTCPServer( );
 	m_Protocol = new CGameProtocol( m_GHost );
@@ -549,7 +549,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		lock.unlock( );
 	}
 
-
 	// rehost ICCup
 	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
@@ -587,6 +586,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					break;
 				}
 			}
+			
 		}
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
@@ -1535,26 +1535,8 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 
 		uint32_t Count = 0;
 		string Line;
-		std::string lia_map_mode ="Map mode: ";
-		if (m_HCLCommandString.find("v")!=std::string::npos){
-			lia_map_mode = lia_map_mode + "Выживание ";
-		}
-		if (m_HCLCommandString.find("x")!=std::string::npos){
-			lia_map_mode = lia_map_mode + "Экстрим ";
-		}
-		if (m_HCLCommandString.find("c")!=std::string::npos){
-			lia_map_mode = lia_map_mode + "Случайные герои  ";
-		}
-		if (m_HCLCommandString.find("e")!=std::string::npos){
-			lia_map_mode = lia_map_mode + "Легкий ";
-		}
-		if (m_HCLCommandString.find("b")!=std::string::npos){
-			lia_map_mode = lia_map_mode + "Битва кланов ";
-		}
-		if (m_HCLCommandString.find("z")!=std::string::npos){
-			lia_map_mode = lia_map_mode + "Золото поровну ";
-		}
-		SendChat(player, lia_map_mode);
+
+		SendChat(player, detect_lia_mode(m_HCLCommandString));
 		while( !in.eof( ) && Count < 6 )
 		{
 			getline( in, Line );
@@ -2885,7 +2867,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 		{
 			CONSOLE_Print( "[GAME: " + m_GameName + "] desync detected" );
 			SendAllChat( m_GHost->m_Language->DesyncDetected( ) );
-			discord_bug_message(this->GetGameName(), "(-_-)==\\~", "Map desync detected!");
+			discord_bug_message(m_GHost->m_discord_bug_webhook_url, this->GetGameName(), "(-_-)==\\~", "Map desync detected!");
 
 			// try to figure out who desynced
 			// this is complicated by the fact that we don't know what the correct game state is so we let the players vote
@@ -4591,7 +4573,7 @@ void CBaseGame :: StartCountDown( bool force )
 		if( force )
 		{
 			m_CountDownStarted = true;
-			m_CountDownCounter = 10;
+			m_CountDownCounter = 0;
 		}
 		else
 		{
@@ -4654,7 +4636,7 @@ void CBaseGame :: StartCountDown( bool force )
 
 			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
-				if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 2 )
+				if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 1 )
 				{
 					if( NotPinged.empty( ) )
 						NotPinged = (*i)->GetName( );
@@ -4665,13 +4647,12 @@ void CBaseGame :: StartCountDown( bool force )
 
 			if( !NotPinged.empty( ) )
 				SendAllChat( m_GHost->m_Language->PlayersNotYetPinged( NotPinged ) );
-
 			// if no problems found start the game
 
 			if( StillDownloading.empty( ) && NotSpoofChecked.empty( ) && NotPinged.empty( ) )
 			{
 				m_CountDownStarted = true;
-				m_CountDownCounter = 5;
+				m_CountDownCounter = 3;
 			}
 		}
 	}
