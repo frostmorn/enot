@@ -1134,15 +1134,15 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				{
 					m_Latency = UTIL_ToUInt32( Payload );
 
-					if( m_Latency <= 20 )
+					if( m_Latency <= 5 )
 					{
-						m_Latency = 20;
-						SendAllChat( m_GHost->m_Language->SettingLatencyToMinimum( "20" ) );
+						m_Latency = 5;
+						SendAllChat( m_GHost->m_Language->SettingLatencyToMinimum( "5" ) );
 					}
-					else if( m_Latency >= 500 )
+					else if( m_Latency >= 100 )
 					{
-						m_Latency = 500;
-						SendAllChat( m_GHost->m_Language->SettingLatencyToMaximum( "500" ) );
+						m_Latency = 100;
+						SendAllChat( m_GHost->m_Language->SettingLatencyToMaximum( "100" ) );
 					}
 					else
 						SendAllChat( m_GHost->m_Language->SettingLatencyTo( UTIL_ToString( m_Latency ) ) );

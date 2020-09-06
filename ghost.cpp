@@ -797,7 +797,7 @@ bool CGHost :: Update( long usecBlock )
 			m_BNETs.clear( );
 		}
 
-		if( m_CurrentGame )
+		if( m_CurrentGame)
 		{
 			CONSOLE_Print( "[GHOST] deleting current game in preparation for exiting nicely" );
 			m_CurrentGame->doDelete( );
