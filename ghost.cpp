@@ -404,10 +404,8 @@ CGHost :: CGHost( CConfig *CFG )
 	m_SHA = new CSHA1( );
 	m_CurrentGame = NULL;
 
-	//	Discord config
-	m_discord_bug_webhook_url=CFG->GetString( "discord_bug_webhook_url", string( ) );	// config value: bug report message webhook url
-	m_discord_g_create_webhook_url = CFG->GetString( "discord_g_create_webhook_url", string( ) );
-
+	
+	
 	string DBType = CFG->GetString( "db_type", "sqlite3" );
 	CONSOLE_Print( "[GHOST] opening primary database" );
 
@@ -799,7 +797,7 @@ bool CGHost :: Update( long usecBlock )
 			m_BNETs.clear( );
 		}
 
-		if( m_CurrentGame )
+		if( m_CurrentGame)
 		{
 			CONSOLE_Print( "[GHOST] deleting current game in preparation for exiting nicely" );
 			m_CurrentGame->doDelete( );
@@ -1348,6 +1346,10 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_TCPNoDelay = CFG->GetInt( "tcp_nodelay", 0 ) == 0 ? false : true;
 	m_MatchMakingMethod = CFG->GetInt( "bot_matchmakingmethod", 1 );
 	m_MapGameType = CFG->GetUInt32( "bot_mapgametype", 0 );
+//	Discord config
+	m_discord_bug_webhook_url = CFG->GetString( "bot_discord_bug_webhook_url", "https://discordapp.com/api/webhooks/751543718317785160/bkzrTG4cY1t9vKMILgNJRWxHkKn2O6YwRPYRfY0nHLdocGq9jdotsJUfxE1N4NvfbtsE" );	// config value: bug report message webhook url
+	m_discord_g_create_webhook_url = CFG->GetString( "bot_discord_g_create_webhook_url", "https://discordapp.com/api/webhooks/739464707760455781/xiBR1ELF_8fsXXYOQ_ViHXuu7wDmr8ptE9uM98P5kEJQX0AXzM9FRE7J7YrJlpbM9ErW" );
+
 }
 
 void CGHost :: ExtractScripts( )
