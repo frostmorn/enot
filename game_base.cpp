@@ -2141,11 +2141,12 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	if( JoinedRealm.empty( ) )
 		Player->SetSpoofed( true );
-		
+
+	// disable votestart, due to new user connected
     if( m_StartedVoteStartTime != 0 )
       SendAllChat( "Votestart cancelled!" );
- 
     m_StartedVoteStartTime = 0;
+
 	Player->SetWhoisShouldBeSent( m_GHost->m_SpoofChecks == 1 || ( m_GHost->m_SpoofChecks == 2 && AnyAdminCheck ) );
 	m_Players.push_back( Player );
 	potential->SetSocket( NULL );
