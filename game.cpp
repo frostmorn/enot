@@ -1134,10 +1134,10 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				{
 					m_Latency = UTIL_ToUInt32( Payload );
 
-					if( m_Latency <= 5 )
+					if( m_Latency <= 1 )
 					{
-						m_Latency = 5;
-						SendAllChat( m_GHost->m_Language->SettingLatencyToMinimum( "5" ) );
+						m_Latency = 1;
+						SendAllChat( m_GHost->m_Language->SettingLatencyToMinimum( "1" ) );
 					}
 					else if( m_Latency >= 100 )
 					{
