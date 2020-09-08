@@ -563,6 +563,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
 		
+		m_LastRubattleRehostTime = GetTime( );
+		
+		
 	}
 
 	// rehost ICCup
