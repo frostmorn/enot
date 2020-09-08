@@ -559,6 +559,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				(*i)->QueueGameUncreate( );
 				(*i)->QueueEnterChat( );
 				break;
+			
+				std:: string rubattle_game_name = m_GameName+ " "+ random_string(1);
+				(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
 			}
 		}
 			// we need to send the game creation message now because private games are not refreshed
