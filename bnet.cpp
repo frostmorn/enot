@@ -1091,12 +1091,12 @@ void CBNET :: ProcessChatEvent( CIncomingChatEvent *chatEvent )
 	{
 		// keep track of current channel so we can rejoin it after hosting a game
 
-		CONSOLE_Print( "[BNET: " + m_ServerAlias + "] joined channel [" + Message + "]" );
+		// CONSOLE_Print( "[BNET: " + m_ServerAlias + "] joined channel [" + Message + "]" );
 		m_CurrentChannel = Message;
 	}
 	else if( Event == CBNETProtocol :: EID_INFO )
 	{
-		CONSOLE_Print( "[INFO: " + m_ServerAlias + "] " + Message );
+		// CONSOLE_Print( "[INFO: " + m_ServerAlias + "] " + Message );
 
 		// extract the first word which we hope is the username
 		// this is not necessarily true though since info messages also include channel MOTD's and such
@@ -1192,7 +1192,7 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 
 	if( IsAdmin( User ) || IsRootAdmin( User ) || ForceRoot )
 	{
-		CONSOLE_Print( "[BNET: " + m_ServerAlias + "] admin [" + User + "] sent command [" + Message + "]" );
+		// CONSOLE_Print( "[BNET: " + m_ServerAlias + "] admin [" + User + "] sent command [" + Message + "]" );
 
 		/*****************
 		* ADMIN COMMANDS *

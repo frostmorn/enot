@@ -787,6 +787,20 @@ void CMap :: Load( CConfig *CFG, string nCFGFile )
 
 	m_MapHeight = MapHeight;
 	m_MapType = CFG->GetString( "map_type", string( ) );
+	CONSOLE_Print("Supported modes:");
+	for (auto i = 0; i < 12; i++){
+		std::string CurrentMode = "";
+		std::string CurrentModeDescription = "";
+		CurrentMode = CFG->GetString("supported_mode"+UTIL_ToString(i)+"_hcl", string());
+		CurrentModeDescription = CFG->GetString("supported_mode"+UTIL_ToString(i)+"_description", "Description not provided");
+		if (CurrentMode != ""){
+			m_MapSupportedModes.insert(m_MapSupportedModes.end(), CurrentMode);
+			m_MapSupportedModesDescription.insert(m_MapSupportedModesDescription.end(), CurrentModeDescription);
+		}
+
+		CONSOLE_Print(CurrentMode);
+	}
+
 	m_MapMatchMakingCategory = CFG->GetString( "map_matchmakingcategory", string( ) );
 	m_MapStatsW3MMDCategory = CFG->GetString( "map_statsw3mmdcategory", string( ) );
 	m_MapDefaultHCL = CFG->GetString( "map_defaulthcl", string( ) );

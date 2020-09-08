@@ -84,7 +84,6 @@
 #define MAPGAMETYPE_OBSNONE				1 << 22
 
 #include "gameslot.h"
-
 //
 // CMap
 //
@@ -111,6 +110,8 @@ private:
 	unsigned char m_MapFilterSize;
 	unsigned char m_MapFilterObs;
 	uint32_t m_MapOptions;
+	vector<string> m_MapSupportedModesDescription;	// config value
+	vector<string> m_MapSupportedModes;	// config value
 	BYTEARRAY m_MapWidth;						// config value: map width (2 bytes)
 	BYTEARRAY m_MapHeight;						// config value: map height (2 bytes)
 	string m_MapType;							// config value: map type (for stats class)
@@ -158,7 +159,7 @@ public:
 	uint32_t GetMapNumPlayers( )			{ return m_MapNumPlayers; }
 	uint32_t GetMapNumTeams( )				{ return m_MapNumTeams; }
 	vector<CGameSlot> GetSlots( )			{ return m_Slots; }
-
+	vector<string> GetMapSupportedModes()	{ return m_MapSupportedModesDescription;	}
 	void Load( CConfig *CFG, string nCFGFile );
 	void CheckValid( );
 	uint32_t XORRotateLeft( unsigned char *data, uint32_t length );
