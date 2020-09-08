@@ -2161,7 +2161,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// turning the CPotentialPlayer into a CGamePlayer is a bit of a pain because we have to be careful not to close the socket
 	// this problem is solved by setting the socket to NULL before deletion and handling the NULL case in the destructor
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
-	auto realm = JoinedRealm.empty()? "LAN":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
+	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
 	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm );
 	CGamePlayer *Player = new CGamePlayer( potential, m_SaveGame ? EnforcePID : GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), Reserved );
 
@@ -2594,7 +2594,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	// this problem is solved by setting the socket to NULL before deletion and handling the NULL case in the destructor
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
 
-	auto realm = JoinedRealm.empty()? "LAN":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
+	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
 	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm);
 	CGamePlayer *Player = new CGamePlayer( potential, GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), false );
 	
