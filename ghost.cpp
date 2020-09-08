@@ -1204,7 +1204,7 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 			m_AdminGame->SendAllChat( m_Language->BNETGameHostingFailed( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
 
 		boost::mutex::scoped_lock sayLock( m_CurrentGame->m_SayGamesMutex );
-		m_CurrentGame->m_DoSayGames.push_back( m_Language->UnableToCreateGameTryAnotherName( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
+		// m_CurrentGame->m_DoSayGames.push_back( m_Language->UnableToCreateGameTryAnotherName( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
 		sayLock.unlock( );
 
 		// we take the easy route and simply close the lobby if a refresh fails
