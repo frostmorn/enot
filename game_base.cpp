@@ -556,10 +556,12 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
-			(*i)->UnqueueGameRefreshes( );
-			(*i)->QueueGameUncreate( );
-			(*i)->QueueEnterChat( );
-			break;
+			if ((*i)->GetServerAlias().find("rubattle") != std::string::npos){
+				(*i)->UnqueueGameRefreshes( );
+				(*i)->QueueGameUncreate( );
+				(*i)->QueueEnterChat( );
+				break;
+			}
 		}
 			// we need to send the game creation message now because private games are not refreshed
 		m_RefreshError = false;
@@ -577,7 +579,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
-			if ((*i)->GetServerAlias().find("rubattle") != std::string::npos){
+			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
 					(*i)->UnqueueGameRefreshes( );
