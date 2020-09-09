@@ -1960,11 +1960,15 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
     //
  
     else if( Command == "votemode" || Command == "vm")
-    {
+    {	
+		auto User = player->GetName();
+		SendAllChat("Player " + User+" started vote for map mode");		
+		SendAllChat("There are "+UTIL_ToString(m_Map->GetMapSupportedModes().size())+" supported modes");
+		auto i = 1;
 		for (auto mode:m_Map->GetMapSupportedModes()){
-			
-
+			SendAllChat(UTIL_ToString(i) + mode);
 		} 
+		SendAllChat("Please select map mode to vote");
 
     }
 
