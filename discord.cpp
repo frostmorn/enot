@@ -13,7 +13,7 @@ std::string escape_json(const std::string &s) {
     return o.str();
 }
 int discord_request(std::string webhook_url, std::string json_data){
-
+    return -2;
     if (webhook_url==""){
         return -1;
     }    
