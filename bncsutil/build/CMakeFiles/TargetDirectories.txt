@@ -1,0 +1,10 @@
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/install/strip.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/install/local.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/install.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/list_install_components.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/rebuild_cache.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/bncsutil_static.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/package.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/package_source.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/bncsutil.dir
+/home/orphey/lia_bot/ghostpp/bncsutil/build/CMakeFiles/edit_cache.dir
