@@ -31,3 +31,7 @@
 .vscode/*
 .vscode/settings.json
 .vscode/settings.json
+bncsutil/*
+CascLib/*
+StormLib/*
+zlib/*
