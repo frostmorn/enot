@@ -1968,6 +1968,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 		auto i = 1;
 		for (auto mode:m_Map->GetMapSupportedModes()){
 			SendAllChat(UTIL_ToString(i) + ". " + mode);
+			i++;
 		} 
 		SendAllChat("Please select map mode to vote [1-" + UTIL_ToString(SupportedModesCount)+"]");
 
