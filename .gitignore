@@ -37,3 +37,5 @@ StormLib/*
 zlib/*
 ghost.dbs
 ghost++
+fiona.dbs
+fiona.log
