@@ -1765,17 +1765,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 		player->SetStatsDotASentTime( GetTime( ) );
 	}
 
-	//
-	// !VERSION
-	//
 
-	else if( Command == "version" )
-	{
-		if( player->GetSpoofed( ) && ( AdminCheck || RootAdminCheck || IsOwner( User ) ) )
-			SendChat( player, m_GHost->m_Language->VersionAdmin( m_GHost->m_Version ) );
-		else
-			SendChat( player, m_GHost->m_Language->VersionNotAdmin( m_GHost->m_Version ) );
-	}
 	// !VOTESTART
     //
    
@@ -1896,7 +1886,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				SendChat( player, m_GHost->m_Language->UnableToVoteKickFoundMoreThanOneMatch( Payload ) );
 		}
 	}
-	 //
+
+
+	//
     // !VOTESTART
     //
  
@@ -1962,6 +1954,24 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
             }
  
         }
+    }
+//
+    // !VOTEMODE
+    //
+ 
+    else if( Command == "votemode" || Command == "vm")
+    {	
+		auto User = player->GetName();
+		auto SupportedModesCount = m_Map->GetMapSupportedModes().size();
+		SendAllChat("Player " + User+" started vote for map mode");		
+		SendAllChat("There are "+UTIL_ToString(SupportedModesCount)+" supported modes");
+		auto i = 1;
+		for (auto mode:m_Map->GetMapSupportedModes()){
+			SendAllChat(UTIL_ToString(i) + ". " + mode);
+			i++;
+		} 
+		SendAllChat("Please select map mode to vote [1-" + UTIL_ToString(SupportedModesCount)+"]");
+
     }
 
 	//

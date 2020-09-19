@@ -549,6 +549,31 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		lock.unlock( );
 	}
 
+	// rehost Rubattle
+	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleRehostTime + 420 && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0){
+
+		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
+		{
+			if ((*i)->GetServerAlias().find("rubattle") != std::string::npos){
+				(*i)->UnqueueGameRefreshes( );
+				(*i)->QueueGameUncreate( );
+				(*i)->QueueEnterChat( );
+				break;
+			
+				std:: string rubattle_game_name = m_GameName+ " "+ random_string(1);
+				(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
+			}
+		}
+			// we need to send the game creation message now because private games are not refreshed
+		m_RefreshError = false;
+		m_RefreshRehosted = true;
+		
+		m_LastRubattleRehostTime = GetTime( );
+		
+		
+		
+	}
+
 	// rehost ICCup
 	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
@@ -561,6 +586,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
+					std:: string iccup_game_name = m_GameName+ " "+ random_string(1);
+					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+	
 					break;
 				}
 			}
@@ -578,7 +607,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					std:: string iccup_game_name = m_GameName+ " "+ random_string(2);
+					std:: string iccup_game_name = m_GameName+ " "+ random_string(1);
 					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
 					
 					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
@@ -1108,7 +1137,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	
 	// expire the votestart
  
-    if( m_StartedVoteStartTime != 0 && GetTime( ) - m_StartedVoteStartTime >= 60 )
+    if( !m_GameLoaded && m_GameLoading && m_StartedVoteStartTime != 0 && GetTime( ) - m_StartedVoteStartTime >= 60 )
       {
         CONSOLE_Print( "[GAME: " + m_GameName + "] votestart expired" );
         SendAllChat( "Votestart expired (sixty seconds without pass)." );
@@ -2132,9 +2161,11 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// turning the CPotentialPlayer into a CGamePlayer is a bit of a pain because we have to be careful not to close the socket
 	// this problem is solved by setting the socket to NULL before deletion and handling the NULL case in the destructor
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
-
-	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players" );
+	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
+	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm );
 	CGamePlayer *Player = new CGamePlayer( potential, m_SaveGame ? EnforcePID : GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), Reserved );
+
+	SendAllChat( "Player [" + joinPlayer->GetName( )+ "] joined the game from Realm:"+realm );
 
 	// consider LAN players to have already spoof checked since they can't
 	// since so many people have trouble with this feature we now use the JoinedRealm to determine LAN status
@@ -2562,10 +2593,12 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	// turning the CPotentialPlayer into a CGamePlayer is a bit of a pain because we have to be careful not to close the socket
 	// this problem is solved by setting the socket to NULL before deletion and handling the NULL case in the destructor
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
-	
-	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players" );
-	CGamePlayer *Player = new CGamePlayer( potential, GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), false );
 
+	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
+	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm);
+	CGamePlayer *Player = new CGamePlayer( potential, GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), false );
+	
+	SendAllChat( "Player [" + joinPlayer->GetName( ) + "] joined the game from Realm:"+realm );
 	// consider LAN players to have already spoof checked since they can't
 	// since so many people have trouble with this feature we now use the JoinedRealm to determine LAN status
 
@@ -2872,7 +2905,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 		{
 			CONSOLE_Print( "[GAME: " + m_GameName + "] desync detected" );
 			SendAllChat( m_GHost->m_Language->DesyncDetected( ) );
-			discord_bug_message(m_GHost->m_discord_bug_webhook_url, this->GetGameName(), "(-_-)==\\~", "Map desync detected! \r\nMap name ="+this->m_Map->GetMapPath()+"\r\nGame name ="+GetGameName());
+			discord_bug_message(m_GHost->m_discord_bug_webhook_url, this->GetGameName(), "(-_-)==\\~", "Map desync detected!");
 
 			// try to figure out who desynced
 			// this is complicated by the fact that we don't know what the correct game state is so we let the players vote
