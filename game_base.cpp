@@ -619,7 +619,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			
 		}
 		m_LastRubattleRehostTime = GetTime( );
-		m_LastRubattleRehostIndex = current_rubattle_index == m_GHost->m_RubattleBnetCount ? 0 : current_iccup_index;
+		m_LastRubattleRehostIndex = current_rubattle_index == m_GHost->m_RubattleBnetCount ? 0 : current_rubattle_index;
 		
 	}
 
