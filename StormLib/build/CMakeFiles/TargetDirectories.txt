@@ -1,0 +1,9 @@
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/install/strip.dir
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/install/local.dir
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/install.dir
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/list_install_components.dir
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/rebuild_cache.dir
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/package.dir
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/storm.dir
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/package_source.dir
+/home/orphey/lia_bot/ghostpp/StormLib/build/CMakeFiles/edit_cache.dir

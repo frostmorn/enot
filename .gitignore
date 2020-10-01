@@ -31,10 +31,6 @@
 .vscode/*
 .vscode/settings.json
 .vscode/settings.json
-bncsutil/*
-CascLib/*
-StormLib/*
-zlib/*
 ghost.dbs
 ghost++
 fiona.dbs
