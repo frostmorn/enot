@@ -578,12 +578,12 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	// rehost Rubattle
 	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleRehostTime + (300/m_GHost->m_RubattleBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
-		uint32_t current_iccup_index = 0;
+		uint32_t current_rubattle_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
-				current_iccup_index++;
-				if (current_iccup_index == m_LastRubattleRehostIndex+1){
+				current_rubattle_index++;
+				if (current_rubattle_index == m_LastRubattleRehostIndex+1){
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
@@ -602,12 +602,12 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			// std::to_string(current_iccup_index ));
 		// SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
 		
-		current_iccup_index = 0;
+		current_rubattle_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
-				current_iccup_index++;
-				if (current_iccup_index == m_LastRubattleRehostIndex+1){
+				current_rubattle_index++;
+				if (current_rubattle_index == m_LastRubattleRehostIndex+1){
 					std:: string rubattle_game_name = m_GameName+ " "+ random_string(1);
 					(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
 					
@@ -619,7 +619,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			
 		}
 		m_LastRubattleRehostTime = GetTime( );
-		m_LastRubattleRehostIndex = current_iccup_index == m_GHost->m_RubattleBnetCount ? 0 : current_iccup_index;
+		m_LastRubattleRehostIndex = current_rubattle_index == m_GHost->m_RubattleBnetCount ? 0 : current_iccup_index;
 		
 	}
 
