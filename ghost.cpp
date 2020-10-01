@@ -547,6 +547,10 @@ CGHost :: CGHost( CConfig *CFG )
 		if (ServerAlias.find("ICCup") != std::string::npos){
 			m_ICCupBnetCount++;
 		}
+		// Rubattle count bnet's
+		if (ServerAlias.find("Rubattle") != std::string::npos){
+			m_RubattleBnetCount++;
+		}
 		if( Locale == "system" )
 		{
 #ifdef WIN32
