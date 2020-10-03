@@ -1500,8 +1500,10 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 	{
 		for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
 		{
-			if( (*i)->GetServer( ) == creatorServer )
-				(*i)->QueueChatCommand( m_Language->UnableToCreateGameDisabled( gameName ), creatorName, whisper );
+			((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos){
+				if( (*i)->GetServer( ) == creatorServer )
+					(*i)->QueueChatCommand( m_Language->UnableToCreateGameDisabled( gameName ), creatorName, whisper );
+			}
 		}
 
 		if( m_AdminGame )
