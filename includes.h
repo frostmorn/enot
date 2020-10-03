@@ -46,7 +46,7 @@
 #include <string>
 #include <vector>
 #include <boost/thread.hpp>
-
+#include <boost/algorithm/string/trim.hpp>
 using namespace std;
 
 typedef vector<unsigned char> BYTEARRAY;
