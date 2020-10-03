@@ -549,34 +549,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		lock.unlock( );
 	}
 
-	// rehost Rubattle
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleRehostTime + 420 && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0){
-
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
-			if ((*i)->GetServerAlias().find("rubattle") != std::string::npos){
-				(*i)->UnqueueGameRefreshes( );
-				(*i)->QueueGameUncreate( );
-				(*i)->QueueEnterChat( );
-				break;
-			
-				std:: string rubattle_game_name = m_GameName+ " "+ random_string(1);
-				(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
-			}
-		}
-			// we need to send the game creation message now because private games are not refreshed
-		m_RefreshError = false;
-		m_RefreshRehosted = true;
-		
-		m_LastRubattleRehostTime = GetTime( );
-		
-		
-		
-	}
 
 
 	// rehost Rubattle
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleRehostTime + (300/m_GHost->m_RubattleBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+	if (!m_RefreshError && m_GameState==GAME_PUBLIC && ((m_LastRubattleRehostIndex==0)||(GetTime()> m_LastRubattleRehostTime + (420/m_GHost->m_RubattleBnetCount))) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
 		uint32_t current_rubattle_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
