@@ -75,7 +75,7 @@ CBNET :: CBNET( CGHost *nGHost, string nServer, string nServerAlias, string nBNL
 	else if( LowerServer == "europe.battle.net" )
 		m_ServerAlias = "Europe";
 	else
-		m_ServerAlias = m_Server;
+		m_ServerAlias = m_ServerAlias;
 
 	if( nPasswordHashType == "pvpgn" && !nBNLSServer.empty( ) )
 	{
