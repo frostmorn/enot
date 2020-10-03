@@ -564,8 +564,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
 					std:: string rubattle_game_name = m_GameName+ " "+ random_string(1);
-					(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
-					(*i)->QueueGameRefresh( m_GameState, rubattle_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					// (*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
+					// (*i)->QueueGameRefresh( m_GameState, rubattle_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 	
 					break;
 				}
@@ -613,8 +613,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
 					std:: string iccup_game_name = m_GameName+ " "+ random_string(1);
-					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
-					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					// (*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
+					// (*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 	
 					break;
 				}
