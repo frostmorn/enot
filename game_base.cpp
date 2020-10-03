@@ -4597,6 +4597,19 @@ void CBaseGame :: SaveGameData( )
 {
 
 }
+void CBaseGame::StartVoteMode(){
+	m_VoteModeStarted = 1;
+	auto SupportedModesCount = m_Map->GetMapSupportedModes().size();
+	SendAllChat("There are "+UTIL_ToString(SupportedModesCount)+" supported modes");
+	auto i = 1;
+	for (auto mode:m_Map->GetMapSupportedModes()){
+		SendAllChat(UTIL_ToString(i) + ". " + mode);
+		i++;
+	} 
+	SendAllChat("Please select map mode to vote [1-" + UTIL_ToString(SupportedModesCount)+"]");
+	
+    
+}
 
 void CBaseGame :: StartCountDown( bool force )
 {
