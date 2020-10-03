@@ -594,7 +594,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-					
+
 					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
 					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 					break;
@@ -1714,7 +1714,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 		SendAllChat( m_GHost->m_Language->VoteKickCancelled( m_KickVotePlayer ) );
 	 // abort the votestart
  
-    if( m_StartedVoteStartTime != 0 )
+    if( m_StartedVoteStartTime != 0 && !m_GameLoaded)
       SendAllChat( "Votestart cancelled!" );
  
     m_StartedVoteStartTime = 0;
