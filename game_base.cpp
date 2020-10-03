@@ -684,7 +684,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			if( (*i)->GetOutPacketsQueued( ) <= 1 )
 			{
-				if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("ICCup") == std::string::npos)){
+				if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos)){
 					(*i)->QueueGameRefresh( m_GameState, m_GameName, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 				}
 				Refreshed = true;
