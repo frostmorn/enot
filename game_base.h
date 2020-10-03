@@ -283,7 +283,7 @@ public:
 	virtual bool IsGameDataSaved( );
 	virtual void SaveGameData( );
 	virtual void StartCountDown( bool force );
-	virtual void CBaseGame::StartVoteMode();
+	virtual void StartVoteMode();
 	virtual void StartCountDownAuto( bool requireSpoofChecks );
 	virtual void StopPlayers( string reason );
 	virtual void StopLaggers( string reason );
