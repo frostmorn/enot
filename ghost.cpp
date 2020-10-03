@@ -521,6 +521,7 @@ CGHost :: CGHost( CConfig *CFG )
 	m_ReplayWar3Version = CFG->GetInt( "replay_war3version", 26 );
 	m_ReplayBuildNumber = CFG->GetInt( "replay_buildnumber", 6059 );
 	m_ICCupBnetCount = 0;
+	m_RubattleBnetCount = 0;
 	SetConfigs( CFG );
 
 	// load the battle.net connections
