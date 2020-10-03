@@ -552,7 +552,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 
 	// rehost Rubattle
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleRehostTime + (420/m_GHost->m_RubattleBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+	if (m_GHost->m_RubattleBnetCount && !m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleRehostTime + (420/m_GHost->m_RubattleBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
 		uint32_t current_rubattle_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
@@ -582,7 +582,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 
 	// rehost ICCup
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+	if (m_GHost->m_ICCupBnetCount &&!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
 	{
 		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
