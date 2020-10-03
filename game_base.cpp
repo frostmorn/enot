@@ -3039,18 +3039,18 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 						Relay = false;
 				}
 				
-				else if( ExtraFlags[0] == 1 )
-				{
-					// this is an ingame [Obs/Ref] message, print it to the console
-
-					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [test] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
-				}
 				else if( ExtraFlags[0] == 2 )
 				{
 					// this is an ingame [Obs/Ref] message, print it to the console
 
 					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [Obs/Ref] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+				
 				}
+				else
+				{
+					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [GameChat] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+				}
+				
 
 				if( Relay )
 				{
