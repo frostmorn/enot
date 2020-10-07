@@ -1670,14 +1670,17 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 */
 		}
 				
-
-		if( saveGame )
-			if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos)){
+		if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos))
+		{
+			//	we can't host 20 games to servers which makes us to do shit
+			//	so we will do it later
+			if( saveGame ){
 				(*i)->QueueGameCreate( gameState, gameName, string( ), map, m_SaveGame, m_CurrentGame->GetHostCounter( ) );
 			}
-		else
-		if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos)){
-					(*i)->QueueGameCreate( gameState, gameName, string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
+			else
+			{
+				(*i)->QueueGameCreate( gameState, gameName, string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
+			}
 		}
 	}
 
