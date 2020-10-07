@@ -1523,7 +1523,6 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		SendChat(player, message);
 	// Cause Welcome message will be sent each time user connects game lobby, this could be used to get bot online 
 	// at log parse
-	CONSOLE_Print(message);
 
 	// read from motd.txt if available (thanks to zeeg for this addition)
 	ifstream in;
@@ -1611,7 +1610,6 @@ void CBaseGame :: SendEndMessage( )
 
 void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 {
-	PlayerCountChanged();
 	CONSOLE_Print( "[GAME: " + m_GameName + "] deleting player [" + player->GetName( ) + "]: " + player->GetLeftReason( ) );
 
 	// remove any queued spoofcheck messages for this player
@@ -1729,6 +1727,8 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 {
+	PlayerCountChanged();
+
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
 		if( !player->GetGProxyDisconnectNoticeSent( ) )
@@ -1768,6 +1768,8 @@ void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectPlayerError( CGamePlayer *player )
 {
+	PlayerCountChanged();
+
 	// at the time of this comment there's only one player error and that's when we receive a bad packet from the player
 	// since TCP has checks and balances for data corruption the chances of this are pretty slim
 	player->SetDeleteMe( true );
@@ -1780,6 +1782,8 @@ void CBaseGame :: EventPlayerDisconnectPlayerError( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectSocketError( CGamePlayer *player )
 {
+	PlayerCountChanged();
+
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
 		if( !player->GetGProxyDisconnectNoticeSent( ) )
@@ -1822,6 +1826,7 @@ void CBaseGame :: PlayerCountChanged(){
 }
 void CBaseGame :: EventPlayerDisconnectConnectionClosed( CGamePlayer *player )
 {
+	PlayerCountChanged();
 
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
