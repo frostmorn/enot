@@ -1237,7 +1237,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !OPENALL
 			//
 
-			else if( Command == "openall" || Command == "oa"  && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "openall" || Command == "oa")  && !m_GameLoading && !m_GameLoaded )
 				OpenAllSlots( );
 
 			//
@@ -1626,7 +1626,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !UNMUTEALL
 			//
 
-			else if( Command == "unmuteall" || Command == "ua"  && m_GameLoaded )
+			else if( (Command == "unmuteall" || Command == "ua")  && m_GameLoaded )
 			{
 				SendAllChat( m_GHost->m_Language->GlobalChatUnmuted( ) );
 				m_MuteAll = false;
