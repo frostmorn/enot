@@ -497,7 +497,7 @@ void CGamePlayer :: ProcessPackets( )
 						{
 							m_Pings.push_back( GetTicks( ) - Pong );
 
-							if( m_Pings.size( ) > 20 )
+							if( m_Pings.size( ) > 3 )
 								m_Pings.erase( m_Pings.begin( ) );
 						}
 					}
