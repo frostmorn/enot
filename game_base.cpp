@@ -1518,10 +1518,12 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		
 		total_players_count = total_players_count +  game->GetNumPlayers();
 	}
-	if (!total_players_count==0)
-		total_players_count--;
+	auto message = "Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame->GetNumPlayers()-1);
 	if (m_GHost->m_CurrentGame)
-		SendChat(player, "Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame->GetNumPlayers()));
+		SendChat(player, message);
+	// Cause Welcome message will be sent each time user connects game lobby, this could be used to get bot online 
+	// at log parse
+	CONSOLE_Print(message);
 	ifstream in;
 	in.open( m_GHost->m_MOTDFile.c_str( ) );
 
