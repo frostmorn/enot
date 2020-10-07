@@ -654,7 +654,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !CLOSE (close slot)
 			//
 
-			else if( Command == "close"||Command == "c" && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "close"||Command == "c") && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
 			{
 				// close as many slots as specified, e.g. "5 10" closes slots 5 and 10
 
@@ -680,7 +680,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !CLOSEALL
 			//
 
-			else if( Command == "closeall" || Command == "ca" && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "closeall" || Command == "ca") && !m_GameLoading && !m_GameLoaded )
 				CloseAllSlots( );
 
 			//
@@ -1069,7 +1069,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !HOLD (hold a slot for someone)
 			//
 
-			else if( Command == "hold" || Command == "h"  && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "hold" || Command == "h")  && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
 			{
 				// hold as many players as specified, e.g. "Varlock Kilranin" holds players "Varlock" and "Kilranin"
 
@@ -1201,7 +1201,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !MUTEALL
 			//
 
-			else if( Command == "muteall" || Command == "ma"  && m_GameLoaded )
+			else if( (Command == "muteall" || Command == "ma") && m_GameLoaded )
 			{
 				SendAllChat( m_GHost->m_Language->GlobalChatMuted( ) );
 				m_MuteAll = true;
@@ -1211,7 +1211,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !OPEN (open slot)
 			//
 
-			else if( Command == "open" || Command == "o"  && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "open" || Command == "o")  && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
 			{
 				// open as many slots as specified, e.g. "5 10" opens slots 5 and 10
 
