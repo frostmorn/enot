@@ -1098,7 +1098,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !KICK (kick a player)
 			//
 
-			else if( Command == "kick"  || Command == "k" && !Payload.empty( ) )
+			else if( (Command == "kick"  || Command == "k") && !Payload.empty( ) )
 			{
 				CGamePlayer *LastMatch = NULL;
 				uint32_t Matches = GetPlayerFromNamePartial( Payload, &LastMatch );
