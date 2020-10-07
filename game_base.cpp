@@ -1513,16 +1513,6 @@ void CBaseGame :: SendAllActions( )
 void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 {
 	PlayerCountChanged();
-	unsigned int total_players_count = 0;
-	for (auto game:m_GHost->m_Games){
-		
-		total_players_count = total_players_count +  game->GetNumPlayers();
-	}
-	auto message = "Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame->GetNumPlayers()-1);
-	if (m_GHost->m_CurrentGame)
-		SendChat(player, message);
-	// Cause Welcome message will be sent each time user connects game lobby, this could be used to get bot online 
-	// at log parse
 
 	// read from motd.txt if available (thanks to zeeg for this addition)
 	ifstream in;
