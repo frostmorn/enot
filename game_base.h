@@ -243,7 +243,7 @@ public:
 	virtual void EventPlayerDropRequest( CGamePlayer *player );
 	virtual void EventPlayerMapSize( CGamePlayer *player, CIncomingMapSize *mapSize );
 	virtual void EventPlayerPongToHost( CGamePlayer *player, uint32_t pong );
-
+	virtual void PlayerCountChanged();
 	// these events are called outside of any iterations
 
 	virtual void EventGameRefreshed( string server );
