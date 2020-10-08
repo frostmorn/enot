@@ -1812,7 +1812,7 @@ void CBaseGame :: PlayerCountChanged(){
 		
 		total_players_count = total_players_count +  game->GetNumPlayers();
 	}
-	auto message = "Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame->GetNumPlayers()-1);
+	auto message = "Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame?m_GHost->m_CurrentGame->GetNumPlayers():0-1);
 
 	CONSOLE_Print(message);
 }
