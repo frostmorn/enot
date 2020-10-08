@@ -233,22 +233,16 @@ string CGamePlayer :: GetNameTerminated( )
 
 uint32_t CGamePlayer :: GetPing( bool LCPing )
 {
-	// just average all the pings in the vector, nothing fancy
-
+	// just last ping data
 	if( m_Pings.empty( ) )
 		return 0;
 
-	uint32_t AvgPing = 0;
-
-	for( unsigned int i = 0; i < m_Pings.size( ); ++i )
-		AvgPing += m_Pings[i];
-
-	AvgPing /= m_Pings.size( );
+	uint32_t CurrentPing = m_Pings.back();
 
 	if( LCPing )
-		return AvgPing / 2;
+		return CurrentPing / 2;
 	else
-		return AvgPing;
+		return CurrentPing;
 }
 
 bool CGamePlayer :: Update( void *fd )
@@ -497,7 +491,7 @@ void CGamePlayer :: ProcessPackets( )
 						{
 							m_Pings.push_back( GetTicks( ) - Pong );
 
-							if( m_Pings.size( ) > 3 )
+							if( m_Pings.size( ) > 100 )
 								m_Pings.erase( m_Pings.begin( ) );
 						}
 					}
