@@ -560,7 +560,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				current_rubattle_index++;
 				if (current_rubattle_index == m_LastRubattleRehostIndex+1){
-					std:: string rubattle_game_name = m_GameName+ " "+ random_string(1);
+					std:: string rubattle_game_name = m_GameName+ " "+ UTIL_ToString(current_rubattle_index);
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
@@ -582,7 +582,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 
 	// rehost ICCup
-	if (m_GHost->m_ICCupBnetCount &&!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+	if (m_GHost->m_ICCupBnetCount &&!m_RefreshError && m_GameState==GAME_PUBLIC && GetSlotsOpen()!=0 && 
+		 GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded)
 	{
 		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
@@ -590,7 +591,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					std:: string iccup_game_name = m_GameName+ " "+ random_string(1);
+					std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
