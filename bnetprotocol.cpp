@@ -172,8 +172,8 @@ bool CBNETProtocol :: RECEIVE_SID_CHECKAD( BYTEARRAY data )
 
 bool CBNETProtocol :: RECEIVE_SID_STARTADVEX3( BYTEARRAY data )
 {
-	// DEBUG_Print( "RECEIVED SID_STARTADVEX3" );
-	// DEBUG_Print( data );
+	DEBUG_Print( "RECEIVED SID_STARTADVEX3" );
+	DEBUG_Print( data );
 
 	// 2 bytes					-> Header
 	// 2 bytes					-> Length
