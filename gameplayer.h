@@ -207,7 +207,7 @@ public:
 
 	string GetNameTerminated( );
 	uint32_t GetPing( bool LCPing );
-
+	uint32_t GetAveragePing(bool LCPing);
 	void AddLoadInGameData( BYTEARRAY nLoadInGameData )								{ m_LoadInGameData.push( nLoadInGameData ); }
 
 	// processing functions

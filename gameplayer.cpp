@@ -244,7 +244,23 @@ uint32_t CGamePlayer :: GetPing( bool LCPing )
 	else
 		return CurrentPing;
 }
+uint32_t CGamePlayer :: GetAveragePing( bool LCPing )
+{
+	// just last ping data
+	if( m_Pings.empty( ) )
+		return 0;
+	uint32_t PingSum = 0;
+	for (auto Ping : m_Pings){
+		PingSum = PingSum + Ping;
+	}	
 
+	uint32_t AveragePing = PingSum / m_Pings.size();
+
+	if( LCPing )
+		return AveragePing / 2;
+	else
+		return AveragePing;
+}
 bool CGamePlayer :: Update( void *fd )
 {
 	// wait 4 seconds after joining before sending the /whois or /w
