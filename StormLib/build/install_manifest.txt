@@ -1,0 +1,3 @@
+/usr/local/lib/libstorm.a
+/usr/local/include/StormLib.h
+/usr/local/include/StormPort.h

@@ -1,0 +1,5 @@
+/usr/local/lib/libcasc.so.1.0.0
+/usr/local/lib/libcasc.so.1
+/usr/local/lib/libcasc.so
+/usr/local/include/CascLib.h
+/usr/local/include/CascPort.h

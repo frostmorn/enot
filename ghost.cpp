@@ -350,12 +350,27 @@ int main( int argc, char **argv )
 	// initialize ghost
 
 	gGHost = new CGHost( &CFG );
-
+	unsigned int last_players_count = 0;
 	while( 1 )
 	{
 		// block for 50ms on all sockets - if you intend to perform any timed actions more frequently you should change this
 		// that said it's likely we'll loop more often than this due to there being data waiting on one of the sockets but there aren't any guarantees
+		
+		unsigned int total_players_count = 0;
+		for (auto game:gGHost->m_Games){
 
+		total_players_count = total_players_count+  game->GetNumHumanPlayers();
+		}
+		if (gGHost->m_CurrentGame)
+		{
+		total_players_count = total_players_count+ gGHost->m_CurrentGame->GetNumHumanPlayers();
+		}
+		if (last_players_count!= total_players_count)
+		{
+			last_players_count = total_players_count;
+			auto message = "Online Players: " + UTIL_ToString(total_players_count)+" ";
+			CONSOLE_Print(message);
+		}
 		if( gGHost->Update( 50000 ) )
 			break;
 	}
@@ -521,12 +536,13 @@ CGHost :: CGHost( CConfig *CFG )
 	m_ReplayWar3Version = CFG->GetInt( "replay_war3version", 26 );
 	m_ReplayBuildNumber = CFG->GetInt( "replay_buildnumber", 6059 );
 	m_ICCupBnetCount = 0;
+	m_RubattleBnetCount = 0;
 	SetConfigs( CFG );
 
 	// load the battle.net connections
 	// we're just loading the config data and creating the CBNET classes here, the connections are established later (in the Update function)
 
-	for( uint32_t i = 1; i < 10; ++i )
+	for( uint32_t i = 1; i < 32; ++i )
 	{
 		string Prefix;
 
@@ -546,6 +562,10 @@ CGHost :: CGHost( CConfig *CFG )
 		// ICCup count bnet's
 		if (ServerAlias.find("ICCup") != std::string::npos){
 			m_ICCupBnetCount++;
+		}
+		// Rubattle count bnet's
+		if (ServerAlias.find("Rubattle") != std::string::npos){
+			m_RubattleBnetCount++;
 		}
 		if( Locale == "system" )
 		{
@@ -1496,8 +1516,10 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 	{
 		for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
 		{
+			
 			if( (*i)->GetServer( ) == creatorServer )
 				(*i)->QueueChatCommand( m_Language->UnableToCreateGameDisabled( gameName ), creatorName, whisper );
+		
 		}
 
 		if( m_AdminGame )
@@ -1663,12 +1685,17 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 */
 		}
 				
-
-		if( saveGame )
-			(*i)->QueueGameCreate( gameState, gameName, string( ), map, m_SaveGame, m_CurrentGame->GetHostCounter( ) );
-		else
-		if ((*i)->GetServerAlias().find("ICCup") == std::string::npos){
-			(*i)->QueueGameCreate( gameState, gameName, string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
+		if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos))
+		{
+			//	we can't host 20 games to servers which makes us to do shit
+			//	so we will do it later
+			if( saveGame ){
+				(*i)->QueueGameCreate( gameState, gameName, string( ), map, m_SaveGame, m_CurrentGame->GetHostCounter( ) );
+			}
+			else
+			{
+				(*i)->QueueGameCreate( gameState, gameName, string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
+			}
 		}
 	}
 

@@ -60,22 +60,16 @@ void CConfig :: Read( string file )
 				continue;
 
 			// remove newlines and partial newlines to help fix issues with Windows formatted config files on Linux systems
-
+			
 			Line.erase( remove( Line.begin( ), Line.end( ), '\r' ), Line.end( ) );
 			Line.erase( remove( Line.begin( ), Line.end( ), '\n' ), Line.end( ) );
-
+			Line = boost::algorithm::trim_copy(Line);		
 			string :: size_type Split = Line.find( "=" );
 
 			if( Split == string :: npos )
 				continue;
-
-			string :: size_type KeyStart = Line.find_first_not_of( " " );
-			string :: size_type KeyEnd = Line.find( " ", KeyStart );
-			string :: size_type ValueStart = Line.find_first_not_of( " ", Split + 1 );
-			string :: size_type ValueEnd = Line.size( );
-
-			if( ValueStart != string :: npos )
-				m_CFG[Line.substr( KeyStart, KeyEnd - KeyStart )] = Line.substr( ValueStart, ValueEnd - ValueStart );
+			m_CFG[boost::algorithm::trim_copy(Line.substr(0, Split))] = boost::algorithm::trim_copy(Line.substr(Split+1, Line.size()));
+		
 		}
 
 		in.close( );

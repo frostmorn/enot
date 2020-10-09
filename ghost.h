@@ -152,6 +152,7 @@ public:
 	uint32_t m_MatchMakingMethod;			// config value: the matchmaking method
 	uint32_t m_MapGameType;					// config value: the MapGameType overwrite (aka: refresh hack)
 	uint32_t m_ICCupBnetCount;				// count of iccup BNET's
+	uint32_t m_RubattleBnetCount;			// count of rubattle BNET's
 	vector<GProxyReconnector *> m_PendingReconnects;
 	boost::mutex m_ReconnectMutex;
 

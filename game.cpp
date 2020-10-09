@@ -654,7 +654,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !CLOSE (close slot)
 			//
 
-			else if( Command == "close"||Command == "c" && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "close"||Command == "c") && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
 			{
 				// close as many slots as specified, e.g. "5 10" closes slots 5 and 10
 
@@ -680,7 +680,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !CLOSEALL
 			//
 
-			else if( Command == "closeall" || Command == "ca" && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "closeall" || Command == "ca") && !m_GameLoading && !m_GameLoaded )
 				CloseAllSlots( );
 
 			//
@@ -1069,7 +1069,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !HOLD (hold a slot for someone)
 			//
 
-			else if( Command == "hold" || Command == "h"  && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "hold" || Command == "h")  && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
 			{
 				// hold as many players as specified, e.g. "Varlock Kilranin" holds players "Varlock" and "Kilranin"
 
@@ -1098,7 +1098,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !KICK (kick a player)
 			//
 
-			else if( Command == "kick"  || Command == "k" && !Payload.empty( ) )
+			else if( (Command == "kick"  || Command == "k") && !Payload.empty( ) )
 			{
 				CGamePlayer *LastMatch = NULL;
 				uint32_t Matches = GetPlayerFromNamePartial( Payload, &LastMatch );
@@ -1134,9 +1134,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				{
 					m_Latency = UTIL_ToUInt32( Payload );
 
-					if( m_Latency <= 1 )
+					if( m_Latency <= 5 )
 					{
-						m_Latency = 1;
+						m_Latency = 5;
 						SendAllChat( m_GHost->m_Language->SettingLatencyToMinimum( "1" ) );
 					}
 					else if( m_Latency >= 100 )
@@ -1201,7 +1201,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !MUTEALL
 			//
 
-			else if( Command == "muteall" || Command == "ma"  && m_GameLoaded )
+			else if( (Command == "muteall" || Command == "ma") && m_GameLoaded )
 			{
 				SendAllChat( m_GHost->m_Language->GlobalChatMuted( ) );
 				m_MuteAll = true;
@@ -1211,7 +1211,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !OPEN (open slot)
 			//
 
-			else if( Command == "open" || Command == "o"  && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "open" || Command == "o")  && !Payload.empty( ) && !m_GameLoading && !m_GameLoaded )
 			{
 				// open as many slots as specified, e.g. "5 10" opens slots 5 and 10
 
@@ -1237,7 +1237,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !OPENALL
 			//
 
-			else if( Command == "openall" || Command == "oa"  && !m_GameLoading && !m_GameLoaded )
+			else if( (Command == "openall" || Command == "oa")  && !m_GameLoading && !m_GameLoaded )
 				OpenAllSlots( );
 
 			//
@@ -1485,7 +1485,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 						BYTEARRAY MapHeight;
 						MapHeight.push_back( 0 );
 						MapHeight.push_back( 0 );
-						m_GHost->m_UDPSocket->SendTo( IP, Port, m_Protocol->SEND_W3GS_GAMEINFO( m_GHost->m_TFT, m_GHost->m_LANWar3Version, UTIL_CreateByteArray( MapGameType, false ), m_Map->GetMapGameFlags( ), MapWidth, MapHeight, m_GameName, "Varlock", GetTime( ) - m_CreationTime, "Save\\Multiplayer\\" + m_SaveGame->GetFileNameNoPath( ), m_SaveGame->GetMagicNumber( ), 12, 12, m_HostPort, FixedHostCounter, m_EntryKey ) );
+						m_GHost->m_UDPSocket->SendTo( IP, Port, m_Protocol->SEND_W3GS_GAMEINFO( m_GHost->m_TFT, m_GHost->m_LANWar3Version, UTIL_CreateByteArray( MapGameType, false ), m_Map->GetMapGameFlags( ), MapWidth, MapHeight, m_GameName, "|cff00ff00EN0T", GetTime( ) - m_CreationTime, "Save\\Multiplayer\\" + m_SaveGame->GetFileNameNoPath( ), m_SaveGame->GetMagicNumber( ), 12, 12, m_HostPort, FixedHostCounter, m_EntryKey ) );
 					}
 					else
 					{
@@ -1493,7 +1493,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 						// note: we do not use m_Map->GetMapGameType because none of the filters are set when broadcasting to LAN (also as you might expect)
 
 						uint32_t MapGameType = MAPGAMETYPE_UNKNOWN0;
-						m_GHost->m_UDPSocket->SendTo( IP, Port, m_Protocol->SEND_W3GS_GAMEINFO( m_GHost->m_TFT, m_GHost->m_LANWar3Version, UTIL_CreateByteArray( MapGameType, false ), m_Map->GetMapGameFlags( ), m_Map->GetMapWidth( ), m_Map->GetMapHeight( ), m_GameName, "Varlock", GetTime( ) - m_CreationTime, m_Map->GetMapPath( ), m_Map->GetMapCRC( ), 12, 12, m_HostPort, FixedHostCounter, m_EntryKey ) );
+						m_GHost->m_UDPSocket->SendTo( IP, Port, m_Protocol->SEND_W3GS_GAMEINFO( m_GHost->m_TFT, m_GHost->m_LANWar3Version, UTIL_CreateByteArray( MapGameType, false ), m_Map->GetMapGameFlags( ), m_Map->GetMapWidth( ), m_Map->GetMapHeight( ), m_GameName, "|cff00ff00EN0T", GetTime( ) - m_CreationTime, m_Map->GetMapPath( ), m_Map->GetMapCRC( ), 12, 12, m_HostPort, FixedHostCounter, m_EntryKey ) );
 					}
 				}
 			}
@@ -1626,7 +1626,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			// !UNMUTEALL
 			//
 
-			else if( Command == "unmuteall" || Command == "ua"  && m_GameLoaded )
+			else if( (Command == "unmuteall" || Command == "ua")  && m_GameLoaded )
 			{
 				SendAllChat( m_GHost->m_Language->GlobalChatUnmuted( ) );
 				m_MuteAll = false;
@@ -1886,93 +1886,6 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				SendChat( player, m_GHost->m_Language->UnableToVoteKickFoundMoreThanOneMatch( Payload ) );
 		}
 	}
-
-
-	//
-    // !VOTESTART
-    //
- 
-    else if( Command == "votestart" || Command == "go"|| Command == "го")
-    {
-        bool votestartAuth = player->GetSpoofed( ) && ( AdminCheck || RootAdminCheck || IsOwner( User ) );
-        bool votestartAutohost = m_GameState == GAME_PUBLIC && !m_GHost->m_AutoHostGameName.empty( ) && m_GHost->m_AutoHostMaximumGames != 0 && m_GHost->m_AutoHostAutoStartPlayers != 0 && m_AutoStartPlayers != 0;
- 
-        if( m_GHost->m_VoteStartAllowed && !m_CountDownStarted && (votestartAuth || votestartAutohost || !m_GHost->m_VoteStartAutohostOnly) )
-        {
-            if( m_GHost->m_CurrentGame->GetLocked( ) )
-            {
-                SendChat( player, "Error: cannot votestart because the game is locked. Owner is " + m_OwnerName );
-                return HideCommand;
-            }
- 
- 
-            if(m_StartedVoteStartTime == 0)
-            { //need >minplayers or admin to START a votestart
-                if (GetNumHumanPlayers() < m_GHost->m_VoteStartMinPlayers && !votestartAuth)
-                { //need at least eight players to votestart
-                    SendChat( player, "You cannot use !votestart until there " + UTIL_ToString(m_GHost->m_VoteStartMinPlayers) + " or more players!" );
-                    return HideCommand;
-                }
- 
-                for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-                    (*i)->SetStartVote( false );
- 
-                m_StartedVoteStartTime = GetTime();
-   
-                CONSOLE_Print( "[GAME: " + m_GameName + "] votestart started by player [" + User + "]" );
-            }
- 
-            player->SetStartVote(true);
-       
-            uint32_t VotesNeeded;
-            uint32_t Votes = 0;
- 
- 
-            for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-            {
-                if( (*i)->GetStartVote( ) )
-                    ++Votes;
-            }
- 
- 
-            if( m_GHost->m_VoteStartPercentalVoting)
-            {
-                VotesNeeded = ((uint32_t) (GetNumHumanPlayers() *  (m_GHost->m_VoteStartPercent - 1) / 100)) + 1;
-            }
-            else
-            {
-                VotesNeeded = m_GHost->m_VoteStartMinPlayers;
-            }
- 
-            if( Votes < VotesNeeded )
-            {
-                SendAllChat( UTIL_ToString(VotesNeeded - Votes) + " more votes needed to votestart.");
-            }
-            else
-            {
-                StartCountDown( true );
-            }
- 
-        }
-    }
-//
-    // !VOTEMODE
-    //
- 
-    else if( Command == "votemode" || Command == "vm")
-    {	
-		auto User = player->GetName();
-		auto SupportedModesCount = m_Map->GetMapSupportedModes().size();
-		SendAllChat("Player " + User+" started vote for map mode");		
-		SendAllChat("There are "+UTIL_ToString(SupportedModesCount)+" supported modes");
-		auto i = 1;
-		for (auto mode:m_Map->GetMapSupportedModes()){
-			SendAllChat(UTIL_ToString(i) + ". " + mode);
-			i++;
-		} 
-		SendAllChat("Please select map mode to vote [1-" + UTIL_ToString(SupportedModesCount)+"]");
-
-    }
 
 	//
 	// !YES

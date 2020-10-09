@@ -127,9 +127,12 @@ protected:
 	bool m_AutoSave;								// if we should auto save the game before someone disconnects
 	bool m_MatchMaking;								// if matchmaking mode is enabled
 	bool m_LocalAdminMessages;						// if local admin messages should be relayed or not
+	bool m_VoteModeStarted;							// VotemodeStarted
 	int m_DoDelete;									// notifies thread to exit
+
 	uint32_t m_LastReconnectHandleTime;				// last time we tried to handle GProxy reconnects
 	uint32_t m_LastICCupRehostIndex;				// last index of iccup bnet rehosted
+	uint32_t m_LastRubattleRehostIndex;
 	uint32_t m_LastICCupRehostTime;					// Get time when last time game was rehosted on ICCup
 	uint32_t m_LastRubattleRehostTime;				// Get time when last time game was rehosted on Rubattle
 
@@ -280,6 +283,7 @@ public:
 	virtual bool IsGameDataSaved( );
 	virtual void SaveGameData( );
 	virtual void StartCountDown( bool force );
+	virtual void StartVoteMode();
 	virtual void StartCountDownAuto( bool requireSpoofChecks );
 	virtual void StopPlayers( string reason );
 	virtual void StopLaggers( string reason );

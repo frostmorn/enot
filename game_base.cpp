@@ -44,7 +44,7 @@
 //
 
 
-CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, string nGameName, string nOwnerName, string nCreatorName, string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ),m_LastICCupRehostTime( GetTime( ) ),m_LastRubattleRehostTime(GetTime()), m_LastICCupRehostIndex(0), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 )
+CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, string nGameName, string nOwnerName, string nCreatorName, string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ),m_LastICCupRehostTime(0),m_LastRubattleRehostTime(0), m_LastICCupRehostIndex(0), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 )
 {
 	m_Socket = new CTCPServer( );
 	m_Protocol = new CGameProtocol( m_GHost );
@@ -452,11 +452,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_Locked = false;
 	}
 
-	// ping every 5 seconds
+	// ping every 1 seconds
 	// changed this to ping during game loading as well to hopefully fix some problems with people disconnecting during loading
 	// changed this to ping during the game as well
 
-	if( GetTime( ) - m_LastPingTime >= 5 )
+	if( GetTime( ) - m_LastPingTime >= 1 )
 	{
 		// note: we must send pings to players who are downloading the map because Warcraft III disconnects from the lobby if it doesn't receive a ping every ~90 seconds
 		// so if the player takes longer than 90 seconds to download the map they would be disconnected unless we keep sending pings
@@ -500,7 +500,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				BYTEARRAY MapHeight;
 				MapHeight.push_back( 0 );
 				MapHeight.push_back( 0 );
-				m_GHost->m_UDPSocket->Broadcast( 6112, m_Protocol->SEND_W3GS_GAMEINFO( m_GHost->m_TFT, m_GHost->m_LANWar3Version, UTIL_CreateByteArray( MapGameType, false ), m_Map->GetMapGameFlags( ), MapWidth, MapHeight, m_GameName, "Varlock", GetTime( ) - m_CreationTime, "Save\\Multiplayer\\" + m_SaveGame->GetFileNameNoPath( ), m_SaveGame->GetMagicNumber( ), 12, 12, m_HostPort, FixedHostCounter, m_EntryKey ) );
+				m_GHost->m_UDPSocket->Broadcast( 6112, m_Protocol->SEND_W3GS_GAMEINFO( m_GHost->m_TFT, m_GHost->m_LANWar3Version, UTIL_CreateByteArray( MapGameType, false ), m_Map->GetMapGameFlags( ), MapWidth, MapHeight, m_GameName, "|cff00ff00EN0T", GetTime( ) - m_CreationTime, "Save\\Multiplayer\\" + m_SaveGame->GetFileNameNoPath( ), m_SaveGame->GetMagicNumber( ), 12, 12, m_HostPort, FixedHostCounter, m_EntryKey ) );
 			}
 			else
 			{
@@ -508,7 +508,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				// note: we do not use m_Map->GetMapGameType because none of the filters are set when broadcasting to LAN (also as you might expect)
 
 				uint32_t MapGameType = MAPGAMETYPE_UNKNOWN0;
-				m_GHost->m_UDPSocket->Broadcast( 6112, m_Protocol->SEND_W3GS_GAMEINFO( m_GHost->m_TFT, m_GHost->m_LANWar3Version, UTIL_CreateByteArray( MapGameType, false ), m_Map->GetMapGameFlags( ), m_Map->GetMapWidth( ), m_Map->GetMapHeight( ), m_GameName, "Varlock", GetTime( ) - m_CreationTime, m_Map->GetMapPath( ), m_Map->GetMapCRC( ), 12, 12, m_HostPort, FixedHostCounter, m_EntryKey ) );
+				m_GHost->m_UDPSocket->Broadcast( 6112, m_Protocol->SEND_W3GS_GAMEINFO( m_GHost->m_TFT, m_GHost->m_LANWar3Version, UTIL_CreateByteArray( MapGameType, false ), m_Map->GetMapGameFlags( ), m_Map->GetMapWidth( ), m_Map->GetMapHeight( ), m_GameName, "|cff00ff00EN0T", GetTime( ) - m_CreationTime, m_Map->GetMapPath( ), m_Map->GetMapCRC( ), 12, 12, m_HostPort, FixedHostCounter, m_EntryKey ) );
 			}
 		}
 
@@ -549,33 +549,42 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		lock.unlock( );
 	}
 
-	// rehost Rubattle
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastRubattleRehostTime + 420 && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0){
 
+
+	// rehost Rubattle
+	if (m_GHost->m_RubattleBnetCount && !m_RefreshError && m_GameState==GAME_PUBLIC &&!m_GameLoading && !m_GameLoaded && GetSlotsOpen() > 0 && 
+		GetTime() > m_LastRubattleRehostTime + (420/m_GHost->m_RubattleBnetCount))
+	{
+		uint32_t current_rubattle_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
-			if ((*i)->GetServerAlias().find("rubattle") != std::string::npos){
-				(*i)->UnqueueGameRefreshes( );
-				(*i)->QueueGameUncreate( );
-				(*i)->QueueEnterChat( );
-				break;
-			
-				std:: string rubattle_game_name = m_GameName+ " "+ random_string(1);
-				(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
+			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
+				current_rubattle_index++;
+				if (current_rubattle_index == m_LastRubattleRehostIndex+1){
+					std:: string rubattle_game_name = m_GameName+ " "+ UTIL_ToString(current_rubattle_index);
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+
+					(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueGameRefresh( m_GameState, rubattle_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					break;
+				}
 			}
-		}
 			// we need to send the game creation message now because private games are not refreshed
+		}
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
-		
+
 		m_LastRubattleRehostTime = GetTime( );
-		
-		
+		m_LastRubattleRehostIndex = current_rubattle_index == m_GHost->m_RubattleBnetCount ? 0 : current_rubattle_index;
 		
 	}
 
+
 	// rehost ICCup
-	if (!m_RefreshError && m_GameState==GAME_PUBLIC && GetTime()> m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount) && !m_GameLoading && !m_GameLoaded && GetSlotsOpen()!=0)
+	if (m_GHost->m_ICCupBnetCount &&!m_RefreshError && m_GameState==GAME_PUBLIC&& !m_GameLoading && !m_GameLoaded && GetSlotsOpen() > 0 &&
+		 GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))
 	{
 		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
@@ -583,40 +592,20 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-					std:: string iccup_game_name = m_GameName+ " "+ random_string(1);
+
 					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
 					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
-	
 					break;
 				}
 			}
-			// we need to send the game creation message now because private games are not refreshed
 		}
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
-		// CONSOLE_Print( "[GAME: " + m_LastGameName + "] trying to rehost as ICCup public game [" + m_GameName + "] on ICCup with index equal " + 
-			// std::to_string(current_iccup_index ));
-		// SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( m_GameName ) );
-		
-		current_iccup_index = 0;
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
-			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				current_iccup_index++;
-				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					std:: string iccup_game_name = m_GameName+ " "+ random_string(1);
-					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
-					
-					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
-					// the game creation message will be sent NOW
-					break;
-				}
-			}
-			
-		}
+
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
 		
@@ -634,7 +623,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			if( (*i)->GetOutPacketsQueued( ) <= 1 )
 			{
-				if ((*i)->GetServerAlias().find("ICCup") == std::string::npos){
+				if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos)){
 					(*i)->QueueGameRefresh( m_GameState, m_GameName, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 				}
 				Refreshed = true;
@@ -1525,16 +1514,14 @@ void CBaseGame :: SendAllActions( )
 
 void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 {
-	// read from motd.txt if available (thanks to zeeg for this addition)
 	unsigned int total_players_count = 0;
 	for (auto game:m_GHost->m_Games){
 		
-		total_players_count = total_players_count +  game->GetNumPlayers();
+		total_players_count = total_players_count +  game->GetNumHumanPlayers();
 	}
-	if (!total_players_count==0)
-		total_players_count--;
-	if (m_GHost->m_CurrentGame)
-		SendChat(player, "Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame->GetNumPlayers()-1) +" Total:"+ UTIL_ToString(total_players_count + m_GHost->m_CurrentGame->GetNumPlayers()));
+	auto message = "Online: " + UTIL_ToString(total_players_count)+" players";
+	SendChat( player, message );
+	// read from motd.txt if available (thanks to zeeg for this addition)
 	ifstream in;
 	in.open( m_GHost->m_MOTDFile.c_str( ) );
 
@@ -1727,7 +1714,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 		SendAllChat( m_GHost->m_Language->VoteKickCancelled( m_KickVotePlayer ) );
 	 // abort the votestart
  
-    if( m_StartedVoteStartTime != 0 )
+    if( m_StartedVoteStartTime != 0 && !m_GameLoaded)
       SendAllChat( "Votestart cancelled!" );
  
     m_StartedVoteStartTime = 0;
@@ -1737,6 +1724,8 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 {
+
+
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
 		if( !player->GetGProxyDisconnectNoticeSent( ) )
@@ -1776,9 +1765,9 @@ void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectPlayerError( CGamePlayer *player )
 {
+
 	// at the time of this comment there's only one player error and that's when we receive a bad packet from the player
 	// since TCP has checks and balances for data corruption the chances of this are pretty slim
-
 	player->SetDeleteMe( true );
 	player->SetLeftReason( m_GHost->m_Language->HasLostConnectionPlayerError( player->GetErrorString( ) ) );
 	player->SetLeftCode( PLAYERLEAVE_DISCONNECT );
@@ -1789,6 +1778,8 @@ void CBaseGame :: EventPlayerDisconnectPlayerError( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectSocketError( CGamePlayer *player )
 {
+
+
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
 		if( !player->GetGProxyDisconnectNoticeSent( ) )
@@ -1821,6 +1812,8 @@ void CBaseGame :: EventPlayerDisconnectSocketError( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectConnectionClosed( CGamePlayer *player )
 {
+
+
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
 		if( !player->GetGProxyDisconnectNoticeSent( ) )
@@ -3043,7 +3036,7 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 				{
 					// this is an ingame [All] message, print it to the console
 
-					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [All] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [All] [ LC Ping:"+UTIL_ToString (player->GetPing(1))+" ] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
 
 					// don't relay ingame messages targeted for all players if we're currently muting all
 					// note that commands will still be processed even when muting all because we only stop relaying the messages, the rest of the function is unaffected
@@ -3051,12 +3044,19 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 					if( m_MuteAll )
 						Relay = false;
 				}
+				
 				else if( ExtraFlags[0] == 2 )
 				{
 					// this is an ingame [Obs/Ref] message, print it to the console
 
-					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [Obs/Ref] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [Obs/Ref] [ LC Ping:"+UTIL_ToString (player->GetPing(1))+" ] [" +  player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+				
 				}
+				else
+				{
+					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [GameChat] [ LC Ping:"+UTIL_ToString (player->GetPing(1))+" ] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+				}
+				
 
 				if( Relay )
 				{
@@ -4602,6 +4602,19 @@ bool CBaseGame :: IsGameDataSaved( )
 void CBaseGame :: SaveGameData( )
 {
 
+}
+void CBaseGame::StartVoteMode(){
+	m_VoteModeStarted = 1;
+	auto SupportedModesCount = m_Map->GetMapSupportedModes().size();
+	SendAllChat("There are "+UTIL_ToString(SupportedModesCount)+" supported modes");
+	auto i = 1;
+	for (auto mode:m_Map->GetMapSupportedModes()){
+		SendAllChat(UTIL_ToString(i) + ". " + mode);
+		i++;
+	} 
+	SendAllChat("Please select map mode to vote [1-" + UTIL_ToString(SupportedModesCount)+"]");
+	
+    
 }
 
 void CBaseGame :: StartCountDown( bool force )

@@ -1,0 +1,7 @@
+/home/orphey/lia_bot/ghostpp/CascLib/build/CMakeFiles/install/strip.dir
+/home/orphey/lia_bot/ghostpp/CascLib/build/CMakeFiles/install/local.dir
+/home/orphey/lia_bot/ghostpp/CascLib/build/CMakeFiles/edit_cache.dir
+/home/orphey/lia_bot/ghostpp/CascLib/build/CMakeFiles/casc.dir
+/home/orphey/lia_bot/ghostpp/CascLib/build/CMakeFiles/rebuild_cache.dir
+/home/orphey/lia_bot/ghostpp/CascLib/build/CMakeFiles/list_install_components.dir
+/home/orphey/lia_bot/ghostpp/CascLib/build/CMakeFiles/install.dir
