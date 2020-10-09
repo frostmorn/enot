@@ -452,7 +452,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_Locked = false;
 	}
 
-	// ping every 1 seconds
+	// ping every 3 seconds
 	// changed this to ping during game loading as well to hopefully fix some problems with people disconnecting during loading
 	// changed this to ping during the game as well
 
