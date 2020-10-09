@@ -1514,8 +1514,13 @@ void CBaseGame :: SendAllActions( )
 
 void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 {
-	PlayerCountChanged();
-
+	unsigned int total_players_count = 0;
+	for (auto game:m_GHost->m_Games){
+		
+		total_players_count =+  game->GetNumHumanPlayers();
+	}
+	auto message = "Online :" + UTIL_ToString(total_players_count)+" players";
+	SendChat( player, message );
 	// read from motd.txt if available (thanks to zeeg for this addition)
 	ifstream in;
 	in.open( m_GHost->m_MOTDFile.c_str( ) );
@@ -1719,7 +1724,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 {
-	PlayerCountChanged();
+
 
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
@@ -1760,7 +1765,6 @@ void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectPlayerError( CGamePlayer *player )
 {
-	PlayerCountChanged();
 
 	// at the time of this comment there's only one player error and that's when we receive a bad packet from the player
 	// since TCP has checks and balances for data corruption the chances of this are pretty slim
@@ -1774,7 +1778,7 @@ void CBaseGame :: EventPlayerDisconnectPlayerError( CGamePlayer *player )
 
 void CBaseGame :: EventPlayerDisconnectSocketError( CGamePlayer *player )
 {
-	PlayerCountChanged();
+
 
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
@@ -1805,20 +1809,10 @@ void CBaseGame :: EventPlayerDisconnectSocketError( CGamePlayer *player )
 	if( !m_GameLoading && !m_GameLoaded )
 		OpenSlot( GetSIDFromPID( player->GetPID( ) ), false );
 }
-void CBaseGame :: PlayerCountChanged(){
-	
-	unsigned int total_players_count = 0;
-	for (auto game:m_GHost->m_Games){
-		
-		total_players_count = total_players_count +  game->GetNumPlayers();
-	}
-	auto message = "Online Players > L:"+UTIL_ToString(m_GHost->m_CurrentGame?m_GHost->m_CurrentGame->GetNumPlayers():0) +" Total:"+ UTIL_ToString(total_players_count + (m_GHost->m_CurrentGame?m_GHost->m_CurrentGame->GetNumPlayers():0)-1);
 
-	CONSOLE_Print(message);
-}
 void CBaseGame :: EventPlayerDisconnectConnectionClosed( CGamePlayer *player )
 {
-	PlayerCountChanged();
+
 
 	if( player->GetGProxy( ) && m_GameLoaded )
 	{
