@@ -359,11 +359,11 @@ int main( int argc, char **argv )
 		unsigned int total_players_count = 0;
 		for (auto game:gGHost->m_Games){
 
-		total_players_count =+  game->GetNumHumanPlayers();
+		total_players_count = total_players_count+  game->GetNumHumanPlayers();
 		}
 		if (gGHost->m_CurrentGame)
 		{
-		total_players_count =+ gGHost->m_CurrentGame->GetNumHumanPlayers();
+		total_players_count = total_players_count+ gGHost->m_CurrentGame->GetNumHumanPlayers();
 		}
 		if (last_players_count!= total_players_count)
 		{

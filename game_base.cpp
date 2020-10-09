@@ -1517,7 +1517,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 	unsigned int total_players_count = 0;
 	for (auto game:m_GHost->m_Games){
 		
-		total_players_count =+  game->GetNumHumanPlayers();
+		total_players_count = total_players_count +  game->GetNumHumanPlayers();
 	}
 	auto message = "Online: " + UTIL_ToString(total_players_count)+" players";
 	SendChat( player, message );
