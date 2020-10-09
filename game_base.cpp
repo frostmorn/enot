@@ -201,7 +201,7 @@ void CBaseGame :: loop( )
 		int nfds = 0;
 		unsigned int NumFDs = SetFD( &fd, &send_fd, &nfds );
 		
-		long usecBlock = 50000;
+		long usecBlock = 20000;
 		
 		if( GetNextTimedActionTicks( ) * 1000 < usecBlock )
 			usecBlock = GetNextTimedActionTicks( ) * 1000;
@@ -552,7 +552,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 
 	// rehost Rubattle
-	if (m_GHost->m_RubattleBnetCount && !m_RefreshError && m_GameState==GAME_PUBLIC &&!m_GameLoading && !m_GameLoaded && GetSlotsOpen() > 0 && 
+	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_RubattleBnetCount &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0 && 
 		GetTime() > m_LastRubattleRehostTime + (420/m_GHost->m_RubattleBnetCount))
 	{
 		uint32_t current_rubattle_index = 0;
@@ -583,7 +583,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 
 	// rehost ICCup
-	if (m_GHost->m_ICCupBnetCount &&!m_RefreshError && m_GameState==GAME_PUBLIC&& !m_GameLoading && !m_GameLoaded && GetSlotsOpen() > 0 &&
+	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0 &&
 		 GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))
 	{
 		uint32_t current_iccup_index = 0;
