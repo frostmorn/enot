@@ -1519,7 +1519,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		
 		total_players_count =+  game->GetNumHumanPlayers();
 	}
-	auto message = "Online :" + UTIL_ToString(total_players_count)+" players";
+	auto message = "Online: " + UTIL_ToString(total_players_count)+" players";
 	SendChat( player, message );
 	// read from motd.txt if available (thanks to zeeg for this addition)
 	ifstream in;
