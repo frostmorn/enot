@@ -201,7 +201,7 @@ void CBaseGame :: loop( )
 		int nfds = 0;
 		unsigned int NumFDs = SetFD( &fd, &send_fd, &nfds );
 		
-		long usecBlock = 20000;
+		long usecBlock = 5000;
 		
 		if( GetNextTimedActionTicks( ) * 1000 < usecBlock )
 			usecBlock = GetNextTimedActionTicks( ) * 1000;

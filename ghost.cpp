@@ -371,7 +371,7 @@ int main( int argc, char **argv )
 			auto message = "Online Players: " + UTIL_ToString(total_players_count)+" ";
 			CONSOLE_Print(message);
 		}
-		if( gGHost->Update( 20000 ) )
+		if( gGHost->Update( 5000 ) )
 			break;
 	}
 
