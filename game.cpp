@@ -1284,30 +1284,25 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				sort( SortedPlayers.begin( ), SortedPlayers.end( ), CGamePlayerSortDescByPing( ) );
 				string Pings;
 
-				for( vector<CGamePlayer *> :: iterator i = SortedPlayers.begin( ); i != SortedPlayers.end( ); ++i )
+				for( auto Player : SortedPlayers)
 				{
-					Pings += (*i)->GetNameTerminated( );
-					Pings += ": ";
+					Pings += "["+Player->GetNameTerminated( )+"]";
+					Pings += ": Current=>";
 
-					if( (*i)->GetNumPings( ) > 0 )
+					if( Player->GetNumPings( ) > 0 )
 					{
-						Pings += UTIL_ToString( (*i)->GetPing( m_GHost->m_LCPings ) );
+						Pings += UTIL_ToString( Player->GetPing( m_GHost->m_LCPings ) );
 
-						if( !m_GameLoading && !m_GameLoaded && !(*i)->GetReserved( ) && KickPing > 0 && (*i)->GetPing( m_GHost->m_LCPings ) > KickPing )
-						{
-							(*i)->SetDeleteMe( true );
-							(*i)->SetLeftReason( "was kicked for excessive ping " + UTIL_ToString( (*i)->GetPing( m_GHost->m_LCPings ) ) + " > " + UTIL_ToString( KickPing ) );
-							(*i)->SetLeftCode( PLAYERLEAVE_LOBBY );
-							OpenSlot( GetSIDFromPID( (*i)->GetPID( ) ), false );
-							Kicked++;
-						}
+						Pings += "ms Average=> ";
+						Pings += UTIL_ToString( Player->GetAveragePing( m_GHost->m_LCPings ) );
+						Pings += "ms ";
+						
 
-						Pings += "ms";
 					}
 					else
 						Pings += "N/A";
 
-					if( i != SortedPlayers.end( ) - 1 )
+					if( Player != *SortedPlayers.end( ) - 1 )
 						Pings += ", ";
 
 					if( ( m_GameLoading || m_GameLoaded ) && Pings.size( ) > 100 )
@@ -1321,9 +1316,6 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 
 				if( !Pings.empty( ) )
 					SendAllChat( Pings );
-
-				if( Kicked > 0 )
-					SendAllChat( m_GHost->m_Language->KickingPlayersWithPingsGreaterThan( UTIL_ToString( Kicked ), UTIL_ToString( KickPing ) ) );
 			}
 
 			//
