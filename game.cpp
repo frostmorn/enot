@@ -617,13 +617,13 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 							}
 						}
 
-						SendAllChat( m_GHost->m_Language->CheckedPlayer( LastMatch->GetName( ), LastMatch->GetNumPings( ) > 0 ? UTIL_ToString( LastMatch->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", m_GHost->m_DBLocal->FromCheck( UTIL_ByteArrayToUInt32( LastMatch->GetExternalIP( ), true ) ), LastMatchAdminCheck || LastMatchRootAdminCheck ? "Yes" : "No", IsOwner( LastMatch->GetName( ) ) ? "Yes" : "No", LastMatch->GetSpoofed( ) ? "Yes" : "No", LastMatch->GetSpoofedRealm( ).empty( ) ? "N/A" : LastMatch->GetSpoofedRealm( ), LastMatch->GetReserved( ) ? "Yes" : "No" ) );
+						SendAllChat( m_GHost->m_Language->CheckedPlayer( LastMatch->GetName( ), LastMatch->GetNumPings( ) > 0 ? UTIL_ToString( LastMatch->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", LastMatch->GetCountry() , LastMatchAdminCheck || LastMatchRootAdminCheck ? "Yes" : "No", IsOwner( LastMatch->GetName( ) ) ? "Yes" : "No", LastMatch->GetSpoofed( ) ? "Yes" : "No", LastMatch->GetSpoofedRealm( ).empty( ) ? "N/A" : LastMatch->GetSpoofedRealm( ), LastMatch->GetReserved( ) ? "Yes" : "No" ) );
 					}
 					else
 						SendAllChat( m_GHost->m_Language->UnableToCheckPlayerFoundMoreThanOneMatch( Payload ) );
 				}
 				else
-					SendAllChat( m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", m_GHost->m_DBLocal->FromCheck( UTIL_ByteArrayToUInt32( player->GetExternalIP( ), true ) ), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
+					SendAllChat( m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", player->GetCountry(), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
 			}
 
 			//
@@ -1017,7 +1017,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 
 					Froms += (*i)->GetNameTerminated( );
 					Froms += ": (";
-					Froms += m_GHost->m_DBLocal->FromCheck( UTIL_ByteArrayToUInt32( (*i)->GetExternalIP( ), true ) );
+					Froms += (*i)->GetCountry( );
 					Froms += ")";
 
 					if( i != m_Players.end( ) - 1 )
@@ -1262,7 +1262,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				else
 					SendAllChat( m_GHost->m_Language->UnableToSetGameOwner( m_OwnerName ) );
 			}
-
+			
 			//
 			// !PING
 			//
@@ -1287,13 +1287,13 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				for( auto Player : SortedPlayers)
 				{
 					Pings += "["+Player->GetNameTerminated( )+"]";
-					Pings += ": Current=>";
+					Pings += ": Current =>";
 
 					if( Player->GetNumPings( ) > 0 )
 					{
 						Pings += UTIL_ToString( Player->GetPing( m_GHost->m_LCPings ) );
 
-						Pings += "ms Average=> ";
+						Pings += "ms Average => ";
 						Pings += UTIL_ToString( Player->GetAveragePing( m_GHost->m_LCPings ) );
 						Pings += "ms ";
 						
@@ -1302,7 +1302,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 					else
 						Pings += "N/A";
 
-					if( Player != *SortedPlayers.end( ) - 1 )
+					if( Player != SortedPlayers.back() )
 						Pings += ", ";
 
 					if( ( m_GameLoading || m_GameLoaded ) && Pings.size( ) > 100 )
@@ -1317,6 +1317,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				if( !Pings.empty( ) )
 					SendAllChat( Pings );
 			}
+
 
 			//
 			// !PRIV (rehost as private game)
@@ -1693,7 +1694,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 	//
 
 	if( Command == "checkme" )
-		SendChat( player, m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", m_GHost->m_DBLocal->FromCheck( UTIL_ByteArrayToUInt32( player->GetExternalIP( ), true ) ), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
+		SendChat( player, m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", player->GetCountry(), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
 
 
 	//

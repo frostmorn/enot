@@ -2156,7 +2156,9 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
 	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
 	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm );
-	CGamePlayer *Player = new CGamePlayer( potential, m_SaveGame ? EnforcePID : GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), Reserved );
+	auto country = m_GHost->m_DBLocal->FromCheck(UTIL_ByteArrayToUInt32(potential->GetExternalIP(), true));
+	country = country == "??"?"N\\A":country;
+	CGamePlayer *Player = new CGamePlayer( potential, m_SaveGame ? EnforcePID : GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), Reserved, country );
 
 	SendAllChat( "Player [" + joinPlayer->GetName( )+ "] joined the game from Realm:"+realm );
 
@@ -2589,7 +2591,9 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
 	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm);
-	CGamePlayer *Player = new CGamePlayer( potential, GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), false );
+	auto country = m_GHost->m_DBLocal->FromCheck(UTIL_ByteArrayToUInt32(potential->GetExternalIP(), true));
+	country = country == "??"?"N\\A":country;
+	CGamePlayer *Player = new CGamePlayer( potential, GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), false, country );
 	
 	SendAllChat( "Player [" + joinPlayer->GetName( ) + "] joined the game from Realm:"+realm );
 	// consider LAN players to have already spoof checked since they can't
