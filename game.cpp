@@ -1287,7 +1287,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				for( auto Player : SortedPlayers)
 				{
 					Pings += "["+Player->GetNameTerminated( )+"]";
-					Pings += ": Current =>";
+					Pings += ": Current => ";
 
 					if( Player->GetNumPings( ) > 0 )
 					{
