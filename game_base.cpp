@@ -201,7 +201,7 @@ void CBaseGame :: loop( )
 		int nfds = 0;
 		unsigned int NumFDs = SetFD( &fd, &send_fd, &nfds );
 		
-		long usecBlock = 50000;
+		long usecBlock = 5000;
 		
 		if( GetNextTimedActionTicks( ) * 1000 < usecBlock )
 			usecBlock = GetNextTimedActionTicks( ) * 1000;
@@ -452,11 +452,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_Locked = false;
 	}
 
-	// ping every 1 seconds
+	// ping every 3 seconds
 	// changed this to ping during game loading as well to hopefully fix some problems with people disconnecting during loading
 	// changed this to ping during the game as well
 
-	if( GetTime( ) - m_LastPingTime >= 1 )
+	if( GetTime( ) - m_LastPingTime >= 3 )
 	{
 		// note: we must send pings to players who are downloading the map because Warcraft III disconnects from the lobby if it doesn't receive a ping every ~90 seconds
 		// so if the player takes longer than 90 seconds to download the map they would be disconnected unless we keep sending pings
@@ -552,7 +552,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 
 	// rehost Rubattle
-	if (m_GHost->m_RubattleBnetCount && !m_RefreshError && m_GameState==GAME_PUBLIC &&!m_GameLoading && !m_GameLoaded && GetSlotsOpen() > 0 && 
+	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_RubattleBnetCount &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0 && 
 		GetTime() > m_LastRubattleRehostTime + (420/m_GHost->m_RubattleBnetCount))
 	{
 		uint32_t current_rubattle_index = 0;
@@ -583,7 +583,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 
 	// rehost ICCup
-	if (m_GHost->m_ICCupBnetCount &&!m_RefreshError && m_GameState==GAME_PUBLIC&& !m_GameLoading && !m_GameLoaded && GetSlotsOpen() > 0 &&
+	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0 &&
 		 GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))
 	{
 		uint32_t current_iccup_index = 0;
@@ -2156,7 +2156,9 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
 	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
 	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm );
-	CGamePlayer *Player = new CGamePlayer( potential, m_SaveGame ? EnforcePID : GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), Reserved );
+	auto country = m_GHost->m_DBLocal->FromCheck(UTIL_ByteArrayToUInt32(potential->GetExternalIP(), true));
+	country = country == "??"?"N\\A":country;
+	CGamePlayer *Player = new CGamePlayer( potential, m_SaveGame ? EnforcePID : GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), Reserved, country );
 
 	SendAllChat( "Player [" + joinPlayer->GetName( )+ "] joined the game from Realm:"+realm );
 
@@ -2589,7 +2591,9 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
 	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm);
-	CGamePlayer *Player = new CGamePlayer( potential, GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), false );
+	auto country = m_GHost->m_DBLocal->FromCheck(UTIL_ByteArrayToUInt32(potential->GetExternalIP(), true));
+	country = country == "??"?"N\\A":country;
+	CGamePlayer *Player = new CGamePlayer( potential, GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), false, country );
 	
 	SendAllChat( "Player [" + joinPlayer->GetName( ) + "] joined the game from Realm:"+realm );
 	// consider LAN players to have already spoof checked since they can't
@@ -3397,7 +3401,7 @@ void CBaseGame :: EventPlayerPongToHost( CGamePlayer *player, uint32_t pong )
 	// also don't kick anyone if the game is loading or loaded - this could happen because we send pings during loading but we stop sending them after the game is loaded
 	// see the Update function for where we send pings
 
-	if( !m_GameLoading && !m_GameLoaded && !player->GetDeleteMe( ) && !player->GetReserved( ) && player->GetNumPings( ) >= 3 && player->GetPing( m_GHost->m_LCPings ) > m_GHost->m_AutoKickPing )
+	if( !m_GameLoading && !m_GameLoaded && !player->GetDeleteMe( ) && !player->GetReserved( ) && player->GetNumPings( ) >= 10 && player->GetAveragePing( m_GHost->m_LCPings ) > m_GHost->m_AutoKickPing )
 	{
 		// send a chat message because we don't normally do so when a player leaves the lobby
 
