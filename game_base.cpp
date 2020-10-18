@@ -1582,7 +1582,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 	uint32_t mins = m_CreationTime /60 % 60;
 	uint32_t secs = m_CreationTime % 60;
 	
-	SendChat(player, "Игра создана "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) "с назад");
+	SendChat(player, "Игра создана "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) +"с назад");
 }
 
 void CBaseGame :: SendEndMessage( )
