@@ -1577,12 +1577,12 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		in.close( );
 	}
 
-	std::time_t temp = m_CreationTime;
-	std::tm* t = std::gmtime(&temp);
-	std::stringstream ss; // or if you're going to print, just input directly into the output stream
-	ss << std::put_time(t, "%I:%M:%S %p");
-	std::string output = ss.str();
-	SendChat(player, "Игра создана "+output + " назад");
+	std:: string output;
+	uint32_t hours = m_CreationTime / 3600;
+	uint32_t mins = m_CreationTime /60 % 60;
+	uint32_t secs = m_CreationTime % 60;
+	
+	SendChat(player, "Игра создана "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) "с назад");
 }
 
 void CBaseGame :: SendEndMessage( )
