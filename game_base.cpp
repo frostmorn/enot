@@ -1578,9 +1578,10 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 	}
 
 	std:: string output;
-	uint32_t hours = m_CreationTime / 3600;
-	uint32_t mins = m_CreationTime /60 % 60;
-	uint32_t secs = m_CreationTime % 60;
+	uint32_t time_elapsed = GetTime()- m_CreationTime;
+	uint32_t hours = time_elapsed / 3600;
+	uint32_t mins = time_elapsed /60 % 60;
+	uint32_t secs = time_elapsed % 60;
 	
 	SendChat(player, "Игра создана "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) +"с назад");
 }
