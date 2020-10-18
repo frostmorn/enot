@@ -1915,9 +1915,16 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !PUB (host public game)
 		//
+		
+		else if( Command == "pub" && !Payload.empty( ) ){
 
-		else if( Command == "pub" && !Payload.empty( ) )
+			if (GetTime() - m_LastTimePubCommandUsed < 180 ){
+				QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожайлуйста подождите.", User, Whisper);
+			}
+
 			m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
+
+		}
 
 		//
 		// !PUBBY (host public game by other player)
