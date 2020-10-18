@@ -1916,7 +1916,7 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		// !PUB (host public game)
 		//
 		
-		else if(IsRootAdmin(User) || Command == "pub" && !Payload.empty( ) ){
+		else if(IsRootAdmin(User) || (Command == "pub" && !Payload.empty( ) )){
 
 			
 			if (m_GHost->m_CurrentGame && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < 180)){
