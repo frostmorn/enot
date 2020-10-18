@@ -1611,7 +1611,9 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 	{
 		if (m_CurrentGame->GetOwnerName() == m_AutoHostOwner){
 			m_CurrentGame->SetExiting( true );
-			sleep(3);
+			while (m_CurrentGame){
+				MILLISLEEP(50);
+			}
 		}
 
 	}
