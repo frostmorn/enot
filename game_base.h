@@ -187,7 +187,7 @@ public:
 	virtual uint32_t GetNumPlayers( );
 	virtual uint32_t GetNumHumanPlayers( );
 	virtual string GetDescription( );
-
+	uint32_t GetCreationTime(){return m_CreationTime;}
 	virtual void SetAnnounce( uint32_t interval, string message );
 
 	// processing functions
