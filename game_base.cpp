@@ -17,6 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
+
 #include "lia.h"
 #include "ghost.h"
 #include "util.h"
@@ -1575,6 +1576,13 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 
 		in.close( );
 	}
+
+	std::time_t temp = m_CreationTime;
+	std::tm* t = std::gmtime(&temp);
+	std::stringstream ss; // or if you're going to print, just input directly into the output stream
+	ss << std::put_time(t, "%I:%M:%S %p");
+	std::string output = ss.str();
+	SendChat(player, "Игра создана "+output + " назад");
 }
 
 void CBaseGame :: SendEndMessage( )
