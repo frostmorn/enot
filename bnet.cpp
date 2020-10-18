@@ -1921,8 +1921,10 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 			if (GetTime() - m_LastTimePubCommandUsed < 180 ){
 				QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожайлуйста подождите.", User, Whisper);
 			}
-
-			m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
+			else{
+				m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
+				m_LastTimePubCommandUsed = GetTime();
+			}
 
 		}
 
