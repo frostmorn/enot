@@ -1551,11 +1551,13 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 
 		uint32_t Count = 0;
 		string Line;
+		
 		if (!m_HCLCommandString.empty())
 		{
-			SendChat(player, detect_lia_mode(m_HCLCommandString));
+			if (m_Map->GetMapType() == "lia")
+				SendChat(player, detect_lia_mode(m_HCLCommandString));
 		}
-		
+
 		while( !in.eof( ) && Count < 6 )
 		{
 			getline( in, Line );
