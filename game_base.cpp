@@ -472,9 +472,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		if( !m_CountDownStarted )
 		{
 			// construct a fixed host counter which will be used to identify players from this "realm" (i.e. LAN)
-			// the fixed host counter's 4 most significant bits will contain a 4 bit ID (0-15)
-			// the rest of the fixed host counter will contain the 28 least significant bits of the actual host counter
-			// since we're destroying 4 bits of information here the actual host counter should not be greater than 2^28 which is a reasonable assumption
+			// the fixed host counter's 8 most significant bits will contain a 8 bit ID 
+			// the rest of the fixed host counter will contain the 24 least significant bits of the actual host counter
+			// since we're destroying 8 bits of information here the actual host counter should not be greater than 2^28 which is a reasonable assumption
 			// when a player joins a game we can obtain the ID from the received host counter
 			// note: LAN broadcasts use an ID of 0, battle.net refreshes use an ID of 1-10, the rest are unused
 
@@ -1881,7 +1881,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// the client sends the host counter when it joins so we can extract the ID value here
 	// note: this is not a replacement for spoof checking since it doesn't verify the player's name and it can be spoofed anyway
 
-	uint32_t HostCounterID = joinPlayer->GetHostCounter( ) >> 28;
+	uint32_t HostCounterID = joinPlayer->GetHostCounter( ) >> 24;
 	string JoinedRealm;
 
 	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
@@ -2556,7 +2556,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	// the client sends the host counter when it joins so we can extract the ID value here
 	// note: this is not a replacement for spoof checking since it doesn't verify the player's name and it can be spoofed anyway
 
-	uint32_t HostCounterID = joinPlayer->GetHostCounter( ) >> 28;
+	uint32_t HostCounterID = joinPlayer->GetHostCounter( ) >> 24;
 	string JoinedRealm;
 
 	// we use an ID value of 0 to denote joining via LAN

@@ -2263,12 +2263,12 @@ void CBNET :: QueueGameRefresh( unsigned char state, string gameName, string hos
 	{
 		// construct a fixed host counter which will be used to identify players from this realm
 		// the fixed host counter's 4 most significant bits will contain a 4 bit ID (0-15)
-		// the rest of the fixed host counter will contain the 28 least significant bits of the actual host counter
-		// since we're destroying 4 bits of information here the actual host counter should not be greater than 2^28 which is a reasonable assumption
+		// the rest of the fixed host counter will contain the 24 least significant bits of the actual host counter
+		// since we're destroying 4 bits of information here the actual host counter should not be greater than 2^24 which is a reasonable assumption
 		// when a player joins a game we can obtain the ID from the received host counter
 		// note: LAN broadcasts use an ID of 0, battle.net refreshes use an ID of 1-10, the rest are unused
 
-		uint32_t FixedHostCounter = ( hostCounter & 0x0FFFFFFF ) | ( m_HostCounterID << 28 );
+		uint32_t FixedHostCounter = ( hostCounter & 0x0FFFFFFF ) | ( m_HostCounterID << 24 );
 
 		if( saveGame )
 		{
