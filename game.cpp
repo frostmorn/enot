@@ -1296,8 +1296,6 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 						Pings += "ms Average => ";
 						Pings += UTIL_ToString( Player->GetAveragePing( m_GHost->m_LCPings ) );
 						Pings += "ms ";
-						
-
 					}
 					else
 						Pings += "N/A";
@@ -1305,7 +1303,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 					if( Player != SortedPlayers.back() )
 						Pings += ", ";
 
-					if( ( m_GameLoading || m_GameLoaded ) && Pings.size( ) > 100 )
+					if( ( m_GameLoading || m_GameLoaded ) && Pings.size( ) < 100 )
 					{
 						// cut the text into multiple lines ingame
 
