@@ -1303,7 +1303,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 					if( Player != SortedPlayers.back() )
 						Pings += ", ";
 
-					if( ( m_GameLoading || m_GameLoaded ) && Pings.size( ) < 100 )
+					if( m_GameLoading || m_GameLoaded )
 					{
 						// cut the text into multiple lines ingame
 
@@ -1693,6 +1693,28 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 
 	if( Command == "checkme" )
 		SendChat( player, m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", player->GetCountry(), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
+// Non Admin ping
+// !PING
+//
+
+	else if( (!(AdminCheck ||RootAdminCheck)) && (Command == "ping" || Command == "p"))
+	{
+		std::string Pings;
+		if( player->GetNumPings( ) > 0 )
+		{
+			Pings += UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) );
+
+			Pings += "ms Average => ";
+			Pings += UTIL_ToString( player->GetAveragePing( m_GHost->m_LCPings ) );
+			Pings += "ms ";
+		}
+		else
+			Pings += "N/A";
+		
+		SendChat(player, Pings );
+		Pings.clear( );
+	
+	}
 
 
 	//
