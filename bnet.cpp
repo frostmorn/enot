@@ -1916,10 +1916,10 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		// !PUB (host public game)
 		//
 		
-		else if(IsRootAdmin(User) || (Command == "pub" && !Payload.empty( ) )){
+		else if(Command == "pub" && !Payload.empty( ) ){
 
 			
-			if (m_GHost->m_CurrentGame && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < 180)){
+			if (IsRootAdmin(User) || (m_GHost->m_CurrentGame && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < 180))){
 				QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожалуйста подождите.", User, Whisper);
 			}
 			else{
