@@ -1915,9 +1915,18 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !PUB (host public game)
 		//
+		
+		else if(Command == "pub" && !Payload.empty( ) ){
 
-		else if( Command == "pub" && !Payload.empty( ) )
-			m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
+			
+			if ((!IsRootAdmin(User))  && (m_GHost->m_CurrentGame && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < 180))){
+				QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожалуйста подождите.", User, Whisper);
+			}
+			else{
+				m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
+			}
+
+		}
 
 		//
 		// !PUBBY (host public game by other player)
@@ -2025,21 +2034,26 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 
 		else if( Command == "unhost" )
-		{
-			boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
-			
-			if( m_GHost->m_CurrentGame )
-			{
-				if( m_GHost->m_CurrentGame->GetCountDownStarted( ) )
-					QueueChatCommand( m_GHost->m_Language->UnableToUnhostGameCountdownStarted( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
-
-				QueueChatCommand( m_GHost->m_Language->UnhostingGame( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
-				m_GHost->m_CurrentGame->SetExiting( true );
+		{			
+			if (IsRootAdmin(User) || User == m_GHost->m_CurrentGame->GetGameOwner() || (m_GHost->m_CurrentGame && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < 180))){
+				QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожалуйста подождите.", User, Whisper);
 			}
-			else
-				QueueChatCommand( m_GHost->m_Language->UnableToUnhostGameNoGameInLobby( ), User, Whisper );
-			
-			lock.unlock( );
+			else{
+				boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
+				
+				if( m_GHost->m_CurrentGame )
+				{
+					if( m_GHost->m_CurrentGame->GetCountDownStarted( ) )
+						QueueChatCommand( m_GHost->m_Language->UnableToUnhostGameCountdownStarted( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
+
+					QueueChatCommand( m_GHost->m_Language->UnhostingGame( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
+					m_GHost->m_CurrentGame->SetExiting( true );
+				}
+				else
+					QueueChatCommand( m_GHost->m_Language->UnableToUnhostGameNoGameInLobby( ), User, Whisper );
+				
+				lock.unlock( );
+			}
 		}
 
 		//

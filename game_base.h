@@ -171,6 +171,7 @@ public:
 	virtual bool GetGameLoading( )					{ return m_GameLoading; }
 	virtual bool GetGameLoaded( )					{ return m_GameLoaded; }
 	virtual bool GetLagging( )						{ return m_Lagging; }
+	string GetGameOwner()							{ return m_OwnerName;}
 
 	virtual void SetEnforceSlots( vector<CGameSlot> nEnforceSlots )		{ m_EnforceSlots = nEnforceSlots; }
 	virtual void SetEnforcePlayers( vector<PIDPlayer> nEnforcePlayers )	{ m_EnforcePlayers = nEnforcePlayers; }
@@ -187,7 +188,7 @@ public:
 	virtual uint32_t GetNumPlayers( );
 	virtual uint32_t GetNumHumanPlayers( );
 	virtual string GetDescription( );
-
+	uint32_t GetCreationTime(){return m_CreationTime;}
 	virtual void SetAnnounce( uint32_t interval, string message );
 
 	// processing functions

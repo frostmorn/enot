@@ -17,6 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
+
 #include "lia.h"
 #include "ghost.h"
 #include "util.h"
@@ -1551,8 +1552,13 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 
 		uint32_t Count = 0;
 		string Line;
+		
+		if (!m_HCLCommandString.empty())
+		{
+			if (m_Map->GetMapType() == "lia")
+				SendChat(player, detect_lia_mode(m_HCLCommandString));
+		}
 
-		SendChat(player, detect_lia_mode(m_HCLCommandString));
 		while( !in.eof( ) && Count < 6 )
 		{
 			getline( in, Line );
@@ -1570,6 +1576,14 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 
 		in.close( );
 	}
+
+	std:: string output;
+	uint32_t time_elapsed = GetTime()- m_CreationTime;
+	uint32_t hours = time_elapsed / 3600;
+	uint32_t mins = time_elapsed /60 % 60;
+	uint32_t secs = time_elapsed % 60;
+	
+	SendChat(player, "Игра создана "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) +"с назад");
 }
 
 void CBaseGame :: SendEndMessage( )
