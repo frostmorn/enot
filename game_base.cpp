@@ -3415,7 +3415,7 @@ void CBaseGame :: EventPlayerPongToHost( CGamePlayer *player, uint32_t pong )
 	// also don't kick anyone if the game is loading or loaded - this could happen because we send pings during loading but we stop sending them after the game is loaded
 	// see the Update function for where we send pings
 
-	if( !m_GameLoading && !m_GameLoaded && !player->GetDeleteMe( ) && !player->GetReserved( ) && player->GetNumPings( ) >= 10 && player->GetAveragePing( m_GHost->m_LCPings ) > m_GHost->m_AutoKickPing )
+	if( !m_GameLoading && !m_GameLoaded && !player->GetDeleteMe( ) && !player->GetReserved( ) && player->GetNumPings( ) >= 3 && player->GetAveragePing( m_GHost->m_LCPings ) > m_GHost->m_AutoKickPing )
 	{
 		// send a chat message because we don't normally do so when a player leaves the lobby
 
