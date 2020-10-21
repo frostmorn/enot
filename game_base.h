@@ -22,7 +22,7 @@
 #define GAME_BASE_H
 
 #include "gameslot.h"
-
+#include <thread>
 //
 // CBaseGame
 //
@@ -47,6 +47,8 @@ public:
 	CGHost *m_GHost;
 
 protected:
+	uint32_t m_PlayersCount;						//Current of players on bo
+	std::thread* m_GameThread;
 	CTCPServer *m_Socket;							// listening socket
 	CGameProtocol *m_Protocol;						// game protocol
 	vector<CGameSlot> m_Slots;						// vector of slots
@@ -139,9 +141,9 @@ protected:
 
 public:
 	vector<string> m_DoSayGames;					// vector of strings we should announce to the current game
-	boost::mutex m_SayGamesMutex;					// mutex for the above vector
+	std::mutex m_SayGamesMutex;					// mutex for the above vector
 	vector<QueuedSpoofAdd> m_DoSpoofAdd;			// vector of spoof add function call structures
-	boost::mutex m_SpoofAddMutex;
+	std::mutex m_SpoofAddMutex;
 
 public:
 	CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, string nGameName, string nOwnerName, string nCreatorName, string nCreatorServer );
@@ -156,6 +158,7 @@ public:
 	virtual CSaveGame *GetSaveGame( )				{ return m_SaveGame; }
 	virtual uint16_t GetHostPort( )					{ return m_HostPort; }
 	virtual unsigned char GetGameState( )			{ return m_GameState; }
+	std::thread * GetGameThread( )			{ return m_GameThread; }
 	virtual unsigned char GetGProxyEmptyActions( )	{ return m_GProxyEmptyActions; }
 	virtual string GetGameName( )					{ return m_GameName; }
 	virtual string GetLastGameName( )				{ return m_LastGameName; }
@@ -292,6 +295,7 @@ public:
 	virtual void DeleteVirtualHost( );
 	virtual void CreateFakePlayer( );
 	virtual void DeleteFakePlayer( );
+	virtual void CreateGame();
 };
 
 struct QueuedSpoofAdd {

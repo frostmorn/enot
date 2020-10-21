@@ -105,7 +105,7 @@ string gLogFile;
 uint32_t gLogMethod;
 ofstream *gLog = NULL;
 CGHost *gGHost = NULL;
-boost::mutex PrintMutex;
+std::mutex PrintMutex;
 
 uint32_t GetTime( )
 {
@@ -168,7 +168,7 @@ void SignalCatcher( int s )
 
 void CONSOLE_Print( string message )
 {
-	boost::mutex::scoped_lock printLock( PrintMutex );
+	PrintMutex.lock();
 	cout << message << endl;
 
 	// logging
@@ -208,7 +208,7 @@ void CONSOLE_Print( string message )
 		}
 	}
 	
-	printLock.unlock( );
+	PrintMutex.unlock( );
 }
 
 void DEBUG_Print( string message )
@@ -356,21 +356,22 @@ int main( int argc, char **argv )
 		// block for 50ms on all sockets - if you intend to perform any timed actions more frequently you should change this
 		// that said it's likely we'll loop more often than this due to there being data waiting on one of the sockets but there aren't any guarantees
 		
-		unsigned int total_players_count = 0;
-		for (auto game:gGHost->m_Games){
-
-		total_players_count = total_players_count+  game->GetNumHumanPlayers();
-		}
-		if (gGHost->m_CurrentGame)
-		{
-		total_players_count = total_players_count+ gGHost->m_CurrentGame->GetNumHumanPlayers();
-		}
-		if (last_players_count!= total_players_count)
-		{
-			last_players_count = total_players_count;
-			auto message = "Online Players: " + UTIL_ToString(total_players_count)+" ";
-			CONSOLE_Print(message);
-		}
+		// unsigned int total_players_count = 0;
+		// for (auto game:gGHost->m_Games){
+		// 	if (game){
+		// 		total_players_count = total_players_count+  game->GetNumHumanPlayers();
+		// 	}
+		// }
+		// if (gGHost->m_CurrentGame)
+		// {
+		// total_players_count = total_players_count+ gGHost->m_CurrentGame->GetNumHumanPlayers();
+		// }
+		// if (last_players_count!= total_players_count)
+		// {
+		// 	last_players_count = total_players_count;
+		// 	auto message = "Online Players: " + UTIL_ToString(total_players_count)+" ";
+		// 	CONSOLE_Print(message);
+		// }
 		if( gGHost->Update( 5000 ) )
 			break;
 	}
@@ -701,7 +702,7 @@ CGHost :: CGHost( CConfig *CFG )
 	{
 		CONSOLE_Print( "[GHOST] creating admin game" );
 		m_AdminGame = new CAdminGame( this, m_AdminMap, NULL, m_AdminGamePort, 0, "GHost++ Admin Game", m_AdminGamePassword );
-		boost::thread(&CBaseGame::loop, m_AdminGame);
+		m_AdminGame->CreateGame();
 
 		if( m_AdminGamePort == m_HostPort )
 			CONSOLE_Print( "[GHOST] warning - admingame_port and bot_hostport are set to the same value, you won't be able to host any games" );
@@ -775,19 +776,27 @@ bool CGHost :: Update( long usecBlock )
 		return true;
 	}
 
-	boost::mutex::scoped_lock gamesLock( m_GamesMutex );
+	m_GamesMutex.lock();
 	
 	// get rid of any deleted games
 	for( vector<CBaseGame *> :: iterator i = m_Games.begin( ); i != m_Games.end( ); )
 	{
-		if( (*i)->readyDelete( ) )
+		if (*i){
+			if((*i)->readyDelete( ) )
+			{
+				delete *i;
+				m_Games.erase( i );
+			} else {
+				++i;
+			}
+		}
+		else
 		{
-			delete *i;
-			m_Games.erase( i );
-		} else {
-			++i;
+				
+			m_Games.erase(i);
 		}
 	}
+	
 
 	if( m_CurrentGame && m_CurrentGame->readyDelete( ) )
 	{
@@ -801,7 +810,7 @@ bool CGHost :: Update( long usecBlock )
 		m_CurrentGame = NULL;
 	}
 	
-	gamesLock.unlock( );
+	m_GamesMutex.unlock( );
 
 	// try to exit nicely if requested to do so
 
@@ -858,7 +867,7 @@ bool CGHost :: Update( long usecBlock )
 	}
 
 	// update callables
-	boost::mutex::scoped_lock callablesLock( m_CallablesMutex );
+	m_CallablesMutex.lock();
 
 	for( vector<CBaseCallable *> :: iterator i = m_Callables.begin( ); i != m_Callables.end( ); )
 	{
@@ -872,7 +881,7 @@ bool CGHost :: Update( long usecBlock )
 			++i;
 	}
 	
-	callablesLock.unlock( );
+	m_CallablesMutex.unlock( );
 
 	// create the GProxy++ reconnect listener
 
@@ -1035,9 +1044,9 @@ bool CGHost :: Update( long usecBlock )
 							i = m_ReconnectSockets.erase( i );
 
 							// post in the reconnects buffer and wait to see if a game thread will pick it up
-							boost::mutex::scoped_lock lock( m_ReconnectMutex );
+							m_ReconnectMutex.lock();
 							m_PendingReconnects.push_back( Reconnector );
-							lock.unlock();
+							m_ReconnectMutex.unlock();
 							continue;
 						}
 						else
@@ -1075,7 +1084,7 @@ bool CGHost :: Update( long usecBlock )
 	
 	// delete any old pending reconnects that have not been handled by games
 	if( !m_PendingReconnects.empty( ) ) {
-		boost::mutex::scoped_lock lock( m_ReconnectMutex );
+		m_ReconnectMutex.lock();
 	
 		for( vector<GProxyReconnector *> :: iterator i = m_PendingReconnects.begin( ); i != m_PendingReconnects.end( ); )
 		{
@@ -1092,7 +1101,7 @@ bool CGHost :: Update( long usecBlock )
 			i++;
 		}
 	
-		lock.unlock();
+		m_ReconnectMutex.unlock();
 	}
 
 	// autohost
@@ -1198,17 +1207,17 @@ void CGHost :: EventBNETGameRefreshed( CBNET *bnet )
 	if( m_AdminGame )
 		m_AdminGame->SendAllChat( m_Language->BNETGameHostingSucceeded( bnet->GetServer( ) ) );
 
-	boost::mutex::scoped_lock lock( m_GamesMutex );
+	m_GamesMutex.lock();
 	
 	if( m_CurrentGame )
 		m_CurrentGame->EventGameRefreshed( bnet->GetServer( ) );
 	
-	lock.unlock( );
+	m_GamesMutex.unlock( );
 }
 
 void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 {
-	boost::mutex::scoped_lock lock( m_GamesMutex );
+	m_GamesMutex.lock();
 	
 	if( m_CurrentGame )
 	{
@@ -1223,9 +1232,9 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 		if( m_AdminGame )
 			m_AdminGame->SendAllChat( m_Language->BNETGameHostingFailed( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
 
-		boost::mutex::scoped_lock sayLock( m_CurrentGame->m_SayGamesMutex );
+		m_CurrentGame->m_SayGamesMutex.lock();
 		// m_CurrentGame->m_DoSayGames.push_back( m_Language->UnableToCreateGameTryAnotherName( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
-		sayLock.unlock( );
+		m_CurrentGame->m_SayGamesMutex.unlock( );
 
 		// we take the easy route and simply close the lobby if a refresh fails
 		// it's possible at least one refresh succeeded and therefore the game is still joinable on at least one battle.net (plus on the local network) but we don't keep track of that
@@ -1237,7 +1246,7 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 		m_CurrentGame->SetRefreshError( true );
 	}
 	
-	lock.unlock( );
+	m_GamesMutex.unlock( );
 }
 
 void CGHost :: EventBNETConnectTimedOut( CBNET *bnet )
@@ -1511,6 +1520,38 @@ void CGHost :: LoadIPToCountryData( )
 
 void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, string gameName, string ownerName, string creatorName, string creatorServer, bool whisper )
 {
+	
+	if (m_CurrentGame){
+		if ((m_CurrentGame->GetCreatorName() == creatorName) && (m_CurrentGame->GetCreatorServer() == creatorServer)){
+			m_GamesMutex.lock();
+			m_CurrentGame->doDelete();
+			m_CurrentGame = NULL;
+			m_GamesMutex.unlock();
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				if( (*i)->GetServer( ) == creatorServer )
+					(*i)->QueueChatCommand( "Ваша старая игра в лобби была анулирована." );
+			}
+			
+		}
+		else
+		{
+			if (m_CurrentGame->GetNumHumanPlayers() > 0){
+				for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+				{
+					if( (*i)->GetServer( ) == creatorServer )
+						(*i)->QueueChatCommand("Уже существует другая игра в лобби с "+ UTIL_ToString(m_CurrentGame->GetNumHumanPlayers())+ " игроками");
+				}
+			}
+			else {
+				m_GamesMutex.lock();
+				m_CurrentGame->doDelete();
+				m_CurrentGame = NULL;
+				m_GamesMutex.unlock();
+			}
+		}
+		
+	}
 
 	if( !m_Enabled )
 	{
@@ -1607,17 +1648,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 			return;
 		}
 	}
-	if( m_CurrentGame )
-	{
-		if (m_CurrentGame->GetOwnerName() == m_AutoHostOwner){
-			m_CurrentGame->SetExiting( true );
-			while (m_CurrentGame){
-				MILLISLEEP(50);
-			}
-		}
-
-	}
-	boost::mutex::scoped_lock lock( m_GamesMutex );
+	m_GamesMutex.lock();
 
 	if( m_CurrentGame )
 	{
@@ -1647,7 +1678,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 		return;
 	}
 
-	lock.unlock( );
+	m_GamesMutex.unlock( );
 
 	CONSOLE_Print( "[GHOST] creating game [" + gameName + "]" );
 	discord_game_created(m_discord_g_create_webhook_url, gameName, ownerName, map->GetMapPath());
@@ -1732,8 +1763,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 		if( (*i)->GetHoldClan( ) )
 			(*i)->HoldClan( m_CurrentGame );
 	}
-	
-	// start the game thread
-	boost::thread(&CBaseGame::loop, m_CurrentGame);
+
+	m_CurrentGame->CreateGame ();
 	CONSOLE_Print("[GameThread] Made new game thread");
 }

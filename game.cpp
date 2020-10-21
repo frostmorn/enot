@@ -92,8 +92,7 @@ CGame :: CGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHost
 
 CGame :: ~CGame( )
 {
-	boost::mutex::scoped_lock callablesLock( m_GHost->m_CallablesMutex );
-	
+ 	m_GHost->m_CallablesMutex.lock();
 	if( m_CallableGameAdd && m_CallableGameAdd->GetReady( ) )
 	{
 		if( m_CallableGameAdd->GetResult( ) > 0 )
@@ -130,7 +129,7 @@ CGame :: ~CGame( )
 	for( vector<PairedDPSCheck> :: iterator i = m_PairedDPSChecks.begin( ); i != m_PairedDPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
 
-	callablesLock.unlock( );
+	m_GHost->m_CallablesMutex.unlock( );
 
 	for( vector<CDBBan *> :: iterator i = m_DBBans.begin( ); i != m_DBBans.end( ); ++i )
 		delete *i;
@@ -150,9 +149,9 @@ CGame :: ~CGame( )
 	if( m_CallableGameAdd )
 	{
 		CONSOLE_Print( "[GAME: " + m_GameName + "] game is being deleted before all game data was saved, game data has been lost" );
-		boost::mutex::scoped_lock lock( m_GHost->m_CallablesMutex );
+		m_GHost->m_CallablesMutex.lock();
 		m_GHost->m_Callables.push_back( m_CallableGameAdd );
-		lock.unlock( );
+		m_GHost->m_CallablesMutex.unlock( );
 	}
 }
 

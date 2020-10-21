@@ -66,7 +66,7 @@ private:
 	CBNETProtocol *m_Protocol;						// battle.net protocol
 	CBNLSClient *m_BNLSClient;						// the BNLS client (for external warden handling)
 	queue<CCommandPacket *> m_Packets;				// queue of incoming packets
-	boost::mutex m_PacketsMutex;					// game sometimes calls QueueChatCommand and UnqueueChatCommand; this makes the functions synchronized
+	std::mutex m_PacketsMutex;					// game sometimes calls QueueChatCommand and UnqueueChatCommand; this makes the functions synchronized
 	CBNCSUtilInterface *m_BNCSUtil;					// the interface to the bncsutil library (used for logging into battle.net)
 	queue<BYTEARRAY> m_OutPackets;					// queue of outgoing packets to be sent (to prevent getting kicked for flooding)
 	vector<CIncomingFriendList *> m_Friends;		// vector of friends
@@ -83,7 +83,7 @@ private:
 	CCallableBanList *m_CallableBanList;			// threaded database ban list in progress
 	vector<string> m_Admins;						// vector of cached admins
 	vector<CDBBan *> m_Bans;						// vector of cached bans
-	boost::mutex m_BansMutex;						// synchronizes accesses and updates to the m_Bans vector
+	std::mutex m_BansMutex;						// synchronizes accesses and updates to the m_Bans vector
 	bool m_Exiting;									// set to true and this class will be deleted next update
 	string m_Server;								// battle.net server to connect to
 	string m_ServerIP;								// battle.net server to connect to (the IP address so we don't have to resolve it every time we connect)
