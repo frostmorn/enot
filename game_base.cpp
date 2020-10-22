@@ -151,7 +151,7 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 }
 
 CBaseGame :: ~CBaseGame( )
-{
+{	
 	delete m_Socket;
 	delete m_Protocol;
 	delete m_Map;
@@ -163,12 +163,12 @@ CBaseGame :: ~CBaseGame( )
 	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		delete *i;
 
-	boost::mutex::scoped_lock lock( m_GHost->m_CallablesMutex );
+	m_GHost->m_CallablesMutex.lock();
 	
 	for( vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( *i );
 	
-	lock.unlock( );
+	m_GHost->m_CallablesMutex.unlock( );
 
 	while( !m_Actions.empty( ) )
 	{
@@ -234,7 +234,7 @@ void CBaseGame :: loop( )
 		if( Update( &fd, &send_fd ) )
 		{
 			CONSOLE_Print( "[GameThread] deleting game [" + GetGameName( ) + "]" );
-			m_DoDelete = 3;
+			m_DoDelete = 2;
 			break;
 		}
 		else
@@ -529,7 +529,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 		//need to synchronize here because we're using host counter variable from GHost
 		// and also gamenames are used in some functions accessed externally
-		boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
+		m_GHost->m_GamesMutex.lock();
 
 		m_LastGameName = m_GameName;
 		m_GameName = GameName;
@@ -547,7 +547,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_CreationTime = GetTime( );
 		m_LastRefreshTime = GetTime( );
 		
-		lock.unlock( );
+		m_GHost->m_GamesMutex.unlock( );
 	}
 
 
@@ -721,21 +721,21 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	
 	if( !m_DoSayGames.empty( ) )
 	{
-		boost::mutex::scoped_lock lock( m_SayGamesMutex );
+		m_SayGamesMutex.lock();
 		
 		for( vector<string> :: iterator i = m_DoSayGames.begin( ); i != m_DoSayGames.end( ); ++i )
 			SendAllChat( "FIONA ADMIN: " + *i );
 		
 		m_DoSayGames.clear( );
 		
-		lock.unlock( );
+		m_SayGamesMutex.unlock( );
 	}
 	
 	// handle add to spoofed vector
 	
 	if( !m_DoSpoofAdd.empty( ) )
 	{
-		boost::mutex::scoped_lock lock( m_SpoofAddMutex );
+		m_SpoofAddMutex.lock();
 		
 		for( vector<QueuedSpoofAdd> :: iterator i = m_DoSpoofAdd.begin( ); i != m_DoSpoofAdd.end( ); ++i )
 		{
@@ -746,7 +746,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		}
 		
 		m_DoSpoofAdd.clear( );
-		lock.unlock( );
+		m_SpoofAddMutex.unlock( );
 	}
 
 	// kick players who don't spoof check within 20 seconds when spoof checks are required and the game is autohosted
@@ -1087,7 +1087,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			m_LastReconnectHandleTime = GetTicks( );
 			
-			boost::mutex::scoped_lock lock( m_GHost->m_ReconnectMutex );
+			m_GHost->m_ReconnectMutex.lock();
 			
 			for( vector<GProxyReconnector *> :: iterator i = m_GHost->m_PendingReconnects.begin( ); i != m_GHost->m_PendingReconnects.end( ); )
 			{
@@ -1104,7 +1104,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				i++;
 			}
 			
-			lock.unlock();
+			m_GHost->m_ReconnectMutex.unlock();
 		}
 	}
 
@@ -3628,10 +3628,10 @@ void CBaseGame :: EventGameStarted( )
 
 	// move the game to the games in progress vector
 
-	boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
+	m_GHost->m_GamesMutex.lock();
 	m_GHost->m_CurrentGame = NULL;
 	m_GHost->m_Games.push_back( this );
-	lock.unlock( );
+	m_GHost->m_GamesMutex.unlock( );
 
 	// and finally reenter battle.net chat
 
@@ -4907,4 +4907,7 @@ void CBaseGame :: DeleteFakePlayer( )
 	SendAll( m_Protocol->SEND_W3GS_PLAYERLEAVE_OTHERS( m_FakePlayerPID, PLAYERLEAVE_LOBBY ) );
 	SendAllSlotInfo( );
 	m_FakePlayerPID = 255;
+}
+void CBaseGame:: CreateGame(){
+	this->m_GameThread = new std::thread(&CBaseGame::loop, this);
 }

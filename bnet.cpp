@@ -17,7 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-
+#define MINIMAL_AUTHOST_GAME_TIME 180
 #include "ghost.h"
 #include "util.h"
 #include "config.h"
@@ -161,7 +161,7 @@ CBNET :: ~CBNET( )
 	for( vector<CIncomingClanList *> :: iterator i = m_Clans.begin( ); i != m_Clans.end( ); ++i )
 		delete *i;
 
-	boost::mutex::scoped_lock lock( m_GHost->m_CallablesMutex );
+	m_GHost->m_CallablesMutex.lock();
 	
 	for( vector<PairedAdminCount> :: iterator i = m_PairedAdminCounts.begin( ); i != m_PairedAdminCounts.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
@@ -193,14 +193,14 @@ CBNET :: ~CBNET( )
 	if( m_CallableBanList )
 		m_GHost->m_Callables.push_back( m_CallableBanList );
 
-	lock.unlock( );
+	m_GHost->m_CallablesMutex.unlock();
 
-	boost::mutex::scoped_lock bansLock( m_BansMutex );
+	m_BansMutex.lock();
 
 	for( vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
 		delete *i;
 	
-	bansLock.unlock( );
+	m_BansMutex.unlock();
 }
 
 BYTEARRAY CBNET :: GetUniqueName( )
@@ -438,13 +438,13 @@ bool CBNET :: Update( void *fd, void *send_fd )
 	if( m_CallableBanList && m_CallableBanList->GetReady( ) )
 	{
 		// CONSOLE_Print( "[BNET: " + m_ServerAlias + "] refreshed ban list (" + UTIL_ToString( m_Bans.size( ) ) + " -> " + UTIL_ToString( m_CallableBanList->GetResult( ).size( ) ) + " bans)" );
-		boost::mutex::scoped_lock lock( m_BansMutex );
+		m_BansMutex.lock();
 		
 		for( vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
 			delete *i;
 
 		m_Bans = m_CallableBanList->GetResult( );
-		lock.unlock( );
+		m_BansMutex.unlock( );
 		
 		m_GHost->m_DB->RecoverCallable( m_CallableBanList );
 		delete m_CallableBanList;
@@ -543,7 +543,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 		
 		WaitTicks += m_FrequencyDelayTimes * 60;
 
-		boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+		m_PacketsMutex.lock();
 		
 		if( !m_OutPackets.empty( ) && GetTicks( ) - m_LastOutPacketTicks >= WaitTicks )
 		{
@@ -564,7 +564,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			m_LastOutPacketTicks = GetTicks( );
 		}
 		
-		packetsLock.unlock( );
+		m_PacketsMutex.unlock();
 
 		// send a null packet every 60 seconds to detect disconnects
 
@@ -594,12 +594,12 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			m_LastNullTime = GetTime( );
 			m_LastOutPacketTicks = GetTicks( );
 
-			boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+			m_PacketsMutex.lock();
 			
 			while( !m_OutPackets.empty( ) )
 				m_OutPackets.pop( );
 
-			packetsLock.unlock( );
+			m_PacketsMutex.unlock();
 
 			return m_Exiting;
 		}
@@ -1024,7 +1024,7 @@ void CBNET :: ProcessChatEvent( CIncomingChatEvent *chatEvent )
 		// this case covers whispers - we assume that anyone who sends a whisper to the bot with message "spoofcheck" should be considered spoof checked
 		// note that this means you can whisper "spoofcheck" even in a public game to manually spoofcheck if the /whois fails
 
-		boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
+		m_GHost->m_GamesMutex.lock();
 		
 		if( Event == CBNETProtocol :: EID_WHISPER && m_GHost->m_CurrentGame )
 		{
@@ -1062,13 +1062,14 @@ void CBNET :: ProcessChatEvent( CIncomingChatEvent *chatEvent )
 			
 			if( Success )
 			{
-				boost::mutex::scoped_lock spoofLock( m_GHost->m_CurrentGame->m_SpoofAddMutex );
+				m_GHost->m_CurrentGame->m_SpoofAddMutex.lock();
 				m_GHost->m_CurrentGame->m_DoSpoofAdd.push_back( SpoofAdd );
-				spoofLock.unlock( );
+				m_GHost->m_CurrentGame->m_SpoofAddMutex.unlock();
 			}
 		}
 		
-		lock.unlock( );
+
+		m_GHost->m_GamesMutex.unlock();
 
 		// handle bot commands
 
@@ -1105,7 +1106,7 @@ void CBNET :: ProcessChatEvent( CIncomingChatEvent *chatEvent )
 		// this case covers whois results which are used when hosting a public game (we send out a "/whois [player]" for each player)
 		// at all times you can still /w the bot with "spoofcheck" to manually spoof check
 		
-		boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
+		m_GHost->m_GamesMutex.lock();
 		
 		if( m_GHost->m_CurrentGame )
 		{
@@ -1126,9 +1127,9 @@ void CBNET :: ProcessChatEvent( CIncomingChatEvent *chatEvent )
 			
 			if( !FailMessage.empty( ) )
 			{
-				boost::mutex::scoped_lock sayLock( m_GHost->m_CurrentGame->m_SayGamesMutex );
+				m_GHost->m_CurrentGame->m_SayGamesMutex.lock();
 				m_GHost->m_CurrentGame->m_DoSayGames.push_back( FailMessage );
-				sayLock.unlock( );
+				m_GHost->m_CurrentGame->m_SayGamesMutex.unlock( );
 			}
 
 			if( Message.find( "is using Warcraft III The Frozen Throne in game" ) != string :: npos || Message.find( "is using Warcraft III Frozen Throne and is currently in  game" ) != string :: npos )
@@ -1146,13 +1147,13 @@ void CBNET :: ProcessChatEvent( CIncomingChatEvent *chatEvent )
 				if( Message.find( m_GHost->m_CurrentGame->GetGameName( ) ) == string :: npos && Message.find( m_GHost->m_CurrentGame->GetLastGameName( ) ) == string :: npos )
 					SpoofAdd.failMessage = m_GHost->m_Language->SpoofDetectedIsInAnotherGame( UserName );
 				
-				boost::mutex::scoped_lock spoofLock( m_GHost->m_CurrentGame->m_SpoofAddMutex );
+				m_GHost->m_CurrentGame->m_SpoofAddMutex.lock();
 				m_GHost->m_CurrentGame->m_DoSpoofAdd.push_back( SpoofAdd );
-				spoofLock.unlock( );
+				m_GHost->m_CurrentGame->m_SpoofAddMutex.unlock();
 			}
 		}
 		
-		lock.unlock( );
+		m_GHost->m_GamesMutex.unlock( );
 	}
 	else if( Event == CBNETProtocol :: EID_ERROR )
 		CONSOLE_Print( "[ERROR: " + m_ServerAlias + "] " + Message );
@@ -1612,7 +1613,7 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 
 		else if( Command == "getgame" && !Payload.empty( ) )
 		{
-			boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
+			m_GHost->m_GamesMutex.lock();
 			
 			uint32_t GameNumber = UTIL_ToUInt32( Payload ) - 1;
 
@@ -1621,7 +1622,7 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 			else
 				QueueChatCommand( m_GHost->m_Language->GameNumberDoesntExist( Payload ), User, Whisper );
 			
-			lock.unlock( );
+			m_GHost->m_GamesMutex.unlock( );
 		}
 
 		//
@@ -1630,14 +1631,14 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 
 		else if( Command == "getgames" )
 		{
-			boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
+			m_GHost->m_GamesMutex.lock();
 			
 			if( m_GHost->m_CurrentGame )
 				QueueChatCommand( m_GHost->m_Language->GameIsInTheLobby( m_GHost->m_CurrentGame->GetDescription( ), UTIL_ToString( m_GHost->m_Games.size( ) ), UTIL_ToString( m_GHost->m_MaxGames ) ), User, Whisper );
 			else
 				QueueChatCommand( m_GHost->m_Language->ThereIsNoGameInTheLobby( UTIL_ToString( m_GHost->m_Games.size( ) ), UTIL_ToString( m_GHost->m_MaxGames ) ), User, Whisper );
 			
-			lock.unlock( );
+			m_GHost->m_GamesMutex.unlock( );
 		}
 
 		//
@@ -1917,15 +1918,20 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		
 		else if(Command == "pub" && !Payload.empty( ) ){
-
-			
-			if ((!IsRootAdmin(User))  && (m_GHost->m_CurrentGame && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < 180))){
-				QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожалуйста подождите.", User, Whisper);
+			if (m_GHost->m_CurrentGame)
+			{
+				if ((!IsRootAdmin(User))  && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < MINIMAL_AUTHOST_GAME_TIME)){
+					QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожалуйста подождите.", User, Whisper);
+				}
+				else
+				{
+					m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
+				}
 			}
 			else{
 				m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
 			}
-
+			
 		}
 
 		//
@@ -1996,23 +2002,23 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		{
 			if( IsRootAdmin( User ) || ForceRoot )
 			{
-				boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
+				m_GHost->m_GamesMutex.lock();
 		
 				if( m_GHost->m_CurrentGame )
 				{
-					boost::mutex::scoped_lock sayLock( m_GHost->m_CurrentGame->m_SayGamesMutex );
+					m_GHost->m_CurrentGame->m_SayGamesMutex.lock();
 					m_GHost->m_CurrentGame->m_DoSayGames.push_back( Payload );
-					sayLock.unlock( );
+					m_GHost->m_CurrentGame->m_SayGamesMutex.unlock( );
 				}
 
 				for( vector<CBaseGame *> :: iterator i = m_GHost->m_Games.begin( ); i != m_GHost->m_Games.end( ); ++i )
 				{
-					boost::mutex::scoped_lock sayLock( (*i)->m_SayGamesMutex );
+					(*i)->m_SayGamesMutex.lock();
 					(*i)->m_DoSayGames.push_back( Payload );
-					sayLock.unlock( );
+					(*i)->m_SayGamesMutex.unlock(); 
 				}
 		
-				lock.unlock( );
+				m_GHost->m_GamesMutex.unlock( );
 			}
 			else
 				QueueChatCommand( m_GHost->m_Language->YouDontHaveAccessToThatCommand( ), User, Whisper );
@@ -2034,26 +2040,25 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 
 		else if( Command == "unhost" )
-		{			
-			if (IsRootAdmin(User) || User == m_GHost->m_CurrentGame->GetGameOwner() || (m_GHost->m_CurrentGame && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < 180))){
-				QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожалуйста подождите.", User, Whisper);
-			}
-			else{
-				boost::mutex::scoped_lock lock( m_GHost->m_GamesMutex );
-				
-				if( m_GHost->m_CurrentGame )
-				{
-					if( m_GHost->m_CurrentGame->GetCountDownStarted( ) )
-						QueueChatCommand( m_GHost->m_Language->UnableToUnhostGameCountdownStarted( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
+		{
+					
+			if (m_GHost->m_CurrentGame){
+					if ((!IsRootAdmin(User))  && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < MINIMAL_AUTHOST_GAME_TIME)){					QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожалуйста подождите.", User, Whisper);
+					}
+					else{
+						m_GHost->m_GamesMutex.lock();
 
-					QueueChatCommand( m_GHost->m_Language->UnhostingGame( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
-					m_GHost->m_CurrentGame->SetExiting( true );
-				}
-				else
-					QueueChatCommand( m_GHost->m_Language->UnableToUnhostGameNoGameInLobby( ), User, Whisper );
-				
-				lock.unlock( );
+						if( m_GHost->m_CurrentGame->GetCountDownStarted( ) )
+							QueueChatCommand( m_GHost->m_Language->UnableToUnhostGameCountdownStarted( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
+
+						QueueChatCommand( m_GHost->m_Language->UnhostingGame( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
+						m_GHost->m_CurrentGame->SetExiting( true );	
+						
+						m_GHost->m_GamesMutex.unlock( );
+					}
 			}
+			else
+				QueueChatCommand( m_GHost->m_Language->UnableToUnhostGameNoGameInLobby( ), User, Whisper );
 		}
 
 		//
@@ -2202,12 +2207,12 @@ void CBNET :: SendClanAcceptInvite( bool accept )
 
 void CBNET :: QueueEnterChat( )
 {
-	boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+	m_PacketsMutex.lock();
 	
 	if( m_LoggedIn )
 		m_OutPackets.push( m_Protocol->SEND_SID_ENTERCHAT( ) );
 	
-	packetsLock.unlock( );
+	m_PacketsMutex.unlock();
 }
 
 void CBNET :: QueueChatCommand( string chatCommand )
@@ -2223,7 +2228,7 @@ void CBNET :: QueueChatCommand( string chatCommand )
 		if( chatCommand.size( ) > 255 )
 			chatCommand = chatCommand.substr( 0, 255 );
 
-		boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+		m_PacketsMutex.lock();
 		
 		if( m_OutPackets.size( ) > 10 )
 			CONSOLE_Print( "[BNET: " + m_ServerAlias + "] attempted to queue chat command [" + chatCommand + "] but there are too many (" + UTIL_ToString( m_OutPackets.size( ) ) + ") packets queued, discarding" );
@@ -2233,7 +2238,7 @@ void CBNET :: QueueChatCommand( string chatCommand )
 			m_OutPackets.push( m_Protocol->SEND_SID_CHATCOMMAND( chatCommand ) );
 		}
 		
-		packetsLock.unlock( );
+		m_PacketsMutex.unlock();
 	}
 }
 
@@ -2302,14 +2307,14 @@ void CBNET :: QueueGameRefresh( unsigned char state, string gameName, string hos
 			MapHeight.push_back( 192 );
 			MapHeight.push_back( 7 );
 
-			boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+			m_PacketsMutex.lock();
 			
 			if( m_GHost->m_Reconnect )
 				m_OutPackets.push( m_Protocol->SEND_SID_STARTADVEX3( state, UTIL_CreateByteArray( MapGameType, false ), map->GetMapGameFlags( ), MapWidth, MapHeight, gameName, hostName, upTime, "Save\\Multiplayer\\" + saveGame->GetFileNameNoPath( ), saveGame->GetMagicNumber( ), map->GetMapSHA1( ), FixedHostCounter ) );
 			else
 				m_OutPackets.push( m_Protocol->SEND_SID_STARTADVEX3( state, UTIL_CreateByteArray( MapGameType, false ), map->GetMapGameFlags( ), UTIL_CreateByteArray( (uint16_t)0, false ), UTIL_CreateByteArray( (uint16_t)0, false ), gameName, hostName, upTime, "Save\\Multiplayer\\" + saveGame->GetFileNameNoPath( ), saveGame->GetMagicNumber( ), map->GetMapSHA1( ), FixedHostCounter ) );
 			
-			packetsLock.unlock( );
+			m_PacketsMutex.unlock();
 		}
 		else
 		{
@@ -2330,26 +2335,26 @@ void CBNET :: QueueGameRefresh( unsigned char state, string gameName, string hos
 			MapHeight.push_back( 192 );
 			MapHeight.push_back( 7 );
 
-			boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+			m_PacketsMutex.lock();
 			
 			if( m_GHost->m_Reconnect )
 				m_OutPackets.push( m_Protocol->SEND_SID_STARTADVEX3( state, UTIL_CreateByteArray( MapGameType, false ), map->GetMapGameFlags( ), MapWidth, MapHeight, gameName, hostName, upTime, map->GetMapPath( ), map->GetMapCRC( ), map->GetMapSHA1( ), FixedHostCounter ) );
 			else
 				m_OutPackets.push( m_Protocol->SEND_SID_STARTADVEX3( state, UTIL_CreateByteArray( MapGameType, false ), map->GetMapGameFlags( ), map->GetMapWidth( ), map->GetMapHeight( ), gameName, hostName, upTime, map->GetMapPath( ), map->GetMapCRC( ), map->GetMapSHA1( ), FixedHostCounter ) );
 			
-			packetsLock.unlock( );
+			m_PacketsMutex.unlock();
 		}
 	}
 }
 
 void CBNET :: QueueGameUncreate( )
 {
-	boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+	m_PacketsMutex.lock();
 	
 	if( m_LoggedIn )
 		m_OutPackets.push( m_Protocol->SEND_SID_STOPADV( ) );
 	
-	packetsLock.unlock( );
+	m_PacketsMutex.unlock();
 }
 
 void CBNET :: UnqueuePackets( unsigned char type )
@@ -2357,7 +2362,7 @@ void CBNET :: UnqueuePackets( unsigned char type )
 	queue<BYTEARRAY> Packets;
 	uint32_t Unqueued = 0;
 
-	boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+	m_PacketsMutex.lock();
 	
 	while( !m_OutPackets.empty( ) )
 	{
@@ -2374,7 +2379,7 @@ void CBNET :: UnqueuePackets( unsigned char type )
 
 	m_OutPackets = Packets;
 	
-	packetsLock.unlock( );
+	m_PacketsMutex.unlock();
 
 	if( Unqueued > 0 )
 		CONSOLE_Print( "[BNET: " + m_ServerAlias + "] unqueued " + UTIL_ToString( Unqueued ) + " packets of type " + UTIL_ToString( type ) );
@@ -2390,7 +2395,7 @@ void CBNET :: UnqueueChatCommand( string chatCommand )
 	queue<BYTEARRAY> Packets;
 	uint32_t Unqueued = 0;
 
-	boost::mutex::scoped_lock packetsLock( m_PacketsMutex );
+	m_PacketsMutex.lock();
 	
 	while( !m_OutPackets.empty( ) )
 	{
@@ -2407,7 +2412,7 @@ void CBNET :: UnqueueChatCommand( string chatCommand )
 
 	m_OutPackets = Packets;
 	
-	packetsLock.unlock( );
+	m_PacketsMutex.unlock();
 
 	if( Unqueued > 0 )
 		CONSOLE_Print( "[BNET: " + m_ServerAlias + "] unqueued " + UTIL_ToString( Unqueued ) + " chat command packets" );
@@ -2462,7 +2467,7 @@ CDBBan *CBNET :: IsBannedName( string name )
 
 	// todotodo: optimize this - maybe use a map?
 	
-	boost::mutex::scoped_lock bansLock( m_BansMutex );
+	m_BansMutex.lock();
 
 	for( vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
 	{
@@ -2470,7 +2475,7 @@ CDBBan *CBNET :: IsBannedName( string name )
 			return *i;
 	}
 	
-	bansLock.unlock( );
+	m_BansMutex.unlock();
 	return NULL;
 }
 
@@ -2478,7 +2483,7 @@ CDBBan *CBNET :: IsBannedIP( string ip )
 {
 	// todotodo: optimize this - maybe use a map?
 	
-	boost::mutex::scoped_lock bansLock( m_BansMutex );
+	m_BansMutex.lock();
 	
 	for( vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
 	{
@@ -2486,7 +2491,7 @@ CDBBan *CBNET :: IsBannedIP( string ip )
 			return *i;
 	}
 
-	bansLock.unlock( );
+	m_BansMutex.unlock();
 	return NULL;
 }
 
@@ -2500,9 +2505,9 @@ void CBNET :: AddBan( string name, string ip, string gamename, string admin, str
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 	
-	boost::mutex::scoped_lock lock( m_BansMutex );
+	m_BansMutex.lock();
 	m_Bans.push_back( new CDBBan( m_Server, name, ip, "N/A", gamename, admin, reason ) );
-	lock.unlock( );
+	m_BansMutex.unlock( );
 }
 
 void CBNET :: RemoveAdmin( string name )
@@ -2522,7 +2527,7 @@ void CBNET :: RemoveBan( string name )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 
-	boost::mutex::scoped_lock lock( m_BansMutex );
+	m_BansMutex.lock();
 	
 	for( vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); )
 	{
@@ -2532,7 +2537,7 @@ void CBNET :: RemoveBan( string name )
 			++i;
 	}
 	
-	lock.unlock( );
+	m_BansMutex.unlock( );
 }
 
 void CBNET :: HoldFriends( CBaseGame *game )
