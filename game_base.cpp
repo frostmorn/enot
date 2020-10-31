@@ -566,8 +566,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-
-					(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
 					(*i)->QueueGameRefresh( m_GameState, rubattle_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 					break;
 				}
@@ -585,7 +583,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	// rehost ICCup
 	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0 &&
-		 GetTime() > m_LastICCupRehostTime + (60/m_GHost->m_ICCupBnetCount))
+		 GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))
 	{
 		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
@@ -597,8 +595,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-
-					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
 					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 					break;
 				}
