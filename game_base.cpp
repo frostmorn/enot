@@ -585,7 +585,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	// rehost ICCup
 	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0 &&
-		 GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))
+		 GetTime() > m_LastICCupRehostTime + (60/m_GHost->m_ICCupBnetCount))
 	{
 		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
@@ -613,32 +613,32 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	}
 	// refresh every 3 seconds
 
-	if( !m_RefreshError && !m_CountDownStarted && m_GameState == GAME_PUBLIC && GetSlotsOpen( ) > 0 && GetTime( ) - m_LastRefreshTime >= 3)
-	{
-		// send a game refresh packet to each battle.net connection
+	// if( !m_RefreshError && !m_CountDownStarted && m_GameState == GAME_PUBLIC && GetSlotsOpen( ) > 0 && GetTime( ) - m_LastRefreshTime >= 3)
+	// {
+	// 	// send a game refresh packet to each battle.net connection
 
-		bool Refreshed = false;
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
-		{
-			// don't queue a game refresh message if the queue contains more than 1 packet because they're very low priority
+	// 	bool Refreshed = false;
+	// 	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	// 	{
+	// 		// don't queue a game refresh message if the queue contains more than 1 packet because they're very low priority
 
-			if( (*i)->GetOutPacketsQueued( ) <= 1 )
-			{
-				if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos)){
-					(*i)->QueueGameRefresh( m_GameState, m_GameName, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
-				}
-				Refreshed = true;
-			}
-		}
+	// 		if( (*i)->GetOutPacketsQueued( ) <= 1 )
+	// 		{
+	// 			if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos)){
+	// 				(*i)->QueueGameRefresh( m_GameState, m_GameName, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+	// 			}
+	// 			Refreshed = true;
+	// 		}
+	// 	}
 		
 
-		// only print the "game refreshed" message if we actually refreshed on at least one battle.net server
+	// 	// only print the "game refreshed" message if we actually refreshed on at least one battle.net server
 
-		if( m_RefreshMessages && Refreshed )
-			SendAllChat( m_GHost->m_Language->GameRefreshed( ) );
+	// 	if( m_RefreshMessages && Refreshed )
+	// 		SendAllChat( m_GHost->m_Language->GameRefreshed( ) );
 
-		m_LastRefreshTime = GetTime( );
-	}
+	// 	m_LastRefreshTime = GetTime( );
+	// }
 
 	// send more map data
 
