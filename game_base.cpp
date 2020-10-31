@@ -561,7 +561,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				current_rubattle_index++;
-				if (current_rubattle_index == m_LastRubattleRehostIndex){
+				if (current_rubattle_index == m_LastRubattleRehostIndex+2){
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
@@ -593,7 +593,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
 				
-				if (current_iccup_index == m_LastICCupRehostIndex){
+				if (current_iccup_index == m_LastICCupRehostIndex+2){
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
