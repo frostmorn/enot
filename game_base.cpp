@@ -569,7 +569,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				if (current_rubattle_index == m_LastRubattleRehostIndex+1){
 					std:: string rubattle_game_name = m_GameName+ " "+ UTIL_ToString(current_rubattle_index);
 					(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
-					(*i)->QueueGameRefresh( m_GameState, rubattle_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					// (*i)->QueueGameRefresh( m_GameState, rubattle_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 					break;
 				}
 			}
@@ -602,7 +602,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
 					std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
 					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
-					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					// (*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 					break;
 				}
 			}
