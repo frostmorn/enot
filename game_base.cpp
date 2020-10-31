@@ -577,6 +577,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 		m_LastRubattleRehostTime = GetTime( );
 		m_LastRubattleRehostIndex = current_rubattle_index == m_GHost->m_RubattleBnetCount ? 0 : current_rubattle_index;
+		current_rubattle_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
@@ -617,6 +618,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
+		current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
