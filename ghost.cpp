@@ -542,7 +542,7 @@ CGHost :: CGHost( CConfig *CFG )
 	// load the battle.net connections
 	// we're just loading the config data and creating the CBNET classes here, the connections are established later (in the Update function)
 
-	for( uint32_t i = 1; i < 32; ++i )
+	for( uint32_t i = 1; i < 256; ++i )
 	{
 		string Prefix;
 
@@ -1106,7 +1106,7 @@ bool CGHost :: Update( long usecBlock )
 		{
 			if( m_AutoHostMap->GetValid( ) )
 			{
-				string GameName = m_AutoHostGameName + " " + random_string(1);
+				string GameName = m_AutoHostGameName;
 
 				if( GameName.size( ) <= 31 )
 				{
