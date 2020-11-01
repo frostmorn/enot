@@ -608,6 +608,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
 		CONSOLE_Print("ICCup index = "+ UTIL_ToString(current_iccup_index));
+		
+		CONSOLE_Print("ICCup bnet count = "+ UTIL_ToString(m_GHost->m_ICCupBnetCount);
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
 
