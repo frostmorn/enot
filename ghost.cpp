@@ -372,7 +372,7 @@ int main( int argc, char **argv )
 			auto message = "Online Players: " + UTIL_ToString(total_players_count)+" ";
 			CONSOLE_Print(message);
 		}
-		if( gGHost->Update( 5000 ) )
+		if( gGHost->Update( 50000 ) )
 			break;
 	}
 
@@ -543,7 +543,7 @@ CGHost :: CGHost( CConfig *CFG )
 	// load the battle.net connections
 	// we're just loading the config data and creating the CBNET classes here, the connections are established later (in the Update function)
 
-	for( uint32_t i = 1; i < 32; ++i )
+	for( uint32_t i = 1; i < 256; ++i )
 	{
 		string Prefix;
 
@@ -1115,7 +1115,7 @@ bool CGHost :: Update( long usecBlock )
 		{
 			if( m_AutoHostMap->GetValid( ) )
 			{
-				string GameName = m_AutoHostGameName + " " + random_string(1);
+				string GameName = m_AutoHostGameName;
 
 				if( GameName.size( ) <= 31 )
 				{
