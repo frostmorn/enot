@@ -597,8 +597,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
-					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter+current_iccup_index );
+					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter+current_iccup_index );
 					break;
 				}
 				
