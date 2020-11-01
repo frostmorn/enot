@@ -579,7 +579,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_RefreshRehosted = true;
 
 		m_LastRubattleRehostTime = GetTime( );
-		m_LastRubattleRehostIndex = current_rubattle_index == m_GHost->m_RubattleBnetCount ? 0 : current_rubattle_index;
+		m_LastRubattleRehostIndex = current_rubattle_index == m_GHost->m_RubattleBnetCount-1 ? 0 : current_rubattle_index;
 	}
 
 
@@ -611,7 +611,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		
 		CONSOLE_Print("ICCup bnet count = "+ UTIL_ToString(m_GHost->m_ICCupBnetCount));
 		m_LastICCupRehostTime = GetTime( );
-		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
+		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount-1 ? 0 : current_iccup_index;
 
 	}
 //	refresh every 3 seconds
