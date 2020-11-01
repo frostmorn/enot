@@ -594,11 +594,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				current_iccup_index++;
 				std:: string iccup_game_name = m_GameName+ " "+ random_string(2);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					(*i)->UnqueueGameRefreshes( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
 					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
