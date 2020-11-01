@@ -594,7 +594,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
 				std:: string iccup_game_name = m_GameName+ " "+ random_string(2);
-				if (current_iccup_index == m_LastICCupRehostIndex+1){
+				if (current_iccup_index == m_LastICCupRehostIndex){
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
