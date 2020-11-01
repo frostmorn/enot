@@ -590,11 +590,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
-			CONSOLE_Print("ICCup index = "+ UTIL_ToString(current_iccup_index));
+
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
 				std:: string iccup_game_name = m_GameName+ " "+ random_string(2);
-				if (current_iccup_index == m_LastICCupRehostIndex){
+				if (current_iccup_index == m_LastICCupRehostIndex+1){
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
@@ -607,7 +607,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		}
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
-
+		CONSOLE_Print("ICCup index = "+ UTIL_ToString(current_iccup_index));
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
 
