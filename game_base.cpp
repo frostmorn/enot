@@ -562,8 +562,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				current_rubattle_index++;
 
-				std:: string rubattle_game_name = m_GameName+ " "+ UTIL_ToString(current_rubattle_index);
+				std:: string rubattle_game_name = m_GameName+ " "+ random_string(2);
 				if (current_rubattle_index == m_LastRubattleRehostIndex+1){
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
 					(*i)->QueueGameCreate( m_GameState, rubattle_game_name, string( ), m_Map, NULL, m_HostCounter );
 					(*i)->QueueGameRefresh( m_GameState, rubattle_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 					break;
@@ -577,20 +580,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 		m_LastRubattleRehostTime = GetTime( );
 		m_LastRubattleRehostIndex = current_rubattle_index == m_GHost->m_RubattleBnetCount ? 0 : current_rubattle_index;
-		current_rubattle_index = 0;
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
-			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				current_rubattle_index++;
-				std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_rubattle_index);
-				if (current_rubattle_index == m_LastRubattleRehostIndex+1){
-					(*i)->UnqueueGameRefreshes( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
-					break;
-				}		
-			}
-		}
 	}
 
 
@@ -603,9 +592,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
-				
-				std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
+				std:: string iccup_game_name = m_GameName+ " "+ random_string(2);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
 					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
 					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 					break;
@@ -618,20 +609,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount ? 0 : current_iccup_index;
-		current_iccup_index = 0;
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
-			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				current_iccup_index++;
-				std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
-				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					(*i)->UnqueueGameRefreshes( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
-					break;
-				}		
-			}
-		}
+
 	}
 //	refresh every 3 seconds
 
