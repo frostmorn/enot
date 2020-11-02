@@ -562,6 +562,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) )
 				{
+					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
@@ -587,6 +588,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				current_iccup_index++;
 				std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					
+					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
