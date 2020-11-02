@@ -2252,6 +2252,7 @@ void CBNET :: QueueChatCommand( string chatCommand, string user, bool whisper )
 
 void CBNET :: QueueGameCreate( unsigned char state, string gameName, string hostName, CMap *map, CSaveGame *savegame, uint32_t hostCounter )
 {
+	LastGameCreateTime = GetTime();
 	if( m_LoggedIn && map )
 	{
 		if( !m_CurrentChannel.empty( ) )
