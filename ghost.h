@@ -63,7 +63,7 @@ public:
 	CBaseGame *m_CurrentGame;				// this game is still in the lobby state
 	CAdminGame *m_AdminGame;				// this "fake game" allows an admin who knows the password to control the bot from the local network
 	vector<CBaseGame *> m_Games;			// these games are in progress
-	boost::mutex m_GamesMutex;
+	std::mutex m_GamesMutex;
 	CGHostDB *m_DB;							// database
 	CGHostDB *m_DBLocal;					// local database (for temporary data)
 	vector<CBaseCallable *> m_Callables;	// vector of orphaned callables waiting to die

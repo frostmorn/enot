@@ -1678,7 +1678,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 			m_CurrentGame = NULL;
 		}
 	}
-	boost::mutex::scoped_lock lock( m_GamesMutex );
+	m_GamesMutex.lock();
 
 	if( m_CurrentGame )
 	{
@@ -1690,7 +1690,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 
 		if( m_AdminGame )
 			m_AdminGame->SendAllChat( m_Language->UnableToCreateGameAnotherGameInLobby( gameName, m_CurrentGame->GetDescription( ) ) );
-
+		m_GamesMutex.unlock();
 		return;
 	}
 

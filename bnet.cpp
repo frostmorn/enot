@@ -2459,8 +2459,10 @@ CDBBan *CBNET :: IsBannedName( string name )
 
 	for( vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
 	{
-		if( (*i)->GetName( ) == name )
+		if( (*i)->GetName( ) == name ){
+			m_BansMutex.unlock();
 			return *i;
+		}
 	}
 	
 	m_BansMutex.unlock();
@@ -2475,8 +2477,10 @@ CDBBan *CBNET :: IsBannedIP( string ip )
 	
 	for( vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
 	{
-		if( (*i)->GetIP( ) == ip )
+		if( (*i)->GetIP( ) == ip ){
+			m_BansMutex.unlock();
 			return *i;
+		}
 	}
 
 	m_BansMutex.unlock();
