@@ -1132,9 +1132,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	// start the gameover timer if there's only one player left
 
-	if( m_Players.size( ) == 1 && m_FakePlayerPID == 255 && m_GameOverTime == 0 && ( m_GameLoading || m_GameLoaded ) )
+	if( m_Players.size( ) == 0 && m_FakePlayerPID == 255 && m_GameOverTime == 0 && ( m_GameLoading || m_GameLoaded ) )
 	{
-		CONSOLE_Print( "[GAME: " + m_GameName + "] gameover timer started (one player left)" );
+		CONSOLE_Print( "[GAME: " + m_GameName + "] gameover timer started (no players left)" );
 		m_GameOverTime = GetTime( );
 	}
 
