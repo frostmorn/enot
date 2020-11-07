@@ -1609,15 +1609,25 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 	}
 	if( m_CurrentGame )
 	{
-		boost::mutex::scoped_lock gamesLock( m_GamesMutex );
-		for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+		if (m_CurrentGame->GetNumHumanPlayers() > 0)
 		{
-			(*i)->QueueGameUncreate( );
-			(*i)->QueueEnterChat( );
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				if( (*i)->GetServer( ) == creatorServer )
+					(*i)->QueueChatCommand("Извините, другая игра уже в лобби и в ней есть игроки [ "+m_CurrentGame->GetDescription( )+" ]", creatorName, whisper );
+			}
+			return;
 		}
-		delete m_CurrentGame;
-		m_CurrentGame = NULL;
-		gamesLock.unlock( );
+		else{
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				(*i)->UnqueueGameRefreshes( );
+				(*i)->QueueGameUncreate( );
+				(*i)->QueueEnterChat( );
+			}
+			m_CurrentGame->doDelete();
+			m_CurrentGame = NULL;
+		}
 	}
 	boost::mutex::scoped_lock lock( m_GamesMutex );
 
