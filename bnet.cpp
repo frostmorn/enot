@@ -1918,8 +1918,7 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		
 		else if(Command == "pub" && !Payload.empty( ) ){
-	
-				m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );			
+			m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );			
 		}
 
 		//
