@@ -1648,9 +1648,6 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 			return;
 		}
 	}
-<<<<<<< HEAD
-	m_GamesMutex.lock();
-=======
 	if( m_CurrentGame )
 	{
 		if (GetTime() - m_CurrentGame->GetCreationTime() < 20)
@@ -1682,7 +1679,6 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 		}
 	}
 	boost::mutex::scoped_lock lock( m_GamesMutex );
->>>>>>> custom_games
 
 	if( m_CurrentGame )
 	{
