@@ -1918,20 +1918,8 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		
 		else if(Command == "pub" && !Payload.empty( ) ){
-			if (m_GHost->m_CurrentGame)
-			{
-				if ((!IsRootAdmin(User))  && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < MINIMAL_AUTHOST_GAME_TIME)){
-					QueueChatCommand("Последняя игра была создана менее 180 секунд назад. Пожалуйста подождите.", User, Whisper);
-				}
-				else
-				{
-					m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
-				}
-			}
-			else{
-				m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
-			}
-			
+	
+				m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );			
 		}
 
 		//
