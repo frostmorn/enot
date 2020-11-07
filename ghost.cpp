@@ -1609,7 +1609,15 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 	}
 	if( m_CurrentGame )
 	{
-		if (m_CurrentGame->GetNumHumanPlayers() > 0)
+		if (GetTime() - m_CurrentGame->GetCreationTime() < 20)
+		{
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				if( (*i)->GetServer( ) == creatorServer )
+					(*i)->QueueChatCommand("Последняя игра была создана менее 20 секунд назад [ "+m_CurrentGame->GetDescription( )+" ]", creatorName, whisper );
+			}
+		}
+		else if (m_CurrentGame->GetNumHumanPlayers() > 0)
 		{
 			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
 			{
