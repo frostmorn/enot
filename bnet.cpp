@@ -1918,7 +1918,6 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		
 		else if(Command == "pub" && !Payload.empty( ) ){
-<<<<<<< HEAD
 			if (m_GHost->m_CurrentGame)
 			{
 				if ((!IsRootAdmin(User))  && (GetTime() - m_GHost->m_CurrentGame->GetCreationTime() < MINIMAL_AUTHOST_GAME_TIME)){
@@ -1933,9 +1932,6 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 				m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
 			}
 			
-=======
-			m_GHost->CreateGame( m_GHost->m_Map, GAME_PUBLIC, false, Payload, User, User, m_Server, Whisper );
->>>>>>> custom_games
 		}
 
 		//
