@@ -1648,7 +1648,41 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 			return;
 		}
 	}
+<<<<<<< HEAD
 	m_GamesMutex.lock();
+=======
+	if( m_CurrentGame )
+	{
+		if (GetTime() - m_CurrentGame->GetCreationTime() < 20)
+		{
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				if( (*i)->GetServer( ) == creatorServer )
+					(*i)->QueueChatCommand("Последняя игра была создана менее 20 секунд назад [ "+m_CurrentGame->GetDescription( )+" ]", creatorName, whisper );
+			}
+		}
+		else if (m_CurrentGame->GetNumHumanPlayers() > 0)
+		{
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				if( (*i)->GetServer( ) == creatorServer )
+					(*i)->QueueChatCommand("Извините, другая игра уже в лобби и в ней есть игроки [ "+m_CurrentGame->GetDescription( )+" ]", creatorName, whisper );
+			}
+			return;
+		}
+		else{
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				(*i)->UnqueueGameRefreshes( );
+				(*i)->QueueGameUncreate( );
+				(*i)->QueueEnterChat( );
+			}
+			m_CurrentGame->doDelete();
+			m_CurrentGame = NULL;
+		}
+	}
+	boost::mutex::scoped_lock lock( m_GamesMutex );
+>>>>>>> custom_games
 
 	if( m_CurrentGame )
 	{
