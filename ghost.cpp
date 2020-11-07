@@ -1609,13 +1609,15 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 	}
 	if( m_CurrentGame )
 	{
-		if (m_CurrentGame->GetOwnerName() == m_AutoHostOwner){
-			m_CurrentGame->SetExiting( true );
-			while (m_CurrentGame){
-				MILLISLEEP(50);
-			}
+		boost::mutex::scoped_lock gamesLock( m_GamesMutex );
+		for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+		{
+			(*i)->QueueGameUncreate( );
+			(*i)->QueueEnterChat( );
 		}
-
+		delete m_CurrentGame;
+		m_CurrentGame = NULL;
+		gamesLock.unlock( );
 	}
 	boost::mutex::scoped_lock lock( m_GamesMutex );
 
