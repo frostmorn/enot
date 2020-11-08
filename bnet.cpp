@@ -589,7 +589,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			CONSOLE_Print( "[BNET: " + m_ServerAlias + "] connected" );
 			m_GHost->EventBNETConnected( this );
 			m_Socket->PutBytes( m_Protocol->SEND_PROTOCOL_INITIALIZE_SELECTOR( ) );
-			m_Socket->PutBytes( m_Protocol->SEND_SID_AUTH_INFO( m_War3Version, m_GHost->m_TFT, m_LocaleID, m_CountryAbbrev, m_Country ) );
+			m_Socket->PutBytes( m_Protocol->SEND_SID_AUTH_INFO( m_War3Version, m_GHost->m_TFT, m_LocaleID, m_CountryAbbrev, m_Country, m_Socket->LocalIP ) );
 			m_Socket->DoSend( (fd_set *)send_fd );
 			m_LastNullTime = GetTime( );
 			m_LastOutPacketTicks = GetTicks( );
@@ -2090,7 +2090,6 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 			if( !StatsUser.empty( ) && StatsUser.size( ) < 16 && StatsUser[0] != '/' )
 				m_PairedGPSChecks.push_back( PairedGPSCheck( Whisper ? User : string( ), m_GHost->m_DB->ThreadedGamePlayerSummaryCheck( StatsUser ) ) );
 		}
-
 
 		//
 		// !COMMAND

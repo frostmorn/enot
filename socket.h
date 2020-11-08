@@ -172,7 +172,7 @@ protected:
 public:
 	CTCPClient( );
 	virtual ~CTCPClient( );
-
+	uint32_t LocalIP;
 	virtual void Reset( );
 	virtual void Disconnect( );
 	virtual bool GetConnecting( )												{ return m_Connecting; }

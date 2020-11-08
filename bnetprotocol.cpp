@@ -796,7 +796,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_NETGAMEPORT( uint16_t serverPort )
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_INFO( unsigned char ver, bool TFT, uint32_t localeID, string countryAbbrev, string country )
+BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_INFO( unsigned char ver, bool TFT, uint32_t localeID, string countryAbbrev, string country, uint32_t LocalIP )
 {
 	unsigned char ProtocolID[]		= {   0,   0,   0,   0 };
 	unsigned char PlatformID[]		= {  54,  56,  88,  73 };	// "IX86"
@@ -804,8 +804,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_INFO( unsigned char ver, bool TFT, uint
 	unsigned char ProductID_TFT[]	= {  80,  88,  51,  87 };	// "W3XP"
 	unsigned char Version[]			= { ver,   0,   0,   0 };
 	unsigned char Language[]		= {  83,  85, 110, 101 };	// "enUS"
-	// Change here to ip after nat
-	unsigned char LocalIP[]			= { 192,   168,   0,   97 };
+
 	unsigned char TimeZoneBias[]	= {  44,   1,   0,   0 };	// 300 minutes (GMT -0500)
 
 	BYTEARRAY packet;
@@ -823,7 +822,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_INFO( unsigned char ver, bool TFT, uint
 
 	UTIL_AppendByteArray( packet, Version, 4 );				// Version
 	UTIL_AppendByteArray( packet, Language, 4 );			// Language (hardcoded as enUS to ensure battle.net sends the bot messages in English)
-	UTIL_AppendByteArray( packet, LocalIP, 4 );				// Local IP for NAT compatibility
+	UTIL_AppendByteArray( packet, UTIL_CreateByteArray (LocalIP, false));	// Local IP for NAT compatibility
 	UTIL_AppendByteArray( packet, TimeZoneBias, 4 );		// Time Zone Bias
 	UTIL_AppendByteArray( packet, localeID, false );		// Locale ID
 	UTIL_AppendByteArray( packet, localeID, false );		// Language ID (copying the locale ID should be sufficient since we don't care about sublanguages)

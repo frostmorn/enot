@@ -347,7 +347,8 @@ void CTCPSocket :: SetNoDelay( bool noDelay )
 
 CTCPClient :: CTCPClient( ) : CTCPSocket( ), m_Connecting( false )
 {
-
+	unsigned char defaultIP[]			= { 127,   0,   0,   1 };
+	LocalIP =  (UTIL_ByteArrayToUInt32 (UTIL_CreateByteArray(defaultIP, 4), false));
 }
 
 CTCPClient :: ~CTCPClient( )
@@ -377,7 +378,6 @@ void CTCPClient :: Connect( string localaddress, string address, uint16_t port )
 		struct sockaddr_in LocalSIN;
 		memset( &LocalSIN, 0, sizeof( LocalSIN ) );
 		LocalSIN.sin_family = AF_INET;
-
 		if( ( LocalSIN.sin_addr.s_addr = inet_addr( localaddress.c_str( ) ) ) == INADDR_NONE )
 			LocalSIN.sin_addr.s_addr = INADDR_ANY;
 
@@ -426,7 +426,6 @@ void CTCPClient :: Connect( string localaddress, string address, uint16_t port )
 			return;
 		}
 	}
-
 	m_Connecting = true;
 }
 
@@ -458,6 +457,11 @@ bool CTCPClient :: CheckConnect( )
 
 	if( FD_ISSET( m_Socket, &fd ) )
 	{
+		struct sockaddr_in sock_address;
+		socklen_t sock_address_size = sizeof(sock_address);
+		if (getsockname(m_Socket, (struct sockaddr *)&sock_address,  &sock_address_size) !=-1){
+			LocalIP = (uint32_t)sock_address.sin_addr.s_addr;
+		}
 		m_Connecting = false;
 		m_Connected = true;
 		return true;
