@@ -1692,9 +1692,79 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 
 	if( Command == "checkme" )
 		SendChat( player, m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", player->GetCountry(), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
-// Non Admin ping
-// !PING
-//
+
+		
+	//
+	// !!IGNORE
+	//
+/*
+	else if( Command == "ignore"  || Command == "i" )
+	{
+		CGamePlayer *LastMatch = NULL;
+		uint32_t Matches = GetPlayerFromNamePartial( Payload, &LastMatch );
+
+		if( Matches == 0 )
+			SendChat(player, "Невозможно добавить пользователя в игнор лист. Пользователь не обнаружен" );
+		else if( Matches == 1 )
+		{
+			if (player == LastMatch){
+				SendChat(player, "Вы не можете добавить себя в игнор-лист" );
+			}
+			else{
+				SendChat(player, "Вы добавили "+LastMatch->GetName()+" в игнор-лист" );
+				LastMatch->SetIgnoredBy(player);
+			}
+		}
+		else
+			SendChat(player, "Невозможно точно определить пользователя. Пожалуйста уточните...");
+	}
+	
+	//
+	// !!IGNOREALL
+	//
+
+	else if( Command == "ignoreall"  || Command == "ia" )
+	{
+		for (auto ignoredPlayer:m_Players){
+			if (ignoredPlayer != player)
+				ignoredPlayer->SetIgnoredBy(player);
+		}
+		SendChat(player, "Все пользователи добавлены в игнор-лист");
+	}
+	//
+	// !UNIGNORE
+	//
+	else if( Command == "unignore" || Command == "un")
+	{
+		CGamePlayer *LastMatch = NULL;
+		uint32_t Matches = GetPlayerFromNamePartial( Payload, &LastMatch );
+
+		if( Matches == 0 )
+			SendChat(player, "Невозможно удалить пользователя из игнор листа. Пользователь не обнаружен" );
+		else if( Matches == 1 )
+		{
+			SendChat(player, "Вы удалили "+LastMatch->GetName()+" из игнор-листа" );
+			LastMatch->DelIgnoredBy(player);
+		}
+		else
+			SendChat(player, "Невозможно точно определить пользователя. Пожалуйста уточните...");
+	}
+	
+	//
+	// !UNIGNOREALL
+	//
+	else if( Command == "unignoreall" || Command == "una")
+	{
+		for (auto probablyIgnoredPlayer:m_Players){
+			probablyIgnoredPlayer->DelIgnoredBy(player);	
+		}
+		SendChat(player, "Игнор-лист очищен");
+	}
+	*/
+
+	// Non Admin ping
+	// !PING
+	//
 
 	else if( (!(AdminCheck ||RootAdminCheck)) && (Command == "ping" || Command == "p"))
 	{
