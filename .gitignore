@@ -36,3 +36,4 @@ ghost++
 fiona.dbs
 fiona.log
 *.cfg
+*.j
