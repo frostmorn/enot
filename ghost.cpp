@@ -1520,37 +1520,45 @@ void CGHost :: LoadIPToCountryData( )
 
 void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, string gameName, string ownerName, string creatorName, string creatorServer, bool whisper )
 {
-	
-	if (m_CurrentGame){
-		if ((m_CurrentGame->GetCreatorName() == creatorName) && (m_CurrentGame->GetCreatorServer() == creatorServer)){
-			m_GamesMutex.lock();
-			m_CurrentGame->doDelete();
-			m_CurrentGame = NULL;
-			m_GamesMutex.unlock();
+	if( m_CurrentGame )
+	{
+		if (GetTime() - m_CurrentGame->GetCreationTime() < 20)
+		{
 			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
 			{
 				if( (*i)->GetServer( ) == creatorServer )
-					(*i)->QueueChatCommand( "Ваша старая игра в лобби была анулирована." );
+					(*i)->QueueChatCommand("Последняя игра была создана менее 20 секунд назад [ "+m_CurrentGame->GetDescription( )+" ]", creatorName, whisper );
 			}
-			
 		}
-		else
+		else if (m_CurrentGame->GetCreatorServer() == creatorServer && m_CurrentGame->GetCreatorName() == creatorName){
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				(*i)->UnqueueGameRefreshes( );
+				(*i)->QueueGameUncreate( );
+				(*i)->QueueEnterChat( );
+			}
+			m_CurrentGame->doDelete();
+			m_CurrentGame = NULL;
+		}
+		else if (m_CurrentGame->GetNumHumanPlayers() > 0)
 		{
-			if (m_CurrentGame->GetNumHumanPlayers() > 0){
-				for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
-				{
-					if( (*i)->GetServer( ) == creatorServer )
-						(*i)->QueueChatCommand("Уже существует другая игра в лобби с "+ UTIL_ToString(m_CurrentGame->GetNumHumanPlayers())+ " игроками");
-				}
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				if( (*i)->GetServer( ) == creatorServer )
+					(*i)->QueueChatCommand("Извините, другая игра уже в лобби и в ней есть игроки [ "+m_CurrentGame->GetDescription( )+" ]", creatorName, whisper );
 			}
-			else {
-				m_GamesMutex.lock();
-				m_CurrentGame->doDelete();
-				m_CurrentGame = NULL;
-				m_GamesMutex.unlock();
-			}
+			return;
 		}
-		
+		else{
+			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
+			{
+				(*i)->UnqueueGameRefreshes( );
+				(*i)->QueueGameUncreate( );
+				(*i)->QueueEnterChat( );
+			}
+			m_CurrentGame->doDelete();
+			m_CurrentGame = NULL;
+		}
 	}
 
 	if( !m_Enabled )
@@ -1646,36 +1654,6 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 				m_AdminGame->SendAllChat( m_Language->UnableToCreateGameMustEnforceFirst( gameName ) );
 
 			return;
-		}
-	}
-	if( m_CurrentGame )
-	{
-		if (GetTime() - m_CurrentGame->GetCreationTime() < 20)
-		{
-			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
-			{
-				if( (*i)->GetServer( ) == creatorServer )
-					(*i)->QueueChatCommand("Последняя игра была создана менее 20 секунд назад [ "+m_CurrentGame->GetDescription( )+" ]", creatorName, whisper );
-			}
-		}
-		else if (m_CurrentGame->GetNumHumanPlayers() > 0)
-		{
-			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
-			{
-				if( (*i)->GetServer( ) == creatorServer )
-					(*i)->QueueChatCommand("Извините, другая игра уже в лобби и в ней есть игроки [ "+m_CurrentGame->GetDescription( )+" ]", creatorName, whisper );
-			}
-			return;
-		}
-		else{
-			for( vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
-			{
-				(*i)->UnqueueGameRefreshes( );
-				(*i)->QueueGameUncreate( );
-				(*i)->QueueEnterChat( );
-			}
-			m_CurrentGame->doDelete();
-			m_CurrentGame = NULL;
 		}
 	}
 	m_GamesMutex.lock();
