@@ -47,6 +47,7 @@
 
 CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, string nGameName, string nOwnerName, string nCreatorName, string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ),m_LastICCupRehostTime(0),m_LastRubattleRehostTime(0), m_LastICCupRehostIndex(0), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 )
 {
+	m_LastConnectedUserTime = 0;
 	m_RubattleHosted = 0;
 	m_Socket = new CTCPServer( );
 	m_Protocol = new CGameProtocol( m_GHost );
@@ -1580,6 +1581,15 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 	uint32_t secs = time_elapsed % 60;
 	
 	SendChat(player, "Игра создана "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) +"с назад");
+	if (m_LastConnectedUserTime){
+		uint32_t time_connected = GetTime()- m_LastConnectedUserTime;
+
+		uint32_t hours = time_connected / 3600;
+		uint32_t mins = time_connected /60 % 60;
+		uint32_t secs = time_connected % 60;
+		SendChat(player, "Последний игрок зашел в лобби "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) +"с назад");
+	}
+
 }
 
 void CBaseGame :: SendEndMessage( )
@@ -2274,6 +2284,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// send a welcome message
 
 	SendWelcomeMessage( Player );
+	m_LastConnectedUserTime = GetTime();
 
 	// if spoof checks are required and we won't automatically spoof check this player then tell them how to spoof check
 	// e.g. if automatic spoof checks are disabled, or if automatic spoof checks are done on admins only and this player isn't an admin
@@ -2598,7 +2609,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	// turning the CPotentialPlayer into a CGamePlayer is a bit of a pain because we have to be careful not to close the socket
 	// this problem is solved by setting the socket to NULL before deletion and handling the NULL case in the destructor
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
-
+	m_LastConnectedUserTime = GetTime();
 	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
 	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm);
 	auto country = m_GHost->m_DBLocal->FromCheck(UTIL_ByteArrayToUInt32(potential->GetExternalIP(), true));
@@ -2669,6 +2680,8 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	// send a welcome message
 
 	SendWelcomeMessage( Player );
+	m_LastConnectedUserTime = GetTime();
+
 
 	// if spoof checks are required and we won't automatically spoof check this player then tell them how to spoof check
 	// e.g. if automatic spoof checks are disabled, or if automatic spoof checks are done on admins only and this player isn't an admin
