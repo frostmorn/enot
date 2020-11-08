@@ -35,3 +35,4 @@ ghost.dbs
 ghost++
 fiona.dbs
 fiona.log
+*.cfg
