@@ -804,7 +804,8 @@ BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_INFO( unsigned char ver, bool TFT, uint
 	unsigned char ProductID_TFT[]	= {  80,  88,  51,  87 };	// "W3XP"
 	unsigned char Version[]			= { ver,   0,   0,   0 };
 	unsigned char Language[]		= {  83,  85, 110, 101 };	// "enUS"
-	unsigned char LocalIP[]			= { 127,   0,   0,   1 };
+	// Change here to ip after nat
+	unsigned char LocalIP[]			= { 192,   168,   0,   97 };
 	unsigned char TimeZoneBias[]	= {  44,   1,   0,   0 };	// 300 minutes (GMT -0500)
 
 	BYTEARRAY packet;
