@@ -2316,7 +2316,7 @@ void CBNET :: QueueGameRefresh( unsigned char state, string gameName, string hos
 
 			// use an invalid map width/height to indicate reconnectable games
 			MapGameType |= MAPGAMETYPE_MAKERUSER;
-			
+			MapGameType |= MAPGAMETYPE_CUSTOMGAME;
 			BYTEARRAY MapWidth;
 			MapWidth.push_back( 192 );
 			MapWidth.push_back( 7 );
