@@ -70,6 +70,7 @@
 #define MAPGAMETYPE_UNKNOWN0			1			// always set except for saved games?
 // AuthenticatedMakerBlizzard = 1 << 3
 // OfficialMeleeGame = 1 << 5
+#define MAPGAMETYPE_CUSTOMGAME			1 << 1
 #define MAPGAMETYPE_SAVEDGAME			1 << 9
 #define MAPGAMETYPE_PRIVATEGAME			1 << 11
 #define MAPGAMETYPE_MAKERUSER			1 << 13
