@@ -703,7 +703,6 @@ Flags:
 		packet.push_back( 0 );											// State continued...
 		packet.push_back( 0 );											// State continued...
 		UTIL_AppendByteArray( packet, upTime, false );					// time since creation
-		CONSOLE_Print("Map game type "+ UTIL_ByteArrayToHexString( mapGameType));
 		UTIL_AppendByteArrayFast( packet, mapGameType );				// Game Type, Parameter
 		UTIL_AppendByteArray( packet, Unknown, 4 );						// ???
 		UTIL_AppendByteArray( packet, CustomGame, 4 );					// Custom Game
