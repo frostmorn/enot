@@ -781,7 +781,8 @@ void CBNET :: ProcessPackets( )
 				}
 				else
 				{
-					CONSOLE_Print( "[BNET: " + m_ServerAlias + "] startadvex3 failed" );
+					CONSOLE_Print( "[BNET: " + m_ServerAlias + "] startadvex3 failed. Packet data => " );
+					CONSOLE_Print(UTIL_ByteArrayToHexString( Packet->GetData()));
 					m_GHost->EventBNETGameRefreshFailed( this );
 				}
 
