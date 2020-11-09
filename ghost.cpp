@@ -1240,7 +1240,7 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 		// it's possible at least one refresh succeeded and therefore the game is still joinable on at least one battle.net (plus on the local network) but we don't keep track of that
 		// we only close the game if it has no players since we support game rehosting (via !priv and !pub in the lobby)
 
-		if( m_CurrentGame->GetNumHumanPlayers( ) == 0 )
+		if( m_CurrentGame->GetNumHumanPlayers( ) == 0  && bnet->GetServerAlias().find("Burgame") == std::string::npos)
 			m_CurrentGame->SetExiting( true );
 
 		m_CurrentGame->SetRefreshError( true );
