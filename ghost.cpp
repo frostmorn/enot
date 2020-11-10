@@ -351,6 +351,10 @@ int main( int argc, char **argv )
 
 	gGHost = new CGHost( &CFG );
 	unsigned int last_players_count = 0;
+
+	/* In windows, this will init the winsock stuff */ 
+	curl_global_init(CURL_GLOBAL_ALL);
+	CONSOLE_Print("Initializing Curl...");
 	while( 1 )
 	{
 		// block for 50ms on all sockets - if you intend to perform any timed actions more frequently you should change this
@@ -375,6 +379,9 @@ int main( int argc, char **argv )
 		if( gGHost->Update( 50000 ) )
 			break;
 	}
+
+	// Curl cleanup
+	curl_global_cleanup();
 
 	// shutdown ghost
 
@@ -1240,8 +1247,8 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 		// it's possible at least one refresh succeeded and therefore the game is still joinable on at least one battle.net (plus on the local network) but we don't keep track of that
 		// we only close the game if it has no players since we support game rehosting (via !priv and !pub in the lobby)
 
-		// if( m_CurrentGame->GetNumHumanPlayers( ) == 0 )
-		// 	m_CurrentGame->SetExiting( true );
+		if( m_CurrentGame->GetNumHumanPlayers( ) == 0 )
+			m_CurrentGame->SetExiting( true );
 
 		m_CurrentGame->SetRefreshError( true );
 	}
@@ -1731,11 +1738,11 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 			//	we can't host 20 games to servers which makes us to do shit
 			//	so we will do it later
 			if( saveGame ){
-				(*i)->QueueGameCreate( gameState, gameName, string( ), map, m_SaveGame, m_CurrentGame->GetHostCounter( ) );
+				(*i)->QueueGameCreate( gameState, gameName+random_string(2), string( ), map, m_SaveGame, m_CurrentGame->GetHostCounter( ) );
 			}
 			else
 			{
-				(*i)->QueueGameCreate( gameState, gameName, string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
+				(*i)->QueueGameCreate( gameState, gameName+random_string(2), string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
 			}
 		}
 		
