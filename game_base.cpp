@@ -337,6 +337,17 @@ uint32_t CBaseGame :: GetNumHumanPlayers( )
 
 	return NumHumanPlayers;
 }
+uint32_t CBaseGame ::GetNumJudgePlayers(){
+	uint32_t NumJudgePlayers = 0;
+
+	for (auto iSlot :m_Slots){
+		if (iSlot.GetPID() !=255 && iSlot.GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && iSlot.GetComputer( ) == 0 && iSlot.GetTeam()==12){
+			++NumJudgePlayers;
+		}
+	}
+
+	return NumJudgePlayers;
+}
 
 string CBaseGame :: GetDescription( )
 {
@@ -762,9 +773,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		}
 	}
 
-	// try to auto start every 10 seconds
+	// try to auto start every 5 seconds
 
-	if( !m_CountDownStarted && m_AutoStartPlayers != 0 && GetTime( ) - m_LastAutoStartTime >= 10 )
+	if( !m_CountDownStarted && m_AutoStartPlayers != 0 && GetTime( ) - m_LastAutoStartTime >= 5 )
 	{
 		StartCountDownAuto( m_GHost->m_RequireSpoofChecks );
 		m_LastAutoStartTime = GetTime( );
@@ -4742,7 +4753,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 	{
 		// check if enough players are present
 
-		if( GetNumHumanPlayers( ) < m_AutoStartPlayers )
+		if( GetNumHumanPlayers( ) - GetNumJudgePlayers() < m_AutoStartPlayers )
 		{
 //			SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( UTIL_ToString( m_AutoStartPlayers ), UTIL_ToString( m_AutoStartPlayers - GetNumHumanPlayers( ) ) ) );
 			return;
