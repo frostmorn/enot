@@ -4753,7 +4753,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 	{
 		// check if enough players are present
 
-		if( GetNumHumanPlayers( ) - GetNumJudgePlayers() < m_AutoStartPlayers )
+		if( GetNumHumanPlayers( )< m_AutoStartPlayers +GetNumJudgePlayers())
 		{
 //			SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( UTIL_ToString( m_AutoStartPlayers ), UTIL_ToString( m_AutoStartPlayers - GetNumHumanPlayers( ) ) ) );
 			return;
