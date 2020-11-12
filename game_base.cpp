@@ -570,7 +570,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
 					(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
 					m_RubattleHosted = 1;
-					break;
 				}
 				else
 				// rehost Iccup
