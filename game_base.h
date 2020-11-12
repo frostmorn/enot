@@ -135,11 +135,7 @@ protected:
 	int m_DoDelete;									// notifies thread to exit
 
 	uint32_t m_LastReconnectHandleTime;				// last time we tried to handle GProxy reconnects
-	uint32_t m_LastICCupRehostIndex;				// last index of iccup bnet rehosted
-	uint32_t m_LastRubattleRehostIndex;
-	uint32_t m_LastICCupRehostTime;					// Get time when last time game was rehosted on ICCup
-	uint32_t m_LastRubattleRehostTime;				// Get time when last time game was rehosted on Rubattle
-
+	
 
 public:
 	vector<string> m_DoSayGames;					// vector of strings we should announce to the current game
