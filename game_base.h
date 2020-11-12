@@ -192,7 +192,7 @@ public:
 	virtual uint32_t GetSlotsOpen( );
 	virtual uint32_t GetNumPlayers( );
 	virtual uint32_t GetNumHumanPlayers( );
-	uint32_t GetNumJudgePlayers();
+	virtual uint32_t GetNumJudgePlayers();
 	virtual string GetDescription( );
 	uint32_t GetCreationTime(){return m_CreationTime;}
 	virtual void SetAnnounce( uint32_t interval, string message );
