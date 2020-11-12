@@ -549,14 +549,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
-		{
-			(*i)->QueueGameUncreate( );
-			(*i)->QueueEnterChat( );
-
-			// the game creation message will be sent on the next refresh
-		}
-
 		m_CreationTime = GetTime( );
 		m_LastRefreshTime = GetTime( );
 		
