@@ -558,13 +558,13 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 
 
-	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0)
+	if (!m_RefreshError && !m_GameLoaded &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0)
 	{
 
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			// host Rubattle
-			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
+			if (!m_RubattleHosted&&(*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) ){
 					std:: string game_name = m_GameName + random_string(2);
 					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
