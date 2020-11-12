@@ -572,16 +572,16 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
 					m_RubattleHosted = 1;
 				}
-				else
+
 				// rehost Iccup
-					if (!IccupRehostDone && (*i)->GetServerAlias().find("ICCup") != std::string::npos){
-						if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 50) )
-						{
-							std:: string game_name = m_GameName + random_string(2);
-							CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
-							(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
-							IccupRehostDone = 1;
-						}		
+				if (!IccupRehostDone && (*i)->GetServerAlias().find("ICCup") != std::string::npos){
+					if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 50) )
+					{
+						std:: string game_name = m_GameName + random_string(2);
+						CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
+						(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
+						IccupRehostDone = 1;
+					}		
 				}		
 			}
 		}
