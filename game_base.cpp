@@ -3592,14 +3592,6 @@ void CBaseGame :: EventGameStarted( )
 	m_GHost->m_CurrentGame = NULL;
 	m_GHost->m_Games.push_back( this );
 	m_GHost->m_GamesMutex.unlock( );
-
-	// and finally reenter battle.net chat
-
-	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
-	{
-		(*i)->QueueGameUncreate( );
-		(*i)->QueueEnterChat( );
-	}
 }
 
 void CBaseGame :: EventGameLoaded( )
