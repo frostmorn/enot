@@ -2882,8 +2882,9 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 		{
 			CONSOLE_Print( "[GAME: " + m_GameName + "] desync detected" );
 			SendAllChat( m_GHost->m_Language->DesyncDetected( ) );
+			#ifdef GHOST_DISCORD
 			discord_bug_message(m_GHost->m_discord_bug_webhook_url, this->GetGameName(), "(-_-)==\\~", "Map desync detected!");
-
+			#endif
 			// try to figure out who desynced
 			// this is complicated by the fact that we don't know what the correct game state is so we let the players vote
 			// put the players into bins based on their game state

@@ -1,3 +1,4 @@
+#ifdef GHOST_DISCORD
 #include "discord.h"
 #include <iostream>
 std::string escape_json(const std::string &s) {
@@ -98,3 +99,4 @@ int discord_bug_message(std::string discord_bug_webhook_url, std::string game_na
     "}";
     return discord_request(discord_bug_webhook_url, json_data);
 }
+#endif

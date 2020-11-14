@@ -1918,18 +1918,19 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
  	//
 	// !BUG (Added by Kira_o_O)
 	//
+#ifdef GHOST_DISCORD
 
 	else if( Command == "bug"){
 		if (Payload.empty( )){
 			SendChat(player, "Error! Bug message not provided. Usage : !bug <message>" );
 		}
 		else {
-
 			discord_bug_message(m_GHost->m_discord_bug_webhook_url, GetGameName(), player->GetName(), Payload);
 			SendChat(player, "Bug reported! Thnx :)" );			
 		}
 
 	}
+#endif
  	//
 	// !VOTEKICK
 	//
