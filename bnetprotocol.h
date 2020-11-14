@@ -30,8 +30,9 @@
 class CIncomingGameHost;
 class CIncomingChatEvent;
 class CIncomingFriendList;
+#ifdef GHOST_CLANS
 class CIncomingClanList;
-
+#endif
 class CBNETProtocol
 {
 public:
@@ -57,6 +58,7 @@ public:
 		SID_WARDEN					= 94,	// 0x5E
 		SID_FRIENDSLIST				= 101,	// 0x65
 		SID_FRIENDSUPDATE			= 102,	// 0x66
+		#ifdef GHOST_CLANS
 		SID_CLANCREATIONINVITATION	= 114,	// 0x72
 		SID_CLANINVITATION			= 119,  // 0x77
 		SID_CLANREMOVEMEMBER    	= 120,  // 0x78
@@ -65,6 +67,7 @@ public:
 		SID_CLANSETMOTD 			= 123,	// 0x7B
 		SID_CLANMEMBERLIST			= 125,	// 0x7D
 		SID_CLANMEMBERSTATUSCHANGE	= 127	// 0x7F
+		#endif
 	};
 
 	enum KeyResult {
@@ -92,7 +95,7 @@ public:
 		EID_ERROR				= 19,	// error message
 		EID_EMOTE				= 23	// emote
 	};
-
+	#ifdef GHOST_CLANS
 	enum RankCode {
 		CLAN_INITIATE = 0,			// 0x00 First week member
 		CLAN_PARTIAL_MEMBER = 1,	// 0x01 Peon
@@ -100,7 +103,7 @@ public:
 		CLAN_OFFICER = 3,			// 0x03 Shaman
 		CLAN_LEADER = 4				// 0x04 Chieftain
 	};
-
+	#endif
 private:
 	BYTEARRAY m_ClientToken;			// set in constructor
 	BYTEARRAY m_LogonType;				// set in RECEIVE_SID_AUTH_INFO
@@ -113,9 +116,10 @@ private:
 	BYTEARRAY m_Salt;					// set in RECEIVE_SID_AUTH_ACCOUNTLOGON
 	BYTEARRAY m_ServerPublicKey;		// set in RECEIVE_SID_AUTH_ACCOUNTLOGON
 	BYTEARRAY m_UniqueName;				// set in RECEIVE_SID_ENTERCHAT
+	#ifdef GHOST_CLANS
 	BYTEARRAY m_ClanLastInviteTag;		// set in RECEIVE_SID_CLANCREATIONINVITATION, SID_CLANINVITATIONRESPONSE
 	BYTEARRAY m_ClanLastInviteName;		// set in RECEIVE_SID_CLANCREATIONINVITATION, SID_CLANINVITATIONRESPONSE
-
+	#endif
 public:
 	CBNETProtocol( );
 	~CBNETProtocol( );
@@ -150,11 +154,12 @@ public:
 	bool RECEIVE_SID_AUTH_ACCOUNTLOGONPROOF( BYTEARRAY data );
 	BYTEARRAY RECEIVE_SID_WARDEN( BYTEARRAY data );
 	vector<CIncomingFriendList *> RECEIVE_SID_FRIENDSLIST( BYTEARRAY data );
+	#ifdef GHOST_CLANS
 	vector<CIncomingClanList *> RECEIVE_SID_CLANMEMBERLIST( BYTEARRAY data );
 	CIncomingClanList *RECEIVE_SID_CLANMEMBERSTATUSCHANGE( BYTEARRAY data );
 	string RECEIVE_SID_CLANCREATIONINVITATION( BYTEARRAY data );
 	string RECEIVE_SID_CLANINVITATIONRESPONSE( BYTEARRAY data );
-
+	#endif
 	// send functions
 
 	BYTEARRAY SEND_PROTOCOL_INITIALIZE_SELECTOR( );
@@ -176,6 +181,7 @@ public:
 	BYTEARRAY SEND_SID_AUTH_ACCOUNTLOGONPROOF( BYTEARRAY clientPasswordProof );
 	BYTEARRAY SEND_SID_WARDEN( BYTEARRAY wardenResponse );
 	BYTEARRAY SEND_SID_FRIENDSLIST( );
+		#ifdef GHOST_CLANS
 	BYTEARRAY SEND_SID_CLANMEMBERLIST( );
 	BYTEARRAY SEND_SID_CLANINVITATION( string accountName );
 	BYTEARRAY SEND_SID_CLANREMOVEMEMBER( string accountName );
@@ -183,7 +189,7 @@ public:
 	BYTEARRAY SEND_SID_CLANSETMOTD( string motd );
 	BYTEARRAY SEND_SID_CLANCREATIONINVITATION( bool accept );
 	BYTEARRAY SEND_SID_CLANINVITATIONRESPONSE( bool accept );
-
+		#endif
 	// other functions
 
 private:
@@ -267,7 +273,7 @@ private:
 //
 // CIncomingClanList
 //
-
+#ifdef GHOST_CLANS
 class CIncomingClanList
 {
 private:
@@ -284,5 +290,5 @@ public:
 	string GetStatus( );
 	string GetDescription( );
 };
-
+#endif
 #endif

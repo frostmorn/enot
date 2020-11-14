@@ -48,7 +48,35 @@ using namespace boost :: filesystem;
 // CBNET
 //
 
-CBNET :: CBNET( CGHost *nGHost, string nServer, string nServerAlias, string nBNLSServer, uint16_t nBNLSPort, uint32_t nBNLSWardenCookie, string nCDKeyROC, string nCDKeyTFT, string nCountryAbbrev, string nCountry, uint32_t nLocaleID, string nUserName, string nUserPassword, string nFirstChannel, string nRootAdmin, char nCommandTrigger, bool nHoldFriends, bool nHoldClan, bool nPublicCommands, unsigned char nWar3Version, BYTEARRAY nEXEVersion, BYTEARRAY nEXEVersionHash, string nPasswordHashType, string nPVPGNRealmName, uint32_t nMaxMessageLength, uint32_t nHostCounterID, uint32_t nLastTimeGameCreate )
+CBNET :: CBNET( CGHost *nGHost,
+		string nServer,
+		string nServerAlias,
+		string nBNLSServer,
+		uint16_t nBNLSPort,
+		uint32_t nBNLSWardenCookie,
+		string nCDKeyROC,
+		string nCDKeyTFT,
+		string nCountryAbbrev,
+		string nCountry,
+		uint32_t nLocaleID,
+		string nUserName,
+		string nUserPassword,
+		string nFirstChannel,
+		string nRootAdmin,
+		char nCommandTrigger,
+		bool nHoldFriends,
+		#ifdef GHOST_CLANS
+		bool nHoldClan,
+		#endif
+		bool nPublicCommands,
+		unsigned char nWar3Version,
+		BYTEARRAY nEXEVersion,
+		BYTEARRAY nEXEVersionHash,
+		string nPasswordHashType,
+		string nPVPGNRealmName,
+		uint32_t nMaxMessageLength,
+		uint32_t nHostCounterID,
+		uint32_t nLastTimeGameCreate )
 {
 	// todotodo: append path seperator to Warcraft3Path if needed
 
@@ -135,9 +163,13 @@ CBNET :: CBNET( CGHost *nGHost, string nServer, string nServerAlias, string nBNL
 	m_LoggedIn = false;
 	m_InChat = false;
 	m_HoldFriends = nHoldFriends;
+	#ifdef GHOST_CLANS
 	m_HoldClan = nHoldClan;
+	#endif
 	m_PublicCommands = nPublicCommands;
+	#ifdef GHOST_CLANS
 	m_LastInviteCreation = false;
+	#endif
 	m_ServerReconnectCount = 0;
 }
 
@@ -157,10 +189,10 @@ CBNET :: ~CBNET( )
 
 	for( vector<CIncomingFriendList *> :: iterator i = m_Friends.begin( ); i != m_Friends.end( ); ++i )
 		delete *i;
-
+	#ifdef GHOST_CLANS
 	for( vector<CIncomingClanList *> :: iterator i = m_Clans.begin( ); i != m_Clans.end( ); ++i )
 		delete *i;
-
+	#endif
 	m_GHost->m_CallablesMutex.lock();
 	
 	for( vector<PairedAdminCount> :: iterator i = m_PairedAdminCounts.begin( ); i != m_PairedAdminCounts.end( ); ++i )
@@ -716,7 +748,9 @@ void CBNET :: ProcessPackets( )
 	CIncomingChatEvent *ChatEvent = NULL;
 	BYTEARRAY WardenData;
 	vector<CIncomingFriendList *> Friends;
+	#ifdef GHOST_CLANS
 	vector<CIncomingClanList *> Clans;
+	#endif
 
 	// process all the received packets in the m_Packets queue
 	// this normally means sending some kind of response
@@ -924,7 +958,9 @@ void CBNET :: ProcessPackets( )
 					m_Socket->PutBytes( m_Protocol->SEND_SID_NETGAMEPORT( m_GHost->m_HostPort ) );
 					m_Socket->PutBytes( m_Protocol->SEND_SID_ENTERCHAT( ) );
 					m_Socket->PutBytes( m_Protocol->SEND_SID_FRIENDSLIST( ) );
+					#ifdef GHOST_CLANS
 					m_Socket->PutBytes( m_Protocol->SEND_SID_CLANMEMBERLIST( ) );
+					#endif
 				}
 				else
 				{
@@ -965,7 +1001,7 @@ void CBNET :: ProcessPackets( )
 
 				m_Friends = Friends;
 				break;
-
+		#ifdef GHOST_CLANS
 			case CBNETProtocol :: SID_CLANMEMBERLIST:
 				{
 				vector<CIncomingClanList *> Clans = m_Protocol->RECEIVE_SID_CLANMEMBERLIST( Packet->GetData( ) );
@@ -976,7 +1012,7 @@ void CBNET :: ProcessPackets( )
 				m_Clans = Clans;
 				break;
 				}
-			
+		
 			case CBNETProtocol :: SID_CLANCREATIONINVITATION:
 				{
 				string ClanCreateName = m_Protocol->RECEIVE_SID_CLANCREATIONINVITATION( Packet->GetData( ) );
@@ -994,6 +1030,7 @@ void CBNET :: ProcessPackets( )
 				m_LastInviteCreation = false;
 				break;
 				}
+		#endif
 			}
 		}
 
@@ -1195,7 +1232,7 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !ACCEPT
 		//
-
+	#ifdef GHOST_CLANS
 		if( Command == "accept" )
 		{
 			if( IsRootAdmin( User ) || ForceRoot )
@@ -1203,7 +1240,7 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 			else
 				QueueChatCommand( m_GHost->m_Language->YouDontHaveAccessToThatCommand( ), User, Whisper );
 		}
-
+	#endif
 		//
 		// !ADDADMIN
 		//
@@ -1591,13 +1628,13 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !GETCLAN
 		//
-
+	#ifdef GHOST_CLANS
 		else if( Command == "getclan" )
 		{
 			SendGetClanList( );
 			QueueChatCommand( m_GHost->m_Language->UpdatingClanList( ), User, Whisper );
 		}
-
+	#endif
 		//
 		// !GETFRIENDS
 		//
@@ -1645,14 +1682,14 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !GRUNT
 		//
-
+	#ifdef GHOST_CLANS
 		if( Command == "grunt"  && !Payload.empty( ) && ( IsRootAdmin( User ) || ForceRoot ) )
 		{
 			SendClanChangeRank( Payload, CBNETProtocol :: CLAN_MEMBER );
 			SendGetClanList( );
 			CONSOLE_Print( "[GHOST] changing " + Payload + " to status grunt done by " + User );
 		}
-
+	#endif
 		//
 		// !HOSTSG
 		//
@@ -1663,14 +1700,14 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !INVITE
 		//
-
+	#ifdef GHOST_CLANS
 		if( Command == "invite" && !Payload.empty( ) )
 		{
 			SendClanInvitation( Payload );
 			SendGetClanList( );
 			CONSOLE_Print( "[GHOST] inviting clan member " + Payload + " done by " + User );
 		}
-
+	#endif
 
 		//
 		// !LOAD (load config file)
@@ -1868,24 +1905,24 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !MOTD
 		//
-
+	#ifdef GHOST_CLANS
 		if( Command == "motd"  && !Payload.empty( ) && ( IsRootAdmin( User ) || ForceRoot ) )
 		{
 			SendClanSetMotd( Payload );
 			CONSOLE_Print( "[GHOST] setting motd to " + Payload );
 		}
-
+	#endif
 		//
 		// !PEON
 		//
-
+	#ifdef GHOST_CLANS
 		if( Command == "peon"  && !Payload.empty( ) && ( IsRootAdmin( User ) || ForceRoot ) )
 		{
 			SendClanChangeRank( Payload, CBNETProtocol :: CLAN_PARTIAL_MEMBER );
 			SendGetClanList( );
 			CONSOLE_Print( "[GHOST] changing " + Payload + " to status peon done by " + User );
 		}
-
+	#endif
 		//
 		// !PRIV (host private game)
 		//
@@ -1961,14 +1998,14 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !REMOVE
 		//
-
+	#ifdef GHOST_CLANS
 		if( Command == "remove" && !Payload.empty( ) && ( IsRootAdmin( User ) || ForceRoot ) )
 		{
 			SendClanRemoveMember( Payload );
 			SendGetClanList( );
 			CONSOLE_Print( "[GHOST] removing clan member " + Payload + " done by " + User );
 		}
-
+	#endif
 		//
 		// !SAY
 		//
@@ -2015,14 +2052,14 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		//
 		// !SHAMAN
 		//
-
+	#ifdef GHOST_CLANS
 		if( Command == "shaman"  && !Payload.empty( ) && ( IsRootAdmin( User ) || ForceRoot ) )
 		{
 			SendClanChangeRank( Payload, CBNETProtocol :: CLAN_OFFICER );
 			SendGetClanList( );
 			CONSOLE_Print( "[GHOST] changing " + Payload + " to status shaman done by " + User );
 		}
-
+	#endif
 		//
 		// !UNHOST
 		//
@@ -2151,7 +2188,7 @@ void CBNET :: SendGetFriendsList( )
 	if( m_LoggedIn )
 		m_Socket->PutBytes( m_Protocol->SEND_SID_FRIENDSLIST( ) );
 }
-
+#ifdef GHOST_CLANS
 void CBNET :: SendGetClanList( )
 {
 	if( m_LoggedIn )
@@ -2191,7 +2228,7 @@ void CBNET :: SendClanAcceptInvite( bool accept )
 			m_Socket->PutBytes( m_Protocol->SEND_SID_CLANINVITATIONRESPONSE( accept ) );
 	}
 }
-
+#endif
 void CBNET :: QueueEnterChat( )
 {
 	m_PacketsMutex.lock();
@@ -2542,7 +2579,7 @@ void CBNET :: HoldFriends( CBaseGame *game )
 			game->AddToReserved( (*i)->GetAccount( ) );
 	}
 }
-
+#ifdef GHOST_CLANS
 void CBNET :: HoldClan( CBaseGame *game )
 {
 	if( game )
@@ -2551,3 +2588,4 @@ void CBNET :: HoldClan( CBaseGame *game )
 			game->AddToReserved( (*i)->GetName( ) );
 	}
 }
+#endif

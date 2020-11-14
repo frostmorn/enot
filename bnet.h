@@ -33,7 +33,9 @@ class CBNCSUtilInterface;
 class CBNETProtocol;
 class CBNLSClient;
 class CIncomingFriendList;
+#ifdef GHOST_CLANS
 class CIncomingClanList;
+#endif
 class CIncomingChatEvent;
 class CCallableAdminCount;
 class CCallableAdminAdd;
@@ -70,7 +72,9 @@ private:
 	CBNCSUtilInterface *m_BNCSUtil;					// the interface to the bncsutil library (used for logging into battle.net)
 	queue<BYTEARRAY> m_OutPackets;					// queue of outgoing packets to be sent (to prevent getting kicked for flooding)
 	vector<CIncomingFriendList *> m_Friends;		// vector of friends
+	#ifdef GHOST_CLANS
 	vector<CIncomingClanList *> m_Clans;			// vector of clan members
+	#endif
 	vector<PairedAdminCount> m_PairedAdminCounts;	// vector of paired threaded database admin counts in progress
 	vector<PairedAdminAdd> m_PairedAdminAdds;		// vector of paired threaded database admin adds in progress
 	vector<PairedAdminRemove> m_PairedAdminRemoves;	// vector of paired threaded database admin removes in progress
@@ -123,12 +127,20 @@ private:
 	bool m_LoggedIn;								// if we've logged into battle.net or not
 	bool m_InChat;									// if we've entered chat or not (but we're not necessarily in a chat channel yet)
 	bool m_HoldFriends;								// whether to auto hold friends when creating a game or not
+	#ifdef GHOST_CLANS
 	bool m_HoldClan;								// whether to auto hold clan members when creating a game or not
+	#endif
 	bool m_PublicCommands;							// whether to allow public commands or not
+	#ifdef GHOST_CLANS
 	bool m_LastInviteCreation;						// whether the last invite received was for a clan creation (else, it was for invitation response)
+	#endif
 	uint32_t LastGameCreateTime;					// last time when game created
 public:
-	CBNET( CGHost *nGHost, string nServer, string nServerAlias, string nBNLSServer, uint16_t nBNLSPort, uint32_t nBNLSWardenCookie, string nCDKeyROC, string nCDKeyTFT, string nCountryAbbrev, string nCountry, uint32_t nLocaleID, string nUserName, string nUserPassword, string nFirstChannel, string nRootAdmin, char nCommandTrigger, bool nHoldFriends, bool nHoldClan, bool nPublicCommands, unsigned char nWar3Version, BYTEARRAY nEXEVersion, BYTEARRAY nEXEVersionHash, string nPasswordHashType, string nPVPGNRealmName, uint32_t nMaxMessageLength, uint32_t nHostCounterID, uint32_t nLastGameCreateTime );
+	CBNET( CGHost *nGHost, string nServer, string nServerAlias, string nBNLSServer, uint16_t nBNLSPort, uint32_t nBNLSWardenCookie, string nCDKeyROC, string nCDKeyTFT, string nCountryAbbrev, string nCountry, uint32_t nLocaleID, string nUserName, string nUserPassword, string nFirstChannel, string nRootAdmin, char nCommandTrigger, bool nHoldFriends, 
+		#ifdef GHOST_CLANS
+	bool nHoldClan, 
+	#endif
+	bool nPublicCommands, unsigned char nWar3Version, BYTEARRAY nEXEVersion, BYTEARRAY nEXEVersionHash, string nPasswordHashType, string nPVPGNRealmName, uint32_t nMaxMessageLength, uint32_t nHostCounterID, uint32_t nLastGameCreateTime );
 	~CBNET( );
 
 	bool GetExiting( )					{ return m_Exiting; }
@@ -150,7 +162,9 @@ public:
 	bool GetLoggedIn( )					{ return m_LoggedIn; }
 	bool GetInChat( )					{ return m_InChat; }
 	bool GetHoldFriends( )				{ return m_HoldFriends; }
+	#ifdef GHOST_CLANS
 	bool GetHoldClan( )					{ return m_HoldClan; }
+	#endif
 	bool GetPublicCommands( )			{ return m_PublicCommands; }
 	uint32_t GetOutPacketsQueued( )		{ return m_OutPackets.size( ); }
 	uint32_t GetLastGameCreateTime()	{ return LastGameCreateTime;}
@@ -169,12 +183,14 @@ public:
 
 	void SendJoinChannel( string channel );
 	void SendGetFriendsList( );
+	#ifdef GHOST_CLANS
 	void SendGetClanList( );
 	void SendClanInvitation( string accountName );
 	void SendClanRemoveMember( string accountName );
 	void SendClanChangeRank( string accountName, CBNETProtocol::RankCode rank );
 	void SendClanSetMotd( string motd );
 	void SendClanAcceptInvite( bool accept );
+	#endif
 	void QueueEnterChat( );
 	void QueueChatCommand( string chatCommand );
 	void QueueChatCommand( string chatCommand, string user, bool whisper );
@@ -197,7 +213,9 @@ public:
 	void RemoveAdmin( string name );
 	void RemoveBan( string name );
 	void HoldFriends( CBaseGame *game );
+	#ifdef GHOST_CLANS
 	void HoldClan( CBaseGame *game );
+	#endif
 };
 
 #endif

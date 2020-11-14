@@ -385,7 +385,7 @@ vector<CIncomingFriendList *> CBNETProtocol :: RECEIVE_SID_FRIENDSLIST( BYTEARRA
 
 	return Friends;
 }
-
+#ifdef GHOST_CLANS
 vector<CIncomingClanList *> CBNETProtocol :: RECEIVE_SID_CLANMEMBERLIST( BYTEARRAY data )
 {
 	// DEBUG_Print( "RECEIVED SID_CLANMEMBERLIST" );
@@ -500,7 +500,7 @@ string CBNETProtocol :: RECEIVE_SID_CLANINVITATIONRESPONSE( BYTEARRAY data )
 
 	return NULL;
 }
-
+#endif
 ////////////////////
 // SEND FUNCTIONS //
 ////////////////////
@@ -942,7 +942,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_FRIENDSLIST( )
 	// DEBUG_Print( packet );
 	return packet;
 }
-
+	#ifdef GHOST_CLANS
 BYTEARRAY CBNETProtocol :: SEND_SID_CLANMEMBERLIST( )
 {
 	unsigned char Cookie[] = { 0, 0, 0, 0 };
@@ -1064,7 +1064,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_CLANINVITATIONRESPONSE( bool accept )
 	AssignLength( packet );
 	return packet;
 }
-
+#endif
 /////////////////////
 // OTHER FUNCTIONS //
 /////////////////////
@@ -1226,7 +1226,7 @@ string CIncomingFriendList :: ExtractLocation( string location )
 //
 // CIncomingClanList
 //
-
+#ifdef GHOST_CLANS
 CIncomingClanList :: CIncomingClanList( string nName, unsigned char nRank, unsigned char nStatus ) : m_Name( nName ), m_Rank( nRank ), m_Status( nStatus )
 {
 
@@ -1267,3 +1267,4 @@ string CIncomingClanList :: GetDescription( )
 	Description += GetRank( ) + "\n\n";
 	return Description;
 }
+#endif
