@@ -40,7 +40,6 @@
 #include "game_admin.h"
 #include <signal.h>
 #include <stdlib.h>
-
 #ifdef WIN32
  #include <ws2tcpip.h>		// for WSAIoctl
 #endif
@@ -353,8 +352,6 @@ int main( int argc, char **argv )
 	unsigned int last_players_count = 0;
 
 	/* In windows, this will init the winsock stuff */ 
-	curl_global_init(CURL_GLOBAL_ALL);
-	CONSOLE_Print("Initializing Curl...");
 	while( 1 )
 	{
 		// block for 50ms on all sockets - if you intend to perform any timed actions more frequently you should change this
@@ -362,9 +359,6 @@ int main( int argc, char **argv )
 		if( gGHost->Update( 5000 ) )
 			break;
 	}
-
-	// Curl cleanup
-	curl_global_cleanup();
 
 	// shutdown ghost
 
