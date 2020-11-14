@@ -1179,7 +1179,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			//
 			// !MUTE
 			//
-
+			#ifdef GHOST_MUTE
 			else if( Command == "mute"  || Command == "m" )
 			{
 				CGamePlayer *LastMatch = NULL;
@@ -1205,7 +1205,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				SendAllChat( m_GHost->m_Language->GlobalChatMuted( ) );
 				m_MuteAll = true;
 			}
-
+			#endif
 			//
 			// !OPEN (open slot)
 			//
@@ -1595,7 +1595,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 			//
 			// !UNMUTE
 			//
-
+			#ifdef GHOST_MUTE
 			else if( Command == "unmute"  || Command == "u" )
 			{
 				CGamePlayer *LastMatch = NULL;
@@ -1621,7 +1621,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 				SendAllChat( m_GHost->m_Language->GlobalChatUnmuted( ) );
 				m_MuteAll = false;
 			}
-
+			#endif
 			//
 			// !VIRTUALHOST
 			//
