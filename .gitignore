@@ -37,3 +37,4 @@ fiona.dbs
 fiona.log
 *.cfg
 *.j
+.vscode/settings.json
