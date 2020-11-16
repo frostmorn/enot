@@ -3409,7 +3409,10 @@ void CBaseGame :: EventGameRefreshed( string server )
 
 void CBaseGame :: EventGameStarted( )
 {
-	CONSOLE_Print("Judges in a game = "+ GetNumJudgePlayers());
+	for(auto mBnet : m_GHost->m_BNETs){
+		mBnet->QueueEnterChat();
+	}
+	CONSOLE_Print("Judges in a game = "+ UTIL_ToString(GetNumJudgePlayers()));
 	CONSOLE_Print( "[GAME: " + m_GameName + "] started loading with " + UTIL_ToString( GetNumHumanPlayers( ) ) + " players" );
 
 	// encode the HCL command string in the slot handicaps
