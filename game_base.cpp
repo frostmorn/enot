@@ -1476,6 +1476,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 	}
 	auto message = "Online: " + UTIL_ToString(total_players_count+this->GetNumHumanPlayers())+" players";
 	SendChat( player, message );
+	CONSOLE_Print(message);
 	// read from motd.txt if available (thanks to zeeg for this addition)
 	ifstream in;
 	in.open( m_GHost->m_MOTDFile.c_str( ) );
@@ -1585,7 +1586,13 @@ void CBaseGame :: SendEndMessage( )
 void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 {
 	CONSOLE_Print( "[GAME: " + m_GameName + "] deleting player [" + player->GetName( ) + "]: " + player->GetLeftReason( ) );
-
+	unsigned int total_players_count = 0;
+	for (auto game:m_GHost->m_Games){
+		
+		total_players_count = total_players_count +  game->GetNumHumanPlayers();
+	}
+	auto message = "Online: " + UTIL_ToString(total_players_count+this->GetNumHumanPlayers())+" players";
+	CONSOLE_Print(message);
 	// remove any queued spoofcheck messages for this player
 
 	if( player->GetWhoisSent( ) && !player->GetJoinedRealm( ).empty( ) && player->GetSpoofedRealm( ).empty( ) )
