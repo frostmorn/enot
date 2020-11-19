@@ -2288,11 +2288,7 @@ void CBNET :: QueueGameCreate( unsigned char state, string gameName, string host
 			m_FirstChannel = m_CurrentChannel;
 
 		m_InChat = false;
-
-		// a game creation message is just a game refresh message with upTime = 0
-		UnqueueGameRefreshes( );
-		QueueGameUncreate();
-		QueueEnterChat();
+		
 		QueueGameRefresh( state, gameName, hostName, map, savegame, 0, hostCounter );
 	}
 }

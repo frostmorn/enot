@@ -548,52 +548,75 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 
+		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		{
+			(*i)->QueueGameUncreate( );
+			(*i)->QueueEnterChat( );
+
+			// the game creation message will be sent on the next refresh
+		}
+
 		m_CreationTime = GetTime( );
 		m_LastRefreshTime = GetTime( );
 		
 		m_GHost->m_GamesMutex.unlock( );
 	}
-	// host Rubattle 
-	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && m_GHost->m_RubattleBnetCount &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0){
-		 for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-			{
-				if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
-					if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) ){
-						std:: string game_name = m_GameName + random_string(2);
-						CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
-						(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
-						m_RubattleHosted = 1;
-						break;
-					}   
-				}
+		// host Rubattle
+	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && m_GHost->m_RubattleBnetCount &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0)
+	{
+
+		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
+		{
+			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
+				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) )
+				{
+					std:: string game_name = m_GameName + random_string(2);
+					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+					(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueGameRefresh( m_GameState, game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					m_RubattleHosted = 1;
+					break;
+				}		
 			}
+		}
 	}
+
 
 	// rehost ICCup
 	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0 &&
-	((GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))|| m_LastICCupRehostTime == 0))
+		 ((GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))|| m_LastICCupRehostTime == 0))
 	{
 		uint32_t current_iccup_index = 0;
 		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 
-				if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-						current_iccup_index++;
-						std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
-						if (current_iccup_index == m_LastICCupRehostIndex+1){
-								
-								CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
-								(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
-								break;
-						}
-						
+			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
+				current_iccup_index++;
+				std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
+				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					
+					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+					break;
 				}
+				
+			}
 		}
 		m_RefreshError = false;
 		m_RefreshRehosted = true;
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount-1 ? 0 : current_iccup_index;
-    }
+
+	}
+	//	refresh every 3 seconds
+
 	// send more map data
 
 	if( !m_GameLoading && !m_GameLoaded && GetTicks( ) - m_LastDownloadCounterResetTicks >= 1000 )
@@ -3610,6 +3633,14 @@ void CBaseGame :: EventGameStarted( )
 	m_GHost->m_CurrentGame = NULL;
 	m_GHost->m_Games.push_back( this );
 	m_GHost->m_GamesMutex.unlock( );
+
+	// and finally reenter battle.net chat
+
+	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	{
+		(*i)->QueueGameUncreate( );
+		(*i)->QueueEnterChat( );
+	}
 }
 
 void CBaseGame :: EventGameLoaded( )
