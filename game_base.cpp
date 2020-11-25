@@ -1614,7 +1614,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 		
 		total_players_count = total_players_count +  game->GetNumHumanPlayers();
 	}
-	auto message = "Online: " + UTIL_ToString(total_players_count+this->GetNumHumanPlayers())+" players";
+	auto message = "Online: " + UTIL_ToString(total_players_count+this->GetNumHumanPlayers()-1)+" players";
 	CONSOLE_Print(message);
 	// remove any queued spoofcheck messages for this player
 
