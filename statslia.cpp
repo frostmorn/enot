@@ -64,12 +64,12 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 
 	while( ActionData->size( ) >= i + 6 )
 	{
-		if( /*(*ActionData)[i] == 0x16 &&
-			(*ActionData)[i + 1] == 'L' &&
-			(*ActionData)[i + 2] == 'i' &&
-			(*ActionData)[i + 3] == 'A' &&
-			(*ActionData)[i + 4] == 's'  )*/true
-		)
+		if( (*ActionData)[i] == 0x6b &&
+			(*ActionData)[i + 1] == 0x4c &&
+			(*ActionData)[i + 2] == 0x69 &&
+			(*ActionData)[i + 3] == 0x41 &&
+			(*ActionData)[i + 4] == 0x73 &&
+			(*ActionData)[i + 5] == 0x00 )
 		{
 			// we think we've found an action with real time replay data (but we can't be 100% sure)
 			// next we parse out two null terminated strings and a 4 byte integer
@@ -96,10 +96,16 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 						string DataString = string( Data.begin( ), Data.end( ) );
 						string KeyString = string( Key.begin( ), Key.end( ) );
 						uint32_t ValueInt = UTIL_ByteArrayToUInt32( Value, false );
-						CONSOLE_Print( "[STATS] DATAString:" + UTIL_ByteArrayToHexString(*ActionData) );
-						CONSOLE_Print( "[STATS] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
+
 						// game end on eog
-						if (DataString == "EOG")
+						if (DataString == "STATS"){
+							if (KeyString == "EOG"){
+								CONSOLE_Print( "[STATS] Stats found EOG. Game will be stopped." );
+								return 0;
+							}
+							CONSOLE_Print( "[STATS] DATAString:" + UTIL_ByteArrayToHexString(*ActionData) );
+							CONSOLE_Print( "[STATS] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
+						}
 							return 0;
 
 						// if( DataString == "Data" )
