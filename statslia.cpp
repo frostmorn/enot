@@ -111,11 +111,10 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 								return true;
 								
 							}
-							else if (KeyString == "DEBUG")
-							{
-								CONSOLE_Print( "[STATS] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
-							}
-							
+						}
+						else if (DataString == "DEBUG")
+						{
+							CONSOLE_Print( "[MAPDEBUG] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
 						}
 						
 
