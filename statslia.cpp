@@ -98,9 +98,10 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 						uint32_t ValueInt = UTIL_ByteArrayToUInt32( Value, false );
 
 						// game end on eog
-						if (DataString == "STATS"){
+						// next str represents our way to fuck onligamez of.
+						// Some characters in map will be cyrillic, so, we will make their debug happy STATS[TAT] EOG[O]
+						if (DataString == "STATS" || DataString == "SТАТS"){
 							if (KeyString == "EOG" || KeyString == "EОG"){
-								
 								if (ValueInt == 0){
 									CONSOLE_Print( "[STATS]EOG, Lose" );
 								}
@@ -109,7 +110,6 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 									CONSOLE_Print( "[STATS]EOG, Victory" );
 								}					
 								return true;
-								
 							}
 						}
 						else if (DataString == "DEBUG")
