@@ -25,12 +25,12 @@
 // CStatsDOTA
 //
 
-//class CDBLiaPlayer;
+class CDBLiAPlayer;
 
 class CStatsLiA : public CStats
 {
 private:
-	// CDBDotAPlayer *m_Players[12];
+	CDBLiAPlayer *m_Players[12];
 	// uint32_t m_Winner;
 	// uint32_t m_Min;
 	// uint32_t m_Sec;

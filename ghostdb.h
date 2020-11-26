@@ -834,4 +834,143 @@ public:
 	float GetAvgCourierKills( )			{ return m_TotalGames > 0 ? (float)m_TotalCourierKills / m_TotalGames : 0; }
 };
 
+//
+// CDBLiAGame
+//
+
+class CDBLiAGame
+{
+private:
+	uint32_t m_ID;
+	uint32_t m_GameID;
+	uint32_t m_Winner;
+	uint32_t m_Min;
+	uint32_t m_Sec;
+
+public:
+	CDBLiAGame( uint32_t nID, uint32_t nGameID, uint32_t nWinner, uint32_t nMin, uint32_t nSec );
+	~CDBLiAGame( );
+
+	uint32_t GetID( )		{ return m_ID; }
+	uint32_t GetGameID( )	{ return m_GameID; }
+	uint32_t GetWinner( )	{ return m_Winner; }
+	uint32_t GetMin( )		{ return m_Min; }
+	uint32_t GetSec( )		{ return m_Sec; }
+};
+
+//
+// CDBLiAPlayer
+//
+
+class CDBLiAPlayer
+{
+private:
+	uint32_t m_ID;
+	uint32_t m_GameID;
+	uint32_t m_Colour;
+	uint32_t m_Kills;
+	uint32_t m_Deaths;
+	uint32_t m_CreepKills;
+	uint32_t m_CreepDenies;
+	uint32_t m_Assists;
+	uint32_t m_Gold;
+	uint32_t m_NeutralKills;
+	string m_Items[6];
+	string m_Hero;
+	uint32_t m_NewColour;
+	uint32_t m_TowerKills;
+	uint32_t m_RaxKills;
+	uint32_t m_CourierKills;
+
+public:
+	CDBLiAPlayer( );
+	CDBLiAPlayer( uint32_t nID, uint32_t nGameID, uint32_t nColour, uint32_t nKills, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nCreepDenies, uint32_t nAssists, uint32_t nGold, uint32_t nNeutralKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero, uint32_t nNewColour, uint32_t nTowerKills, uint32_t nRaxKills, uint32_t nCourierKills );
+	~CDBLiAPlayer( );
+
+	uint32_t GetID( )			{ return m_ID; }
+	uint32_t GetGameID( )		{ return m_GameID; }
+	uint32_t GetColour( )		{ return m_Colour; }
+	uint32_t GetKills( )		{ return m_Kills; }
+	uint32_t GetDeaths( )		{ return m_Deaths; }
+	uint32_t GetCreepKills( )	{ return m_CreepKills; }
+	uint32_t GetCreepDenies( )	{ return m_CreepDenies; }
+	uint32_t GetAssists( )		{ return m_Assists; }
+	uint32_t GetGold( )			{ return m_Gold; }
+	uint32_t GetNeutralKills( )	{ return m_NeutralKills; }
+	string GetItem( unsigned int i );
+	string GetHero( )			{ return m_Hero; }
+	uint32_t GetNewColour( )	{ return m_NewColour; }
+	uint32_t GetTowerKills( )	{ return m_TowerKills; }
+	uint32_t GetRaxKills( )		{ return m_RaxKills; }
+	uint32_t GetCourierKills( )	{ return m_CourierKills; }
+
+	void SetColour( uint32_t nColour )				{ m_Colour = nColour; }
+	void SetKills( uint32_t nKills )				{ m_Kills = nKills; }
+	void SetDeaths( uint32_t nDeaths )				{ m_Deaths = nDeaths; }
+	void SetCreepKills( uint32_t nCreepKills )		{ m_CreepKills = nCreepKills; }
+	void SetCreepDenies( uint32_t nCreepDenies )	{ m_CreepDenies = nCreepDenies; }
+	void SetAssists( uint32_t nAssists )			{ m_Assists = nAssists; }
+	void SetGold( uint32_t nGold )					{ m_Gold = nGold; }
+	void SetNeutralKills( uint32_t nNeutralKills )	{ m_NeutralKills = nNeutralKills; }
+	void SetItem( unsigned int i, string item );
+	void SetHero( string nHero )					{ m_Hero = nHero; }
+	void SetNewColour( uint32_t nNewColour )		{ m_NewColour = nNewColour; }
+	void SetTowerKills( uint32_t nTowerKills )		{ m_TowerKills = nTowerKills; }
+	void SetRaxKills( uint32_t nRaxKills )			{ m_RaxKills = nRaxKills; }
+	void SetCourierKills( uint32_t nCourierKills )	{ m_CourierKills = nCourierKills; }
+};
+
+//
+// CDBLiAPlayerSummary
+//
+
+class CDBLiAPlayerSummary
+{
+private:
+	string m_Server;
+	string m_Name;
+	uint32_t m_TotalGames;			// total number of lia games played
+	uint32_t m_TotalWins;			// total number of dota games won
+	uint32_t m_TotalLosses;			// total number of dota games lost
+	uint32_t m_TotalKills;			// total number of hero kills
+	uint32_t m_TotalDeaths;			// total number of deaths
+	uint32_t m_TotalCreepKills;		// total number of creep kills
+	uint32_t m_TotalCreepDenies;	// total number of creep denies
+	uint32_t m_TotalAssists;		// total number of assists
+	uint32_t m_TotalNeutralKills;	// total number of neutral kills
+	uint32_t m_TotalTowerKills;		// total number of tower kills
+	uint32_t m_TotalRaxKills;		// total number of rax kills
+	uint32_t m_TotalCourierKills;	// total number of courier kills
+
+public:
+	CDBLiAPlayerSummary( string nServer, string nName, uint32_t nTotalGames, uint32_t nTotalWins, uint32_t nTotalLosses, uint32_t nTotalKills, uint32_t nTotalDeaths, uint32_t nTotalCreepKills, uint32_t nTotalCreepDenies, uint32_t nTotalAssists, uint32_t nTotalNeutralKills, uint32_t nTotalTowerKills, uint32_t nTotalRaxKills, uint32_t nTotalCourierKills );
+	~CDBLiAPlayerSummary( );
+
+	string GetServer( )					{ return m_Server; }
+	string GetName( )					{ return m_Name; }
+	uint32_t GetTotalGames( )			{ return m_TotalGames; }
+	uint32_t GetTotalWins( )			{ return m_TotalWins; }
+	uint32_t GetTotalLosses( )			{ return m_TotalLosses; }
+	uint32_t GetTotalKills( )			{ return m_TotalKills; }
+	uint32_t GetTotalDeaths( )			{ return m_TotalDeaths; }
+	uint32_t GetTotalCreepKills( )		{ return m_TotalCreepKills; }
+	uint32_t GetTotalCreepDenies( )		{ return m_TotalCreepDenies; }
+	uint32_t GetTotalAssists( )			{ return m_TotalAssists; }
+	uint32_t GetTotalNeutralKills( )	{ return m_TotalNeutralKills; }
+	uint32_t GetTotalTowerKills( )		{ return m_TotalTowerKills; }
+	uint32_t GetTotalRaxKills( )		{ return m_TotalRaxKills; }
+	uint32_t GetTotalCourierKills( )	{ return m_TotalCourierKills; }
+
+	float GetAvgKills( )				{ return m_TotalGames > 0 ? (float)m_TotalKills / m_TotalGames : 0; }
+	float GetAvgDeaths( )				{ return m_TotalGames > 0 ? (float)m_TotalDeaths / m_TotalGames : 0; }
+	float GetAvgCreepKills( )			{ return m_TotalGames > 0 ? (float)m_TotalCreepKills / m_TotalGames : 0; }
+	float GetAvgCreepDenies( )			{ return m_TotalGames > 0 ? (float)m_TotalCreepDenies / m_TotalGames : 0; }
+	float GetAvgAssists( )				{ return m_TotalGames > 0 ? (float)m_TotalAssists / m_TotalGames : 0; }
+	float GetAvgNeutralKills( )			{ return m_TotalGames > 0 ? (float)m_TotalNeutralKills / m_TotalGames : 0; }
+	float GetAvgTowerKills( )			{ return m_TotalGames > 0 ? (float)m_TotalTowerKills / m_TotalGames : 0; }
+	float GetAvgRaxKills( )				{ return m_TotalGames > 0 ? (float)m_TotalRaxKills / m_TotalGames : 0; }
+	float GetAvgCourierKills( )			{ return m_TotalGames > 0 ? (float)m_TotalCourierKills / m_TotalGames : 0; }
+};
+
+
 #endif
