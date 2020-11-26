@@ -108,7 +108,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 								{
 									CONSOLE_Print( "[STATS]EOG FOUND, Victory found!" );
 								}					
-								return false;
+								return true;
 								
 							}
 								CONSOLE_Print( "[STATS] ActionData:" + UTIL_ByteArrayToHexString(*ActionData) );
@@ -131,7 +131,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 			++i;
 	}
 
-	return true;
+	return false;
 }
 
 void CStatsLiA :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
