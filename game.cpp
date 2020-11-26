@@ -33,6 +33,7 @@
 #include "game_base.h"
 #include "game.h"
 #include "stats.h"
+#include "statslia.h"
 #include "statsdota.h"
 #include "statsw3mmd.h"
 
@@ -88,6 +89,8 @@ CGame :: CGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHost
 		m_Stats = new CStatsW3MMD( this, m_Map->GetMapStatsW3MMDCategory( ) );
 	else if( m_Map->GetMapType( ) == "dota" )
 		m_Stats = new CStatsDOTA( this );
+	else if(m_Map->GetMapType() == "lia")
+		m_Stats = new CStatsLiA(this);
 }
 
 CGame :: ~CGame( )
