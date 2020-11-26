@@ -99,7 +99,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 
 						// game end on eog
 						if (DataString == "STATS"){
-							if (KeyString == "EOG" ||KeyString == "EОG"  ){
+							if (KeyString == "EOG" || KeyString == "EОG"){
 								
 								if (ValueInt == 0){
 									CONSOLE_Print( "[STATS]EOG, Lose" );
