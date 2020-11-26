@@ -64,15 +64,13 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 
 	while( ActionData->size( ) >= i + 6 )
 	{
-		if( (*ActionData)[i] == 'k' &&
-			(*ActionData)[i + 1] == 'S' &&
-			(*ActionData)[i + 2] == 'T' &&
+		if( /*(*ActionData)[i] == 0x16 &&
+			(*ActionData)[i + 1] == 'L' &&
+			(*ActionData)[i + 2] == 'i' &&
 			(*ActionData)[i + 3] == 'A' &&
-			(*ActionData)[i + 4] == 'T' &&
-			(*ActionData)[i + 5] == 'S' 
-			// (*ActionData)[i + 6] == 'a' &&
-			// (*ActionData)[i + 7] == 't' &&
-			/*(*ActionData)[i + 8] == 0x00 */){
+			(*ActionData)[i + 4] == 's'  )*/true
+		)
+		{
 			// we think we've found an action with real time replay data (but we can't be 100% sure)
 			// next we parse out two null terminated strings and a 4 byte integer
 
@@ -83,7 +81,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 				Data = UTIL_ExtractCString( *ActionData, i + 6 );
 				auto DataDebug = UTIL_ExtractCString( *ActionData, 0 );
 			
-				CONSOLE_Print( "[STATS] DATAString:" + UTIL_ByteArrayToHexString(DataDebug) );
+				
 				if( ActionData->size( ) >= i + 8 + Data.size( ) )
 				{
 					// the second null terminated string should be the key
@@ -98,8 +96,11 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 						string DataString = string( Data.begin( ), Data.end( ) );
 						string KeyString = string( Key.begin( ), Key.end( ) );
 						uint32_t ValueInt = UTIL_ByteArrayToUInt32( Value, false );
-
+						CONSOLE_Print( "[STATS] DATAString:" + UTIL_ByteArrayToHexString(*ActionData) );
 						CONSOLE_Print( "[STATS] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
+						// game end on eog
+						if (DataString == "EOG")
+							return 0;
 
 						// if( DataString == "Data" )
 						// {
