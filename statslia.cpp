@@ -74,7 +74,9 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 				// the first null terminated string should either be the strings "Data" or "Global" or a player id in ASCII representation, e.g. "1" or "2"
 
 				Data = UTIL_ExtractCString( *ActionData, i + 6 );
-
+				auto DataDebug = UTIL_ExtractCString( *ActionData, 0 );
+			
+				CONSOLE_Print( "[STATS] DATAString:" + UTIL_ByteArrayToHexString(DataDebug) );
 				if( ActionData->size( ) >= i + 8 + Data.size( ) )
 				{
 					// the second null terminated string should be the key
