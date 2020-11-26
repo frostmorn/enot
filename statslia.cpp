@@ -99,20 +99,23 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 
 						// game end on eog
 						if (DataString == "STATS"){
-							if (KeyString == "EOG"){
+							if (KeyString == "EOG" ||KeyString == "EОG"  ){
 								
 								if (ValueInt == 0){
-									CONSOLE_Print( "[STATS]EOG FOUND, Game losed" );
+									CONSOLE_Print( "[STATS]EOG, Lose" );
 								}
 								else
 								{
-									CONSOLE_Print( "[STATS]EOG FOUND, Victory found!" );
+									CONSOLE_Print( "[STATS]EOG, Victory" );
 								}					
 								return true;
 								
 							}
-								CONSOLE_Print( "[STATS] ActionData:" + UTIL_ByteArrayToHexString(*ActionData) );
+							else if (KeyString == "DEBUG")
+							{
 								CONSOLE_Print( "[STATS] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
+							}
+							
 						}
 						
 
