@@ -1121,7 +1121,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	// finish the gameover timer
 
-	if( m_GameOverTime != 0 && GetTime( ) - m_GameOverTime >= 60 )
+	if( m_GameOverTime != 0 && GetTime( ) - m_GameOverTime >= 0 )
 	{
 		bool AlreadyStopped = true;
 
