@@ -286,6 +286,11 @@ CGHostDBSQLite :: CGHostDBSQLite( CConfig *CFG ) : CGHostDB( CFG )
 		Upgrade7_8( );
 		SchemaNumber = "8";
 	}
+	if( SchemaNumber == "8" )
+	{
+		Upgrade8_9( );
+		SchemaNumber = "9";
+	}
 
 	if( m_DB->Exec( "CREATE TEMPORARY TABLE iptocountry ( ip1 INTEGER NOT NULL, ip2 INTEGER NOT NULL, country TEXT NOT NULL, PRIMARY KEY ( ip1, ip2 ) )" ) != SQLITE_OK )
 		CONSOLE_Print( "[SQLITE3] error creating temporary iptocountry table - " + m_DB->GetError( ) );
