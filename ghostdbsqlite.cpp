@@ -1664,7 +1664,7 @@ CCallableDotAPlayerSummaryCheck *CGHostDBSQLite :: ThreadedDotAPlayerSummaryChec
 CCallableLiAGameAdd *CGHostDBSQLite :: ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec )
 {
 	CCallableLiAGameAdd *Callable = new CCallableLiAGameAdd( gameid, gameresult, min, sec );
-	Callable->SetResult( LiaGameAdd( gameid, gameresult, min, sec ) );
+	Callable->SetGameResult( LiAGameAdd( gameid, gameresult, min, sec ) );
 	Callable->SetReady( true );
 	return Callable;
 }
