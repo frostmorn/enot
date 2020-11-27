@@ -545,6 +545,27 @@ void CGHostDBSQLite :: Upgrade7_8( )
 	CONSOLE_Print( "[SQLITE3] schema upgrade v7 to v8 finished" );
 }
 
+void CGHostDBSQLite :: Upgrade8_9( )
+{
+	CONSOLE_Print( "[SQLITE3] schema upgrade v8 to v9 started" );
+
+	// create new tables
+
+	if( m_DB->Exec( "CREATE TABLE liagames ( id INTEGER PRIMARY KEY, gameid INTEGER NOT NULL, gameresult INTEGER, min INTEGER NOT NULL DEFAULT 0, sec INTEGER NOT NULL DEFAULT 0 )" ) != SQLITE_OK )
+		CONSOLE_Print( "[SQLITE3] error creating liagames table - " + m_DB->GetError( ) );
+	else
+		CONSOLE_Print( "[SQLITE3] created liagames table" );
+
+	// update schema number
+
+	if( m_DB->Exec( "UPDATE config SET value=\"9\" where name=\"schema_number\"" ) != SQLITE_OK )
+		CONSOLE_Print( "[SQLITE3] error updating schema number [9] - " + m_DB->GetError( ) );
+	else
+		CONSOLE_Print( "[SQLITE3] updated schema number [9]" );
+
+	CONSOLE_Print( "[SQLITE3] schema upgrade v8 to v9 finished" );
+}
+
 bool CGHostDBSQLite :: Begin( )
 {
 	return m_DB->Exec( "BEGIN TRANSACTION" ) == SQLITE_OK;
@@ -1205,6 +1226,35 @@ CDBDotAPlayerSummary *CGHostDBSQLite :: DotAPlayerSummaryCheck( string name )
 
 	return DotAPlayerSummary;
 }
+
+uint32_t CGHostDBSQLite :: LiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec )
+{
+	uint32_t RowID = 0;
+	sqlite3_stmt *Statement;
+	m_DB->Prepare( "INSERT INTO liagames ( gameid, winner, min, sec ) VALUES ( ?, ?, ?, ? )", (void **)&Statement );
+
+	if( Statement )
+	{
+		sqlite3_bind_int( Statement, 1, gameid );
+		sqlite3_bind_int( Statement, 2, gameresult );
+		sqlite3_bind_int( Statement, 3, min );
+		sqlite3_bind_int( Statement, 4, sec );
+
+		int RC = m_DB->Step( Statement );
+
+		if( RC == SQLITE_DONE )
+			RowID = m_DB->LastRowID( );
+		else if( RC == SQLITE_ERROR )
+			CONSOLE_Print( "[SQLITE3] error adding liagame [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( gameresult ) + " : " + UTIL_ToString( min ) + " : " + UTIL_ToString( sec ) + "] - " + m_DB->GetError( ) );
+
+		m_DB->Finalize( Statement );
+	}
+	else
+		CONSOLE_Print( "[SQLITE3] prepare error adding liagame [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( gameresult ) + " : " + UTIL_ToString( min ) + " : " + UTIL_ToString( sec ) + "] - " + m_DB->GetError( ) );
+
+	return RowID;
+}
+
 
 string CGHostDBSQLite :: FromCheck( uint32_t ip )
 {
