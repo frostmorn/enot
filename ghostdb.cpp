@@ -272,6 +272,12 @@ CCallableDotAPlayerSummaryCheck *CGHostDB :: ThreadedDotAPlayerSummaryCheck( str
 	return NULL;
 }
 
+CCallableLiAGameAdd *CGHostDB :: ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec )
+{
+	return NULL;
+}
+
+
 CCallableDownloadAdd *CGHostDB :: ThreadedDownloadAdd( string map, uint32_t mapsize, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t downloadtime )
 {
 	return NULL;

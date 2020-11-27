@@ -21,6 +21,13 @@
 #ifndef STATSLIA_H
 #define STATSLIA_H
 
+#define LIA_GAME_RESULT_LOSE            0
+#define LIA_GAME_RESULT_WIN             1
+
+// NOT_IMPLEMENTED. Need for -b mode
+#define LIA_GAME_RESULT_COMMAND_1_WIN   2
+#define LIA_GAME_RESULT_COMMAND_2_WIN   3
+
 //
 // CStatsDOTA
 //
@@ -30,10 +37,12 @@ class CDBLiAPlayer;
 class CStatsLiA : public CStats
 {
 private:
-	CDBLiAPlayer *m_Players[12];
+	CDBLiAPlayer *m_Players[8];
+    
 	// uint32_t m_Winner;
-	// uint32_t m_Min;
-	// uint32_t m_Sec;
+    uint32_t m_GameResult;
+	uint32_t m_Min;
+	uint32_t m_Sec;
 
 public:
 	CStatsLiA( CBaseGame *nGame );

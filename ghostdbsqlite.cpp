@@ -1606,7 +1606,13 @@ CCallableDotAPlayerSummaryCheck *CGHostDBSQLite :: ThreadedDotAPlayerSummaryChec
 	Callable->SetReady( true );
 	return Callable;
 }
-
+CCallableLiAGameAdd *CGHostDBSQLite :: ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec )
+{
+	CCallableLiAGameAdd *Callable = new CCallableLiAGameAdd( gameid, gameresult, min, sec );
+	Callable->SetResult( LiaGameAdd( gameid, gameresult, min, sec ) );
+	Callable->SetReady( true );
+	return Callable;
+}
 CCallableDownloadAdd *CGHostDBSQLite :: ThreadedDownloadAdd( string map, uint32_t mapsize, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t downloadtime )
 {
 	CCallableDownloadAdd *Callable = new CCallableDownloadAdd( map, mapsize, name, ip, spoofed, spoofedrealm, downloadtime );

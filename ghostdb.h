@@ -42,6 +42,7 @@ class CCallableGamePlayerSummaryCheck;
 class CCallableDotAGameAdd;
 class CCallableDotAPlayerAdd;
 class CCallableDotAPlayerSummaryCheck;
+class CCallableLiAGameAdd;
 class CCallableDownloadAdd;
 class CCallableScoreCheck;
 class CCallableW3MMDPlayerAdd;
@@ -121,6 +122,7 @@ public:
 	virtual CCallableDotAGameAdd *ThreadedDotAGameAdd( uint32_t gameid, uint32_t winner, uint32_t min, uint32_t sec );
 	virtual CCallableDotAPlayerAdd *ThreadedDotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, string item1, string item2, string item3, string item4, string item5, string item6, string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills );
 	virtual CCallableDotAPlayerSummaryCheck *ThreadedDotAPlayerSummaryCheck( string name );
+	virtual CCallableLiAGameAdd *ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec );
 	virtual CCallableDownloadAdd *ThreadedDownloadAdd( string map, uint32_t mapsize, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t downloadtime );
 	virtual CCallableScoreCheck *ThreadedScoreCheck( string category, string name, string server );
 	virtual CCallableW3MMDPlayerAdd *ThreadedW3MMDPlayerAdd( string category, uint32_t gameid, uint32_t pid, string name, string flag, uint32_t leaver, uint32_t practicing );
@@ -420,6 +422,21 @@ public:
 
 	virtual uint32_t GetResult( )				{ return m_Result; }
 	virtual void SetResult( uint32_t nResult )	{ m_Result = nResult; }
+};
+class CCallableLiAGameAdd : virtual public CBaseCallable
+{
+protected:
+	uint32_t m_GameID;
+	uint32_t m_GameResult;
+	uint32_t m_Min;
+	uint32_t m_Sec;
+
+public:
+	CCallableLiAGameAdd( uint32_t nGameID, uint32_t nGameResult, uint32_t nMin, uint32_t nSec ) : CBaseCallable( ), m_GameID( nGameID ), m_GameResult(nGameResult),  m_Min( nMin ), m_Sec( nSec ) { }
+	virtual ~CCallableLiAGameAdd( );
+
+	virtual uint32_t GetResult( )				{ return m_GameResult; }
+	virtual void SetGameResult( uint32_t nGameResult )	{ m_GameResult = nGameResult; }
 };
 
 class CCallableDotAPlayerAdd : virtual public CBaseCallable
@@ -928,8 +945,6 @@ public:
 	int32_t GetTotalPTS( )				{ return m_TotalPTS; }
 	uint32_t GetTotalCreepKills( )		{ return m_TotalCreepKills; }
 	uint32_t GetTotalBossKills( )		{ return m_TotalBossKills; }
-
-	float GetAvgCreepKills( )			{ return m_TotalGames > 0 ? (float)m_TotalCreepKills / m_TotalGames : 0; }
 	float GetAvgDeaths( )				{ return m_TotalGames > 0 ? (float)m_TotalDeaths / m_TotalGames : 0; }
 	float GetAvgCreepKills( )			{ return m_TotalGames > 0 ? (float)m_TotalCreepKills / m_TotalGames : 0; }
 	float GetAvgBossKills( )			{ return m_TotalGames > 0 ? (float)m_TotalBossKills / m_TotalGames : 0; }
