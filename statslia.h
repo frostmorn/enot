@@ -32,7 +32,7 @@
 // CStatsDOTA
 //
 
-class CDBLiAPlayer;
+// class CDBLiAPlayer;
 
 class CStatsLiA : public CStats
 {
@@ -40,9 +40,9 @@ private:
 	CDBLiAPlayer *m_Players[8];
     
 	// uint32_t m_Winner;
-    uint32_t m_GameResult;
-	uint32_t m_Min;
-	uint32_t m_Sec;
+    uint32_t m_GameResult = 0;
+	uint32_t m_Min = 0;
+	uint32_t m_Sec = 0;
 
 public:
 	CStatsLiA( CBaseGame *nGame );

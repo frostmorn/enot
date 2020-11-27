@@ -885,7 +885,7 @@ private:
 	uint32_t m_ID;
 	uint32_t m_GameID;
 	uint32_t m_Colour;
-	uint32_t m_PTS;
+	int32_t m_PTS;
 	uint32_t m_Deaths;
 	uint32_t m_CreepKills;
 	uint32_t m_BossKills;
@@ -894,7 +894,7 @@ private:
 
 public:
 	CDBLiAPlayer( );
-	CDBLiAPlayer( uint32_t nID, uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, uint32_t nCreepDenies, uint32_t nAssists, uint32_t nGold, uint32_t nNeutralKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero, uint32_t nNewColour, uint32_t nTowerKills, uint32_t nRaxKills, uint32_t nCourierKills );
+	CDBLiAPlayer( uint32_t nID, uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero);
 	~CDBLiAPlayer( );
 
 	uint32_t GetID( )				{ return m_ID; }

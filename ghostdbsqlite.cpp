@@ -1236,7 +1236,7 @@ uint32_t CGHostDBSQLite :: LiAGameAdd( uint32_t gameid, uint32_t gameresult, uin
 {
 	uint32_t RowID = 0;
 	sqlite3_stmt *Statement;
-	m_DB->Prepare( "INSERT INTO liagames ( gameid, winner, min, sec ) VALUES ( ?, ?, ?, ? )", (void **)&Statement );
+	m_DB->Prepare( "INSERT INTO liagames ( gameid, gameresult, min, sec ) VALUES ( ?, ?, ?, ? )", (void **)&Statement );
 
 	if( Statement )
 	{

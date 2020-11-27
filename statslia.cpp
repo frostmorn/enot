@@ -114,29 +114,14 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 								return true;
 							} 
 							// PTS Data
-							else if (KeyString == "0"){
-								m_Players[0]->SetPTS(ValueInt);
-							} 
-							else if (KeyString == "1"){
-								m_Players[1]->SetPTS(ValueInt);
-							} 
-							else if (KeyString == "2"){
-								m_Players[2]->SetPTS(ValueInt);
-							} 
-							else if (KeyString == "3"){
-								m_Players[3]->SetPTS(ValueInt);								
-							} 
-							else if (KeyString == "4"){
-								m_Players[4]->SetPTS(ValueInt);								
-							} 
-							else if (KeyString == "5"){
-								m_Players[5]->SetPTS(ValueInt);								
-							} 
-							else if (KeyString == "6"){
-								m_Players[6]->SetPTS(ValueInt);								
-							} 
-							else if (KeyString == "7"){
-								m_Players[7]->SetPTS(ValueInt);								
+							else {
+								auto index = UTIL_ToUInt32(KeyString);
+								if (index < 8){
+									if (m_Players[index] == NULL){
+										m_Players[index] = new CDBLiAPlayer( );
+									}
+									m_Players[index]->SetPTS(ValueInt);
+								}
 							}
 						}
 						else if (DataString == "DEBUG")
