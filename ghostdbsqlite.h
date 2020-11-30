@@ -210,6 +210,7 @@ public:
 	virtual void Upgrade6_7( );
 	virtual void Upgrade7_8( );
 	virtual void Upgrade8_9( );
+	virtual void Upgrade9_10( );
 
 	virtual bool Begin( );
 	virtual bool Commit( );
@@ -232,6 +233,7 @@ public:
 	virtual uint32_t DotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, string item1, string item2, string item3, string item4, string item5, string item6, string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills );
 	virtual uint32_t DotAPlayerCount( string name );
 	virtual uint32_t LiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec );
+	virtual uint32_t LiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero );
 	virtual CDBDotAPlayerSummary *DotAPlayerSummaryCheck( string name );
 	virtual string FromCheck( uint32_t ip );
 	virtual bool FromAdd( uint32_t ip1, uint32_t ip2, string country );
@@ -263,7 +265,7 @@ public:
 	virtual CCallableDotAPlayerAdd *ThreadedDotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, string item1, string item2, string item3, string item4, string item5, string item6, string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills );
 	virtual CCallableDotAPlayerSummaryCheck *ThreadedDotAPlayerSummaryCheck( string name );
 	virtual CCallableLiAGameAdd *ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec );
-	
+	virtual CCallableLiAPlayerAdd *	ThreadedLiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero ); 
 	virtual CCallableDownloadAdd *ThreadedDownloadAdd( string map, uint32_t mapsize, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t downloadtime );
 	virtual CCallableW3MMDPlayerAdd *ThreadedW3MMDPlayerAdd( string category, uint32_t gameid, uint32_t pid, string name, string flag, uint32_t leaver, uint32_t practicing );
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, map<VarP,int32_t> var_ints );

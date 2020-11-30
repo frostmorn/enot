@@ -291,6 +291,11 @@ CGHostDBSQLite :: CGHostDBSQLite( CConfig *CFG ) : CGHostDB( CFG )
 		Upgrade8_9( );
 		SchemaNumber = "9";
 	}
+	if( SchemaNumber == "9" )
+	{
+		Upgrade9_10( );
+		SchemaNumber = "10";
+	}
 
 	if( m_DB->Exec( "CREATE TEMPORARY TABLE iptocountry ( ip1 INTEGER NOT NULL, ip2 INTEGER NOT NULL, country TEXT NOT NULL, PRIMARY KEY ( ip1, ip2 ) )" ) != SQLITE_OK )
 		CONSOLE_Print( "[SQLITE3] error creating temporary iptocountry table - " + m_DB->GetError( ) );
@@ -571,6 +576,27 @@ void CGHostDBSQLite :: Upgrade8_9( )
 	CONSOLE_Print( "[SQLITE3] schema upgrade v8 to v9 finished" );
 }
 
+void CGHostDBSQLite :: Upgrade9_10( )
+{
+	CONSOLE_Print( "[SQLITE3] schema upgrade v9 to v10 started" );
+
+	// create new tables
+
+
+	if( m_DB->Exec( "CREATE TABLE liaplayers ( id INTEGER PRIMARY KEY, gameid INTEGER NOT NULL, colour INTEGER NOT NULL, pts INTEGER, deaths INTEGER, creepkills INTEGER, bosskills INTEGER, item1 TEXT NOT NULL, item2 TEXT NOT NULL, item3 TEXT NOT NULL, item4 TEXT NOT NULL, item5 TEXT NOT NULL, item6 TEXT NOT NULL, hero TEXT NOT NULL DEFAULT \"\" )" ) != SQLITE_OK )
+		CONSOLE_Print( "[SQLITE3] error creating liaplayers table - " + m_DB->GetError( ) );
+	else
+		CONSOLE_Print( "[SQLITE3] created liaplayers table" );
+
+	// update schema number
+
+	if( m_DB->Exec( "UPDATE config SET value=\"10\" where name=\"schema_number\"" ) != SQLITE_OK )
+		CONSOLE_Print( "[SQLITE3] error updating schema number [10] - " + m_DB->GetError( ) );
+	else
+		CONSOLE_Print( "[SQLITE3] updated schema number [10]" );
+
+	CONSOLE_Print( "[SQLITE3] schema upgrade v9 to v10 finished" );
+}
 bool CGHostDBSQLite :: Begin( )
 {
 	return m_DB->Exec( "BEGIN TRANSACTION" ) == SQLITE_OK;
@@ -1261,6 +1287,53 @@ uint32_t CGHostDBSQLite :: LiAGameAdd( uint32_t gameid, uint32_t gameresult, uin
 }
 
 
+uint32_t CGHostDBSQLite :: LiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS,
+ uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, 
+ string nItem3, string nItem4, string nItem5, string nItem6, string nHero )
+{
+	uint32_t RowID = 0;
+	sqlite3_stmt *Statement;
+	m_DB->Prepare( "INSERT INTO liaplayers ( gameid, colour, pts, deaths, creepkills, bosskills, item1, item2, item3, item4, item5, item6, hero) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )", (void **)&Statement );
+
+	if( Statement )
+	{
+		sqlite3_bind_int( Statement, 1, nGameID );
+		sqlite3_bind_int( Statement, 2, nColour );
+		sqlite3_bind_int( Statement, 3, nPTS );
+		sqlite3_bind_int( Statement, 4, nDeaths );
+		sqlite3_bind_int( Statement, 5, nCreepKills );
+		sqlite3_bind_int( Statement, 6, nBossKills );
+		sqlite3_bind_text( Statement, 7, nItem1.c_str( ), -1, SQLITE_TRANSIENT );
+		sqlite3_bind_text( Statement, 8, nItem2.c_str( ), -1, SQLITE_TRANSIENT );
+		sqlite3_bind_text( Statement, 9, nItem3.c_str( ), -1, SQLITE_TRANSIENT );
+		sqlite3_bind_text( Statement, 10, nItem4.c_str( ), -1, SQLITE_TRANSIENT );
+		sqlite3_bind_text( Statement, 11, nItem5.c_str( ), -1, SQLITE_TRANSIENT );
+		sqlite3_bind_text( Statement, 12, nItem6.c_str( ), -1, SQLITE_TRANSIENT );
+		sqlite3_bind_text( Statement, 13, nHero.c_str( ), -1, SQLITE_TRANSIENT );
+
+		int RC = m_DB->Step( Statement );
+
+		if( RC == SQLITE_DONE )
+			RowID = m_DB->LastRowID( );
+		else if( RC == SQLITE_ERROR )
+			CONSOLE_Print( "[SQLITE3] error adding liaplayer [" + UTIL_ToString( nGameID ) + " : " +
+			 UTIL_ToString( nColour ) + " : " + UTIL_ToString( nPTS ) + " : " + UTIL_ToString( nDeaths ) +
+			  " : " + UTIL_ToString( nCreepKills ) + " : " + UTIL_ToString( nBossKills ) + " : "
+			   + nItem1 + " : " + nItem2 + " : " + nItem3 + " : " + nItem4 + " : " + nItem5 + " : " + nItem6 + " : " + nHero + "] - " + m_DB->GetError( ) );
+
+		m_DB->Finalize( Statement );
+	}
+	else
+		CONSOLE_Print( "[SQLITE3] prepare error adding liaplayer  [" + UTIL_ToString( nGameID ) + " : " +
+			 UTIL_ToString( nColour ) + " : " + UTIL_ToString( nPTS ) + " : " + UTIL_ToString( nDeaths ) +
+			  " : " + UTIL_ToString( nCreepKills ) + " : " + UTIL_ToString( nBossKills ) + " : "
+			   + nItem1 + " : " + nItem2 + " : " + nItem3 + " : " + nItem4 + " : " + nItem5 + " : " + nItem6 + 
+			   " : " + nHero + "] - " + m_DB->GetError( ) );
+
+	return RowID;
+}
+
+
 string CGHostDBSQLite :: FromCheck( uint32_t ip )
 {
 	// a big thank you to tjado for help with the iptocountry feature
@@ -1646,10 +1719,15 @@ CCallableDotAGameAdd *CGHostDBSQLite :: ThreadedDotAGameAdd( uint32_t gameid, ui
 	return Callable;
 }
 
-CCallableDotAPlayerAdd *CGHostDBSQLite :: ThreadedDotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, string item1, string item2, string item3, string item4, string item5, string item6, string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills )
+CCallableDotAPlayerAdd *CGHostDBSQLite :: ThreadedDotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t
+ creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, string item1, string item2, string item3, 
+ string item4, string item5, string item6, string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills )
 {
-	CCallableDotAPlayerAdd *Callable = new CCallableDotAPlayerAdd( gameid, colour, kills, deaths, creepkills, creepdenies, assists, gold, neutralkills, item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, raxkills, courierkills );
-	Callable->SetResult( DotAPlayerAdd( gameid, colour, kills, deaths, creepkills, creepdenies, assists, gold, neutralkills, item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, raxkills, courierkills ) );
+	CCallableDotAPlayerAdd *Callable = new CCallableDotAPlayerAdd( gameid, colour, kills, deaths, creepkills,
+	 creepdenies, assists, gold, neutralkills, item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, 
+	 raxkills, courierkills );
+	Callable->SetResult( DotAPlayerAdd( gameid, colour, kills, deaths, creepkills, creepdenies, assists, gold, neutralkills, 
+	item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, raxkills, courierkills ) );
 	Callable->SetReady( true );
 	return Callable;
 }
@@ -1668,6 +1746,17 @@ CCallableLiAGameAdd *CGHostDBSQLite :: ThreadedLiAGameAdd( uint32_t gameid, uint
 	Callable->SetReady( true );
 	return Callable;
 }
+
+CCallableLiAPlayerAdd *CGHostDBSQLite :: ThreadedLiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS,
+ uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero )
+{
+	CCallableLiAPlayerAdd *Callable = new CCallableLiAPlayerAdd(nGameID, nColour, nPTS, nDeaths, nCreepKills,nBossKills,nItem1, nItem2,
+	 nItem3, nItem4, nItem5, nItem6, nHero);
+	Callable->SetResult( LiAPlayerAdd(nGameID, nColour, nPTS, nDeaths, nCreepKills,nBossKills,nItem1, nItem2, nItem3, nItem4, nItem5, nItem6, nHero));
+	Callable->SetReady( true );
+	return Callable;
+}
+
 CCallableDownloadAdd *CGHostDBSQLite :: ThreadedDownloadAdd( string map, uint32_t mapsize, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t downloadtime )
 {
 	CCallableDownloadAdd *Callable = new CCallableDownloadAdd( map, mapsize, name, ip, spoofed, spoofedrealm, downloadtime );

@@ -192,14 +192,17 @@ void CStatsLiA :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 
 	// 	// save the liaplayers
 
-		// for( unsigned int i = 0; i < 12; ++i )
-		// {
-		// 	if( m_Players[i] )
-		// 	{
-		// 		GHost->m_Callables.push_back( DB->ThreadedLiAPlayerAdd( GameID, m_Players[i]->GetColour( ), m_Players[i]->GetCreepKills( ), m_Players[i]->GetDeaths( ), m_Players[i]->GetCreepKills( ), m_Players[i]->GetCreepDenies( ), m_Players[i]->GetAssists( ), m_Players[i]->GetGold( ), m_Players[i]->GetNeutralKills( ), m_Players[i]->GetItem( 0 ), m_Players[i]->GetItem( 1 ), m_Players[i]->GetItem( 2 ), m_Players[i]->GetItem( 3 ), m_Players[i]->GetItem( 4 ), m_Players[i]->GetItem( 5 ), m_Players[i]->GetHero( ), m_Players[i]->GetNewColour( ), m_Players[i]->GetTowerKills( ), m_Players[i]->GetRaxKills( ), m_Players[i]->GetCourierKills( ) ) );
-		// 		++Players;
-		// 	}
-		// }
+		for( unsigned int i = 0; i < 8; ++i )
+		{
+			if( m_Players[i] )
+			{
+				GHost->m_Callables.push_back( DB->ThreadedLiAPlayerAdd( GameID, m_Players[i]->GetColour(), m_Players[i]->GetPTS(),
+				m_Players[i]->GetDeaths(), m_Players[i]->GetCreepKills(), m_Players[i]->GetBossKills(), 
+				m_Players[i]->GetItem(0),m_Players[i]->GetItem(1),m_Players[i]->GetItem(2),m_Players[i]->GetItem(3),m_Players[i]->GetItem(4),m_Players[i]->GetItem(5),
+				m_Players[i]->GetHero()));
+				++Players;
+			}
+		}
 
 		if( DB->Commit( ) )
 			CONSOLE_Print( "[STATSLIA: " + m_Game->GetGameName( ) + "] saving " + UTIL_ToString( Players ) + " players" );

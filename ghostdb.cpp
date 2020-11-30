@@ -276,7 +276,11 @@ CCallableLiAGameAdd *CGHostDB :: ThreadedLiAGameAdd( uint32_t gameid, uint32_t g
 {
 	return NULL;
 }
+CCallableLiAPlayerAdd *CGHostDB :: ThreadedLiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero )
 
+{
+	return NULL;
+}
 
 CCallableDownloadAdd *CGHostDB :: ThreadedDownloadAdd( string map, uint32_t mapsize, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t downloadtime )
 {
@@ -407,6 +411,10 @@ CCallableLiAGameAdd :: ~CCallableLiAGameAdd( )
 
 }
 
+CCallableLiAPlayerAdd :: ~CCallableLiAPlayerAdd( )
+{
+
+}
 CCallableDownloadAdd :: ~CCallableDownloadAdd( )
 {
 
@@ -557,7 +565,7 @@ CDBDotAPlayerSummary :: ~CDBDotAPlayerSummary( )
 
 }
 CDBLiAPlayer :: CDBLiAPlayer( )
-    : m_ID( 0 ), m_GameID( 0 ), m_Colour( 0 ), m_Deaths( 0 ), m_CreepKills( 0 ), m_BossKills( 0 ),  m_Hero( "" )
+    : m_ID( 0 ), m_GameID( 0 ), m_Colour( 0 ), m_Deaths( 0 ), m_CreepKills( 0 ), m_BossKills( 0 )
 {
 	
 	m_Items[0] = "";
@@ -566,6 +574,7 @@ CDBLiAPlayer :: CDBLiAPlayer( )
 	m_Items[3] = "";
 	m_Items[4] = "";
 	m_Items[5] = "";
+	m_Hero = "";
 }
 
 CDBLiAPlayer :: CDBLiAPlayer( uint32_t nID, uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero)
@@ -582,4 +591,17 @@ CDBLiAPlayer :: CDBLiAPlayer( uint32_t nID, uint32_t nGameID, uint32_t nColour, 
 CDBLiAPlayer :: ~CDBLiAPlayer( )
 {
 
+}
+string CDBLiAPlayer :: GetItem( unsigned int i )
+{
+	if( i < 6 )
+		return m_Items[i];
+
+	return string( );
+}
+
+void CDBLiAPlayer :: SetItem( unsigned int i, string item )
+{
+	if( i < 6 )
+		m_Items[i] = item;
 }

@@ -42,7 +42,6 @@ class CCallableGamePlayerSummaryCheck;
 class CCallableDotAGameAdd;
 class CCallableDotAPlayerAdd;
 class CCallableDotAPlayerSummaryCheck;
-class CCallableLiAGameAdd;
 class CCallableDownloadAdd;
 class CCallableScoreCheck;
 class CCallableW3MMDPlayerAdd;
@@ -52,6 +51,11 @@ class CDBGame;
 class CDBGamePlayer;
 class CDBGamePlayerSummary;
 class CDBDotAPlayerSummary;
+class CDBLiAGame;
+class CDBLiAPlayer;
+class CDBLiAPlayerSummary;
+class CCallableLiAGameAdd;
+class CCallableLiAPlayerAdd;
 
 typedef pair<uint32_t,string> VarP;
 
@@ -123,6 +127,7 @@ public:
 	virtual CCallableDotAPlayerAdd *ThreadedDotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, string item1, string item2, string item3, string item4, string item5, string item6, string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills );
 	virtual CCallableDotAPlayerSummaryCheck *ThreadedDotAPlayerSummaryCheck( string name );
 	virtual CCallableLiAGameAdd *ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec );
+	virtual CCallableLiAPlayerAdd *ThreadedLiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero );
 	virtual CCallableDownloadAdd *ThreadedDownloadAdd( string map, uint32_t mapsize, string name, string ip, uint32_t spoofed, string spoofedrealm, uint32_t downloadtime );
 	virtual CCallableScoreCheck *ThreadedScoreCheck( string category, string name, string server );
 	virtual CCallableW3MMDPlayerAdd *ThreadedW3MMDPlayerAdd( string category, uint32_t gameid, uint32_t pid, string name, string flag, uint32_t leaver, uint32_t practicing );
@@ -465,8 +470,44 @@ protected:
 	uint32_t m_Result;
 
 public:
-	CCallableDotAPlayerAdd( uint32_t nGameID, uint32_t nColour, uint32_t nKills, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nCreepDenies, uint32_t nAssists, uint32_t nGold, uint32_t nNeutralKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero, uint32_t nNewColour, uint32_t nTowerKills, uint32_t nRaxKills, uint32_t nCourierKills ) : CBaseCallable( ), m_GameID( nGameID ), m_Colour( nColour ), m_Kills( nKills ), m_Deaths( nDeaths ), m_CreepKills( nCreepKills ), m_CreepDenies( nCreepDenies ), m_Assists( nAssists ), m_Gold( nGold ), m_NeutralKills( nNeutralKills ), m_Item1( nItem1 ), m_Item2( nItem2 ), m_Item3( nItem3 ), m_Item4( nItem4 ), m_Item5( nItem5 ), m_Item6( nItem6 ), m_Hero( nHero ), m_NewColour( nNewColour ), m_TowerKills( nTowerKills ), m_RaxKills( nRaxKills ), m_CourierKills( nCourierKills ), m_Result( 0 ) { }
+	CCallableDotAPlayerAdd( uint32_t nGameID, uint32_t nColour, uint32_t nKills, uint32_t nDeaths, uint32_t nCreepKills,
+	 uint32_t nCreepDenies, uint32_t nAssists, uint32_t nGold, uint32_t nNeutralKills, string nItem1, string nItem2, 
+	 string nItem3, string nItem4, string nItem5, string nItem6, string nHero, uint32_t nNewColour, uint32_t nTowerKills,
+	  uint32_t nRaxKills, uint32_t nCourierKills ) : CBaseCallable( ), m_GameID( nGameID ), m_Colour( nColour ), m_Kills( nKills ),
+	   m_Deaths( nDeaths ), m_CreepKills( nCreepKills ), m_CreepDenies( nCreepDenies ), m_Assists( nAssists ), m_Gold( nGold ),
+	    m_NeutralKills( nNeutralKills ), m_Item1( nItem1 ), m_Item2( nItem2 ), m_Item3( nItem3 ), m_Item4( nItem4 ), m_Item5( nItem5 ),
+		 m_Item6( nItem6 ), m_Hero( nHero ), m_NewColour( nNewColour ), m_TowerKills( nTowerKills ), m_RaxKills( nRaxKills ), 
+		 m_CourierKills( nCourierKills ), m_Result( 0 ) { }
 	virtual ~CCallableDotAPlayerAdd( );
+
+	virtual uint32_t GetResult( )				{ return m_Result; }
+	virtual void SetResult( uint32_t nResult )	{ m_Result = nResult; }
+};
+
+class CCallableLiAPlayerAdd : virtual public CBaseCallable
+{
+protected:
+	uint32_t m_GameID;
+	uint32_t m_Colour;
+	int32_t m_PTS;
+	uint32_t m_Deaths;
+	uint32_t m_CreepKills;
+	uint32_t m_BossKills;
+	string m_Item1;
+	string m_Item2;
+	string m_Item3;
+	string m_Item4;
+	string m_Item5;
+	string m_Item6;
+	string m_Hero;
+	uint32_t m_Result;
+public:
+	CCallableLiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS,
+ uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero ) : 
+	CBaseCallable( ), m_GameID( nGameID ), m_Colour( nColour ), m_PTS( nPTS ), m_Deaths( nDeaths ), m_CreepKills( nCreepKills ), m_BossKills( nBossKills ),
+	  m_Item1( nItem1 ), m_Item2( nItem2 ), m_Item3( nItem3 ), m_Item4( nItem4 ), m_Item5( nItem5 ), m_Item6( nItem6 ),
+	   m_Hero( nHero ), m_Result( 0 ) { }
+	virtual ~CCallableLiAPlayerAdd( );
 
 	virtual uint32_t GetResult( )				{ return m_Result; }
 	virtual void SetResult( uint32_t nResult )	{ m_Result = nResult; }
