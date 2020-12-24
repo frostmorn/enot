@@ -1719,7 +1719,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 */
 		}
 				
-		if (((*i)->GetServerAlias().find("ICCup") != std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") != std::string::npos))
+		if (((*i)->GetServerAlias().find("ICCup") == std::string::npos)&&((*i)->GetServerAlias().find("Rubattle") == std::string::npos))
 		{
 			//	we can't host 20 games to servers which makes us to do shit
 			//	so we will do it later
