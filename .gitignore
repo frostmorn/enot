@@ -38,3 +38,4 @@ fiona.log
 *.cfg
 *.j
 .vscode/settings.json
+move_to_production.sh
