@@ -349,7 +349,7 @@ uint32_t CBaseGame ::GetNumJudgePlayers(){
 	uint32_t NumJudgePlayers = 0;
 
 	for (auto iSlot :m_Slots){
-		if (iSlot.GetPID() !=255 && iSlot.GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && iSlot.GetComputer( ) == 0 && iSlot.GetTeam()==12){
+		if (iSlot.GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && iSlot.GetComputer( ) == 0 && iSlot.GetTeam()==12 && iSlot.GetPID() != m_FakePlayerPID){
 			++NumJudgePlayers;
 		}
 	}
