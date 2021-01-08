@@ -104,6 +104,7 @@ private:
 	uint32_t m_StartedLaggingTicks;				// GetTicks when the player started lagging
 	uint32_t m_StatsSentTime;					// GetTime when we sent this player's stats to the chat (to prevent players from spamming !stats)
 	uint32_t m_StatsDotASentTime;				// GetTime when we sent this player's dota stats to the chat (to prevent players from spamming !statsdota)
+	uint32_t m_StatsLiASentTime;				// GetTime when we sent this player's dota stats to the chat (to prevent players from spamming !statslia)
 	uint32_t m_LastGProxyWaitNoticeSentTime;
 	queue<BYTEARRAY> m_LoadInGameData;			// queued data to be sent when the player finishes loading when using "load in game"
 	double m_Score;								// the player's generic "score" for the matchmaking algorithm
@@ -155,6 +156,7 @@ public:
 	uint32_t GetStartedLaggingTicks( )			{ return m_StartedLaggingTicks; }
 	uint32_t GetStatsSentTime( )				{ return m_StatsSentTime; }
 	uint32_t GetStatsDotASentTime( )			{ return m_StatsDotASentTime; }
+	uint32_t GetStatsLiASentTime( )				{ return m_StatsLiASentTime; }
 	uint32_t GetLastGProxyWaitNoticeSentTime( )	{ return m_LastGProxyWaitNoticeSentTime; }
 	queue<BYTEARRAY> *GetLoadInGameData( )		{ return &m_LoadInGameData; }
 	double GetScore( )							{ return m_Score; }
@@ -190,6 +192,7 @@ public:
 	void SetStartedLaggingTicks( uint32_t nStartedLaggingTicks )					{ m_StartedLaggingTicks = nStartedLaggingTicks; }
 	void SetStatsSentTime( uint32_t nStatsSentTime )								{ m_StatsSentTime = nStatsSentTime; }
 	void SetStatsDotASentTime( uint32_t nStatsDotASentTime )						{ m_StatsDotASentTime = nStatsDotASentTime; }
+	void SetStatsLiASentTime( uint32_t nStatsLiASentTime )						{ m_StatsLiASentTime = nStatsLiASentTime; }
 	void SetLastGProxyWaitNoticeSentTime( uint32_t nLastGProxyWaitNoticeSentTime )	{ m_LastGProxyWaitNoticeSentTime = nLastGProxyWaitNoticeSentTime; }
 	void SetScore( double nScore )													{ m_Score = nScore; }
 	void SetLoggedIn( bool nLoggedIn )												{ m_LoggedIn = nLoggedIn; }

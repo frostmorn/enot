@@ -1850,6 +1850,26 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string
 		player->SetStatsDotASentTime( GetTime( ) );
 	}
 
+	//
+	// !STATSLIA
+	// !SL
+	//
+
+	else if( (Command == "statslia" || Command == "sl") && GetTime( ) - player->GetStatsLiASentTime( ) >= 5 )
+	{
+		string StatsUser = User;
+
+		if( !Payload.empty( ) )
+			StatsUser = Payload;
+
+		if( player->GetSpoofed( ) && ( AdminCheck || RootAdminCheck || IsOwner( User ) ) )
+			m_PairedLPSChecks.push_back( PairedLPSCheck( string( ), m_GHost->m_DB->ThreadedLiAPlayerSummaryCheck( StatsUser ) ) );
+		else
+			m_PairedLPSChecks.push_back( PairedLPSCheck( User, m_GHost->m_DB->ThreadedLiAPlayerSummaryCheck( StatsUser ) ) );
+
+		player->SetStatsLiASentTime( GetTime( ) );
+	}
+
 
 	// !VOTESTART
     //

@@ -597,6 +597,7 @@ string CLanguage :: HasPlayedDotAGamesWithThisBot( string user, string totalgame
 	return Out;
 }
 
+
 string CLanguage :: HasntPlayedDotAGamesWithThisBot( string user )
 {
 	string Out = m_CFG->GetString( "lang_0075", "lang_0075" );
@@ -610,6 +611,7 @@ string CLanguage :: WasKickedForReservedPlayer( string reserved )
 	UTIL_Replace( Out, "$RESERVED$", reserved );
 	return Out;
 }
+
 
 string CLanguage :: WasKickedForOwnerPlayer( string owner )
 {
@@ -1531,5 +1533,23 @@ string CLanguage :: PlayerReconnectedWithGProxy( string name )
 {
 	string Out = m_CFG->GetString( "lang_0220", "lang_0220" );
 	UTIL_Replace( Out, "$NAME$", name );
+	return Out;
+}
+
+string CLanguage :: HasPlayedLiAGamesWithThisBot( string user, string totalgames, string totalwins, string totallosses, string totaldeaths, string totalpts, string totalcreepkills, string totalbosskills,  string avgdeaths, string avgcreepkills, string avgbosskills, string avgpts)
+{
+	string Out = m_CFG->GetString( "lang_0221", "lang_0221" );
+	UTIL_Replace( Out, "$USER$", user );
+	UTIL_Replace( Out, "$TOTALGAMES$", totalgames );
+	UTIL_Replace( Out, "$TOTALWINS$", totalwins );
+	UTIL_Replace( Out, "$TOTALLOSSES$", totallosses );
+	UTIL_Replace( Out, "$TOTALDEATHS$", totaldeaths );
+	UTIL_Replace( Out, "$TOTALPTS$", totalpts );
+	UTIL_Replace( Out, "$TOTALCREEPKILLS$", totalcreepkills );
+	UTIL_Replace( Out, "$TOTALBOSSKILLS$", totalbosskills );
+	UTIL_Replace( Out, "$AVGDEATHS$", avgdeaths );
+	UTIL_Replace( Out, "$AVGCREEPKILLS$", avgcreepkills );
+	UTIL_Replace( Out, "$AVGBOSSKILLS$", avgbosskills );
+	UTIL_Replace( Out, "$AVGPTS$", avgpts );
 	return Out;
 }

@@ -1168,6 +1168,31 @@ uint32_t CGHostDBSQLite :: DotAPlayerCount( string name )
 	return Count;
 }
 
+uint32_t CGHostDBSQLite :: LiAPlayerCount( string name )
+{
+	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
+	uint32_t Count = 0;
+	sqlite3_stmt *Statement;
+	m_DB->Prepare( "SELECT COUNT(liaplayers.id) FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN liaplayers ON liaplayers.gameid=games.id AND liaplayers.colour=gameplayers.colour WHERE name=?", (void **)&Statement );
+
+	if( Statement )
+	{
+		sqlite3_bind_text( Statement, 1, name.c_str( ), -1, SQLITE_TRANSIENT );
+		int RC = m_DB->Step( Statement );
+
+		if( RC == SQLITE_ROW )
+			Count = sqlite3_column_int( Statement, 0 );
+		else if( RC == SQLITE_ERROR )
+			CONSOLE_Print( "[SQLITE3] error counting liaplayers [" + name + "] - " + m_DB->GetError( ) );
+
+		m_DB->Finalize( Statement );
+	}
+	else
+		CONSOLE_Print( "[SQLITE3] prepare error counting liaplayers [" + name + "] - " + m_DB->GetError( ) );
+
+	return Count;
+}
+
 CDBDotAPlayerSummary *CGHostDBSQLite :: DotAPlayerSummaryCheck( string name )
 {
 	if( DotAPlayerCount( name ) == 0 )
@@ -1256,6 +1281,91 @@ CDBDotAPlayerSummary *CGHostDBSQLite :: DotAPlayerSummaryCheck( string name )
 		CONSOLE_Print( "[SQLITE3] prepare error checking dotaplayersummary [" + name + "] - " + m_DB->GetError( ) );
 
 	return DotAPlayerSummary;
+}
+
+CDBLiAPlayerSummary *CGHostDBSQLite :: LiAPlayerSummaryCheck( string name )
+{
+	if( LiAPlayerCount( name ) == 0 )
+		return NULL;
+
+	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
+	CDBLiAPlayerSummary *LiAPlayerSummary = NULL;
+	sqlite3_stmt *Statement;
+	m_DB->Prepare( "SELECT COUNT(liaplayers.id), SUM(deaths), SUM(pts), SUM(creepkills), SUM(bosskills) FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN liaplayers ON liaplayers.gameid=games.id AND liaplayers.colour=gameplayers.colour WHERE name=?", (void **)&Statement );
+
+	if( Statement )
+	{
+		sqlite3_bind_text( Statement, 1, name.c_str( ), -1, SQLITE_TRANSIENT );
+		int RC = m_DB->Step( Statement );
+
+		if( RC == SQLITE_ROW )
+		{
+			if( sqlite3_column_count( (sqlite3_stmt *)Statement ) == 5 )
+			{
+				uint32_t TotalGames = sqlite3_column_int( (sqlite3_stmt *)Statement, 0 );
+				uint32_t TotalWins = 0;
+				uint32_t TotalLosses = 0;
+				uint32_t TotalDeaths = sqlite3_column_int( (sqlite3_stmt *)Statement, 1 );
+				uint32_t TotalPTS = sqlite3_column_int( (sqlite3_stmt *)Statement, 2 );
+				uint32_t TotalCreepKills = sqlite3_column_int( (sqlite3_stmt *)Statement, 3 );
+				uint32_t TotalBossKills = sqlite3_column_int( (sqlite3_stmt *)Statement, 4 );
+
+				// calculate total wins
+
+				/*sqlite3_stmt *Statement2;
+				m_DB->Prepare( "SELECT COUNT(*) FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id AND dotaplayers.colour=gameplayers.colour LEFT JOIN dotagames ON games.id=dotagames.gameid WHERE name=? AND ((winner=1 AND dotaplayers.newcolour>=1 AND dotaplayers.newcolour<=5) OR (winner=2 AND dotaplayers.newcolour>=7 AND dotaplayers.newcolour<=11))", (void **)&Statement2 );
+
+				if( Statement2 )
+				{
+					sqlite3_bind_text( Statement2, 1, name.c_str( ), -1, SQLITE_TRANSIENT );
+					int RC2 = m_DB->Step( Statement2 );
+
+					if( RC2 == SQLITE_ROW )
+						TotalWins = sqlite3_column_int( Statement2, 0 );
+					else if( RC2 == SQLITE_ERROR )
+						CONSOLE_Print( "[SQLITE3] error counting dotaplayersummary wins [" + name + "] - " + m_DB->GetError( ) );
+
+					m_DB->Finalize( Statement2 );
+				}
+				else
+					CONSOLE_Print( "[SQLITE3] prepare error counting dotaplayersummary wins [" + name + "] - " + m_DB->GetError( ) );
+
+				// calculate total losses
+
+				sqlite3_stmt *Statement3;
+				m_DB->Prepare( "SELECT COUNT(*) FROM gameplayers LEFT JOIN games ON games.id=gameplayers.gameid LEFT JOIN dotaplayers ON dotaplayers.gameid=games.id AND dotaplayers.colour=gameplayers.colour LEFT JOIN dotagames ON games.id=dotagames.gameid WHERE name=? AND ((winner=2 AND dotaplayers.newcolour>=1 AND dotaplayers.newcolour<=5) OR (winner=1 AND dotaplayers.newcolour>=7 AND dotaplayers.newcolour<=11))", (void **)&Statement3 );
+
+				if( Statement3 )
+				{
+					sqlite3_bind_text( Statement3, 1, name.c_str( ), -1, SQLITE_TRANSIENT );
+					int RC3 = m_DB->Step( Statement3 );
+
+					if( RC3 == SQLITE_ROW )
+						TotalLosses = sqlite3_column_int( Statement3, 0 );
+					else if( RC3 == SQLITE_ERROR )
+						CONSOLE_Print( "[SQLITE3] error counting dotaplayersummary losses [" + name + "] - " + m_DB->GetError( ) );
+
+					m_DB->Finalize( Statement3 );
+				}
+				else
+					CONSOLE_Print( "[SQLITE3] prepare error counting dotaplayersummary losses [" + name + "] - " + m_DB->GetError( ) );
+*/
+				// done
+
+				LiAPlayerSummary = new CDBLiAPlayerSummary( string( ), name, TotalGames, TotalWins, TotalLosses, TotalDeaths, TotalPTS, TotalCreepKills, TotalBossKills );
+			}
+			else
+				CONSOLE_Print( "[SQLITE3] error checking liaplayersummary [" + name + "] - row doesn't have 5 columns" );
+		}
+		else if( RC == SQLITE_ERROR )
+			CONSOLE_Print( "[SQLITE3] error checking liaplayersummary [" + name + "] - " + m_DB->GetError( ) );
+
+		m_DB->Finalize( Statement );
+	}
+	else
+		CONSOLE_Print( "[SQLITE3] prepare error checking liaplayersummary [" + name + "] - " + m_DB->GetError( ) );
+
+	return LiAPlayerSummary;
 }
 
 uint32_t CGHostDBSQLite :: LiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec )
@@ -1736,6 +1846,14 @@ CCallableDotAPlayerSummaryCheck *CGHostDBSQLite :: ThreadedDotAPlayerSummaryChec
 {
 	CCallableDotAPlayerSummaryCheck *Callable = new CCallableDotAPlayerSummaryCheck( name );
 	Callable->SetResult( DotAPlayerSummaryCheck( name ) );
+	Callable->SetReady( true );
+	return Callable;
+}
+
+CCallableLiAPlayerSummaryCheck *CGHostDBSQLite :: ThreadedLiAPlayerSummaryCheck( string name )
+{
+	CCallableLiAPlayerSummaryCheck *Callable = new CCallableLiAPlayerSummaryCheck( name );
+	Callable->SetResult( LiAPlayerSummaryCheck( name ) );
 	Callable->SetReady( true );
 	return Callable;
 }

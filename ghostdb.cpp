@@ -147,6 +147,10 @@ CDBDotAPlayerSummary *CGHostDB :: DotAPlayerSummaryCheck( string name )
 	return NULL;
 }
 
+CDBLiAPlayerSummary *CGHostDB :: LiAPlayerSummaryCheck( string name )
+{
+	return NULL;
+}
 string CGHostDB :: FromCheck( uint32_t ip )
 {
 	return "??";
@@ -278,6 +282,11 @@ CCallableLiAGameAdd *CGHostDB :: ThreadedLiAGameAdd( uint32_t gameid, uint32_t g
 }
 CCallableLiAPlayerAdd *CGHostDB :: ThreadedLiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, string nItem1, string nItem2, string nItem3, string nItem4, string nItem5, string nItem6, string nHero )
 
+{
+	return NULL;
+}
+
+CCallableLiAPlayerSummaryCheck *CGHostDB :: ThreadedLiAPlayerSummaryCheck( string name )
 {
 	return NULL;
 }
@@ -414,6 +423,10 @@ CCallableLiAGameAdd :: ~CCallableLiAGameAdd( )
 CCallableLiAPlayerAdd :: ~CCallableLiAPlayerAdd( )
 {
 
+}
+CCallableLiAPlayerSummaryCheck :: ~CCallableLiAPlayerSummaryCheck( )
+{
+	delete m_Result;
 }
 CCallableDownloadAdd :: ~CCallableDownloadAdd( )
 {
@@ -564,6 +577,10 @@ CDBDotAPlayerSummary :: ~CDBDotAPlayerSummary( )
 {
 
 }
+CDBLiAPlayerSummary :: ~CDBLiAPlayerSummary( )
+{
+
+}
 CDBLiAPlayer :: CDBLiAPlayer( )
     : m_ID( 0 ), m_GameID( 0 ), m_Colour( 0 ), m_Deaths( 0 ), m_CreepKills( 0 ), m_BossKills( 0 )
 {
@@ -592,6 +609,15 @@ CDBLiAPlayer :: ~CDBLiAPlayer( )
 {
 
 }
+CDBLiAPlayerSummary:: CDBLiAPlayerSummary( string nServer, string nName, uint32_t nTotalGames, uint32_t nTotalWins,
+	 uint32_t nTotalLosses, uint32_t nTotalDeaths, uint32_t nTotalPTS, uint32_t nTotalCreepKills,
+	  uint32_t nTotalBossKills) : m_Server( nServer ), m_Name( nName ), m_TotalGames( nTotalGames ),
+	   m_TotalWins( nTotalWins ), m_TotalLosses( nTotalLosses ),
+	   m_TotalDeaths( nTotalDeaths ), m_TotalPTS( nTotalPTS ), 
+	    m_TotalCreepKills( nTotalCreepKills ), m_TotalBossKills( nTotalBossKills )
+	  {
+
+	  }
 string CDBLiAPlayer :: GetItem( unsigned int i )
 {
 	if( i < 6 )
