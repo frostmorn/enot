@@ -192,7 +192,7 @@ public:
 	void SetStartedLaggingTicks( uint32_t nStartedLaggingTicks )					{ m_StartedLaggingTicks = nStartedLaggingTicks; }
 	void SetStatsSentTime( uint32_t nStatsSentTime )								{ m_StatsSentTime = nStatsSentTime; }
 	void SetStatsDotASentTime( uint32_t nStatsDotASentTime )						{ m_StatsDotASentTime = nStatsDotASentTime; }
-	void SetStatsLiASentTime( uint32_t nStatsLiASentTime )						{ m_StatsLiASentTime = nStatsLiASentTime; }
+	void SetStatsLiASentTime( uint32_t nStatsLiASentTime )							{ m_StatsLiASentTime = nStatsLiASentTime; }
 	void SetLastGProxyWaitNoticeSentTime( uint32_t nLastGProxyWaitNoticeSentTime )	{ m_LastGProxyWaitNoticeSentTime = nLastGProxyWaitNoticeSentTime; }
 	void SetScore( double nScore )													{ m_Score = nScore; }
 	void SetLoggedIn( bool nLoggedIn )												{ m_LoggedIn = nLoggedIn; }
