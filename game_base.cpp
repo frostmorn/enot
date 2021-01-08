@@ -259,8 +259,17 @@ void CBaseGame :: loop( )
 
 		if( SecString.size( ) == 1 )
 			SecString.insert( 0, "0" );
+		
+		CONSOLE_Print("ENOT is trying to save replay...");
+		CONSOLE_Print("Game HCL is : " + this->m_HCLCommandString);
+		CONSOLE_Print("Players :");
+		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		{
+			CONSOLE_Print("Player " + (*i)->GetNameTerminated());
+		}
 
 		m_Replay->BuildReplay( m_GameName, m_StatString, m_GHost->m_ReplayWar3Version, m_GHost->m_ReplayBuildNumber );
+		
 		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
 	}
 
