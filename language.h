@@ -254,6 +254,8 @@ public:
 	string WaitForReconnectSecondsRemain( string seconds );
 	string WasUnrecoverablyDroppedFromGProxy( );
 	string PlayerReconnectedWithGProxy( string name );
+	string HasPlayedLiAGamesWithThisBot( string user, string totalgames, string totalwins, string totallosses, string totaldeaths, string totalpts, string totalcreepkills, string totalbosskills,  string avgdeaths, string avgcreepkills, string avgbosskills, string avgpts);
+	string HasntPlayedLiAGamesWithThisBot( string user );
 };
 
 #endif

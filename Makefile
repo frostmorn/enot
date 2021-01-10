@@ -80,8 +80,8 @@ sha1.o: sha1.h
 socket.o: ghost.h includes.h util.h socket.h
 stats.o: ghost.h includes.h stats.h
 statsdota.o: ghost.h includes.h util.h ghostdb.h gameplayer.h gameprotocol.h game_base.h stats.h statsdota.h
-statslia.o: ghost.h includes.h util.h ghostdb.h gameplayer.h gameprotocol.h game_base.h stats.h statslia.h
 statsw3mmd.o: ghost.h includes.h util.h ghostdb.h gameprotocol.h game_base.h stats.h statsw3mmd.h
+statslia.o: ghost.h includes.h util.h ghostdb.h gameplayer.h gameprotocol.h game_base.h stats.h statslia.h
 util.o: ghost.h includes.h util.h
 discord.o : discord.h
 lia.o : lia.h

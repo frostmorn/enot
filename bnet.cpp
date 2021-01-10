@@ -219,6 +219,9 @@ CBNET :: ~CBNET( )
 	for( vector<PairedDPSCheck> :: iterator i = m_PairedDPSChecks.begin( ); i != m_PairedDPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
 
+	for( vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); ++i )
+		m_GHost->m_Callables.push_back( i->second );
+
 	if( m_CallableAdminList )
 		m_GHost->m_Callables.push_back( m_CallableAdminList );
 
@@ -442,6 +445,39 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			m_GHost->m_DB->RecoverCallable( i->second );
 			delete i->second;
 			i = m_PairedDPSChecks.erase( i );
+		}
+		else
+			++i;
+	}
+	for( vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); )
+	{
+		if( i->second->GetReady( ) )
+		{
+			CDBLiAPlayerSummary *LiAPlayerSummary = i->second->GetResult( );
+
+			if( LiAPlayerSummary )
+			{
+				string Summary = m_GHost->m_Language->HasPlayedLiAGamesWithThisBot(	i->second->GetName( ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalGames( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalWins( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalLosses( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalDeaths( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalPTS( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalCreepKills( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalBossKills( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetAvgDeaths( ), 2 ),
+					UTIL_ToString( LiAPlayerSummary->GetAvgCreepKills( ), 2 ),
+					UTIL_ToString( LiAPlayerSummary->GetAvgBossKills( ), 2 ),
+					UTIL_ToString( LiAPlayerSummary->GetAvgPTS( ), 2 ));
+
+				QueueChatCommand( Summary, i->first, !i->first.empty( ) );
+			}
+			else
+				QueueChatCommand( m_GHost->m_Language->HasntPlayedLiAGamesWithThisBot( i->second->GetName( ) ), i->first, !i->first.empty( ) );
+
+			m_GHost->m_DB->RecoverCallable( i->second );
+			delete i->second;
+			i = m_PairedLPSChecks.erase( i );
 		}
 		else
 			++i;
@@ -2162,6 +2198,23 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 				m_PairedDPSChecks.push_back( PairedDPSCheck( Whisper ? User : string( ), m_GHost->m_DB->ThreadedDotAPlayerSummaryCheck( StatsUser ) ) );
 		}
 
+		//
+		// !STATSLIA
+		// !SL
+		//
+
+		else if( Command == "statslia" || Command == "sl" )
+		{
+			string StatsUser = User;
+
+			if( !Payload.empty( ) )
+				StatsUser = Payload;
+
+			// check for potential abuse
+
+			if( !StatsUser.empty( ) && StatsUser.size( ) < 16 && StatsUser[0] != '/' )
+				m_PairedLPSChecks.push_back( PairedLPSCheck( Whisper ? User : string( ), m_GHost->m_DB->ThreadedLiAPlayerSummaryCheck( StatsUser ) ) );
+		}
 		//
 		// !VERSION
 		//
