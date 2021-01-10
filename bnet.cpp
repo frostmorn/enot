@@ -2196,8 +2196,8 @@ void CBNET :: BotCommand( string Message, string User, bool Whisper, bool ForceR
 		}
 
 		//
-		// !STATSDOTA
-		// !SD
+		// !STATSLIA
+		// !SL
 		//
 
 		else if( Command == "statslia" || Command == "sl" )
