@@ -470,7 +470,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 				QueueChatCommand( Summary, i->first, !i->first.empty( ) );
 			}
 			else
-				QueueChatCommand( m_GHost->m_Language->HasntPlayedDotAGamesWithThisBot( i->second->GetName( ) ), i->first, !i->first.empty( ) );
+				QueueChatCommand( m_GHost->m_Language->HasntPlayedLiAGamesWithThisBot( i->second->GetName( ) ), i->first, !i->first.empty( ) );
 
 			m_GHost->m_DB->RecoverCallable( i->second );
 			delete i->second;
