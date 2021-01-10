@@ -108,7 +108,6 @@ public:
 	string LongestLoadByPlayer( string user, string loadingtime );
 	string YourLoadingTimeWas( string loadingtime );
 	string HasPlayedDotAGamesWithThisBot( string user, string totalgames, string totalwins, string totallosses, string totalkills, string totaldeaths, string totalcreepkills, string totalcreepdenies, string totalassists, string totalneutralkills, string totaltowerkills, string totalraxkills, string totalcourierkills, string avgkills, string avgdeaths, string avgcreepkills, string avgcreepdenies, string avgassists, string avgneutralkills, string avgtowerkills, string avgraxkills, string avgcourierkills );
-	string HasPlayedLiAGamesWithThisBot( string user, string totalgames, string totalwins, string totallosses, string totaldeaths, string totalpts, string totalcreepkills, string totalbosskills,  string avgdeaths, string avgcreepkills, string avgbosskills, string avgpts);
 	string HasntPlayedDotAGamesWithThisBot( string user );
 	string WasKickedForReservedPlayer( string reserved );
 	string WasKickedForOwnerPlayer( string owner );
@@ -255,6 +254,8 @@ public:
 	string WaitForReconnectSecondsRemain( string seconds );
 	string WasUnrecoverablyDroppedFromGProxy( );
 	string PlayerReconnectedWithGProxy( string name );
+	string HasPlayedLiAGamesWithThisBot( string user, string totalgames, string totalwins, string totallosses, string totaldeaths, string totalpts, string totalcreepkills, string totalbosskills,  string avgdeaths, string avgcreepkills, string avgbosskills, string avgpts);
+	string HasntPlayedLiAGamesWithThisBot( string user );
 };
 
 #endif

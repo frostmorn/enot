@@ -1553,3 +1553,11 @@ string CLanguage :: HasPlayedLiAGamesWithThisBot( string user, string totalgames
 	UTIL_Replace( Out, "$AVGPTS$", avgpts );
 	return Out;
 }
+
+
+string CLanguage :: HasntPlayedLiAGamesWithThisBot( string user )
+{
+	string Out = m_CFG->GetString( "lang_0222", "lang_0222" );
+	UTIL_Replace( Out, "$USER$", user );
+	return Out;
+}
