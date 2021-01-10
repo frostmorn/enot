@@ -1538,6 +1538,7 @@ string CLanguage :: PlayerReconnectedWithGProxy( string name )
 
 string CLanguage :: HasPlayedLiAGamesWithThisBot( string user, string totalgames, string totalwins, string totallosses, string totaldeaths, string totalpts, string totalcreepkills, string totalbosskills,  string avgdeaths, string avgcreepkills, string avgbosskills, string avgpts)
 {
+	CONSOLE_Print("Entering CLanguage :: HasPlayedLiAGamesWithThisBot");
 	string Out = m_CFG->GetString( "lang_0221", "lang_0221" );
 	UTIL_Replace( Out, "$USER$", user );
 	UTIL_Replace( Out, "$TOTALGAMES$", totalgames );
@@ -1551,6 +1552,7 @@ string CLanguage :: HasPlayedLiAGamesWithThisBot( string user, string totalgames
 	UTIL_Replace( Out, "$AVGCREEPKILLS$", avgcreepkills );
 	UTIL_Replace( Out, "$AVGBOSSKILLS$", avgbosskills );
 	UTIL_Replace( Out, "$AVGPTS$", avgpts );
+	CONSOLE_Print("LiA Stats string: " + Out);
 	return Out;
 }
 

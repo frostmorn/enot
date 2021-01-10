@@ -1189,7 +1189,7 @@ uint32_t CGHostDBSQLite :: LiAPlayerCount( string name )
 	}
 	else
 		CONSOLE_Print( "[SQLITE3] prepare error counting liaplayers [" + name + "] - " + m_DB->GetError( ) );
-
+	CONSOLE_Print("Player " + name + " played " + UTIL_ToString(Count) + " LiA games");
 	return Count;
 }
 
@@ -1285,6 +1285,7 @@ CDBDotAPlayerSummary *CGHostDBSQLite :: DotAPlayerSummaryCheck( string name )
 
 CDBLiAPlayerSummary *CGHostDBSQLite :: LiAPlayerSummaryCheck( string name )
 {
+	CONSOLE_Print("Entering LiAPlayerSummaryCheck. Player = "+name);
 	if( LiAPlayerCount( name ) == 0 )
 		return NULL;
 
@@ -1364,7 +1365,15 @@ CDBLiAPlayerSummary *CGHostDBSQLite :: LiAPlayerSummaryCheck( string name )
 	}
 	else
 		CONSOLE_Print( "[SQLITE3] prepare error checking liaplayersummary [" + name + "] - " + m_DB->GetError( ) );
-
+	if (LiAPlayerSummary == 0)
+	{
+		CONSOLE_Print("Looks like we can't get stats for lia user "+name);
+	}
+	else
+	{
+		CONSOLE_Print("Good news! Database returned valid data!!! ");
+	}
+	
 	return LiAPlayerSummary;
 }
 

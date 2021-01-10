@@ -219,6 +219,9 @@ CBNET :: ~CBNET( )
 	for( vector<PairedDPSCheck> :: iterator i = m_PairedDPSChecks.begin( ); i != m_PairedDPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
 
+	for( vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); ++i )
+		m_GHost->m_Callables.push_back( i->second );
+
 	if( m_CallableAdminList )
 		m_GHost->m_Callables.push_back( m_CallableAdminList );
 

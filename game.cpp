@@ -132,6 +132,9 @@ CGame :: ~CGame( )
 	for( vector<PairedDPSCheck> :: iterator i = m_PairedDPSChecks.begin( ); i != m_PairedDPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
 
+	for( vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); ++i )
+		m_GHost->m_Callables.push_back( i->second );
+
 	m_GHost->m_CallablesMutex.unlock( );
 
 	for( vector<CDBBan *> :: iterator i = m_DBBans.begin( ); i != m_DBBans.end( ); ++i )
@@ -304,6 +307,61 @@ bool CGame :: Update( void *fd, void *send_fd )
 		else
 			++i;
 	}
+		for( vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); )
+	{
+		if( i->second->GetReady( ) )
+		{
+			CDBLiAPlayerSummary *LiAPlayerSummary = i->second->GetResult( );
+
+			if( LiAPlayerSummary )
+			{
+				string Summary = m_GHost->m_Language->HasPlayedLiAGamesWithThisBot(	i->second->GetName( ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalGames( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalWins( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalLosses( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalDeaths( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalPTS( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalCreepKills( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetTotalBossKills( ) ),
+					UTIL_ToString( LiAPlayerSummary->GetAvgDeaths( ), 2 ),
+					UTIL_ToString( LiAPlayerSummary->GetAvgCreepKills( ), 2 ),
+					UTIL_ToString( LiAPlayerSummary->GetAvgBossKills( ), 2 ),
+					UTIL_ToString( LiAPlayerSummary->GetAvgPTS( ), 2 ));
+
+				if( i->first.empty( ) )
+					SendAllChat( Summary );
+				else
+				{
+					CGamePlayer *Player = GetPlayerFromName( i->first, true );
+
+					if( Player )
+						SendChat( Player, Summary );
+				}
+			}
+			else
+			{
+				if( i->first.empty( ) )
+					SendAllChat( m_GHost->m_Language->HasntPlayedLiAGamesWithThisBot( i->second->GetName( ) ) );
+				else
+				{
+					CGamePlayer *Player = GetPlayerFromName( i->first, true );
+
+					if( Player )
+						SendChat( Player, m_GHost->m_Language->HasntPlayedLiAGamesWithThisBot( i->second->GetName( ) ) );
+				}
+			}
+
+			m_GHost->m_DB->RecoverCallable( i->second );
+			delete i->second;
+			i = m_PairedLPSChecks.erase( i );
+		}
+		else
+			++i;
+	}
+
+
+
+
 
 	return CBaseGame :: Update( fd, send_fd );
 }
