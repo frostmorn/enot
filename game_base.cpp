@@ -563,7 +563,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			(*i)->QueueEnterChat( );
 			if (((*i)->GetServerAlias().find("ICCup") == string::npos) &&((*i)->GetServerAlias().find("Rubattle")==string::npos)){
 				(*i)->QueueGameCreate( m_GameState, m_GameName + random_string(2) , string( ), m_Map, NULL, m_HostCounter );
-				(*i)->QueueGameRefresh( m_GameState, m_GameName + random_string(2), string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 			}
 		}
 		
@@ -582,23 +581,14 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) )
 				{
-					if ((*i)->GetLoggedIn()){
-						std:: string game_name = m_GameName + random_string(2);
-						CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
-						(*i)->UnqueueGameRefreshes( );
-						(*i)->QueueGameUncreate( );
-						(*i)->QueueEnterChat( );
-						(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
-						(*i)->QueueGameRefresh( m_GameState, game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
-						m_RubattleHosted = 1;
-						break;
-					}
-					else
-					{
-						CONSOLE_Print("Skipping rubattle account due to NOT LOGGED IN reason. Username = " + (*i)->GetUserName());
-						continue;
-					}
-					
+					std:: string game_name = m_GameName + random_string(2);
+					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+					(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
+					m_RubattleHosted = 1;
+					break;					
 				}		
 			}
 		}
@@ -617,19 +607,12 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				current_iccup_index++;
 				std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					if ((*i)->GetLoggedIn()){
-						CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
-						(*i)->UnqueueGameRefreshes( );
-						(*i)->QueueGameUncreate( );
-						(*i)->QueueEnterChat( );
-						(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
-						(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
-					}
-					else
-					{
-						CONSOLE_Print("Skipping iccup account due to NOT LOGGED IN reason. Username = " + (*i)->GetUserName());
-						break;
-					}
+					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 					break;
 				}
 				
