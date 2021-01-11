@@ -124,7 +124,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 								}
 							}
 						}
-						else if (DataString == "DEBUG")
+						else if (DataString.find("DEBUG") != string::npos)
 						{
 							CONSOLE_Print( "[MAPDEBUG] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
 						}
