@@ -545,7 +545,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		// however, if autohosting is enabled and this game is public and this game is set to autostart, it's probably autohosted
 		// so rehost it using the current autohost game name
 
-		string GameName = m_GHost->m_AutoHostGameName + random_string(1);
+		string GameName = m_GHost->m_AutoHostGameName;
 		// CONSOLE_Print( "[GAME: " + m_GameName + "] automatically trying to rehost as public game [" + GameName + "] due to refresh failure" );
 
 		//need to synchronize here because we're using host counter variable from GHost
@@ -561,9 +561,12 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			(*i)->QueueGameUncreate( );
 			(*i)->QueueEnterChat( );
-
-			// the game creation message will be sent on the next refresh
+			if (((*i)->GetServerAlias().find("ICCup") == std::string::npos) &&(*i)->GetServerAlias().find("Rubattle")){
+				(*i)->QueueGameCreate( m_GameState, m_GameName + random_string(2) , string( ), m_Map, NULL, m_HostCounter );
+				(*i)->QueueGameRefresh( m_GameState, m_GameName + random_string(2), string( ), m_Map, m_SaveGame, 0, m_HostCounter );
+			}
 		}
+		
 
 		m_CreationTime = GetTime( );
 		m_LastRefreshTime = GetTime( );
@@ -633,7 +636,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			}
 		}
 		m_RefreshError = false;
-		m_RefreshRehosted = true;
+		// m_RefreshRehosted = true;
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount-1 ? 0 : current_iccup_index;
 
