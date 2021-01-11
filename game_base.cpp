@@ -561,7 +561,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			(*i)->QueueGameUncreate( );
 			(*i)->QueueEnterChat( );
-			if (((*i)->GetServerAlias().find("ICCup") == std::string::npos) &&(*i)->GetServerAlias().find("Rubattle")){
+			if (((*i)->GetServerAlias().find("ICCup") == string::npos) &&((*i)->GetServerAlias().find("Rubattle")==string::npos)){
 				(*i)->QueueGameCreate( m_GameState, m_GameName + random_string(2) , string( ), m_Map, NULL, m_HostCounter );
 				(*i)->QueueGameRefresh( m_GameState, m_GameName + random_string(2), string( ), m_Map, m_SaveGame, 0, m_HostCounter );
 			}
