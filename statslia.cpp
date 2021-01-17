@@ -124,9 +124,10 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 								}
 							}
 						}
-						else if (DataString == "DEBUG")
+						else if (DataString.find("DEBUG") != string::npos)
 						{
-							CONSOLE_Print( "[MAPDEBUG] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
+							
+							CONSOLE_Print( "[MAPDEBUG:"+m_Game->GetGameName()+"/CREATION TIMESTAMP:" + UTIL_ToString(m_Game->GetCreationTime())+"] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
 						}
 
 						i += 12 + Data.size( ) + Key.size( );

@@ -545,7 +545,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		// however, if autohosting is enabled and this game is public and this game is set to autostart, it's probably autohosted
 		// so rehost it using the current autohost game name
 
-		string GameName = m_GHost->m_AutoHostGameName + random_string(1);
+		string GameName = m_GHost->m_AutoHostGameName;
 		// CONSOLE_Print( "[GAME: " + m_GameName + "] automatically trying to rehost as public game [" + GameName + "] due to refresh failure" );
 
 		//need to synchronize here because we're using host counter variable from GHost
@@ -561,9 +561,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			(*i)->QueueGameUncreate( );
 			(*i)->QueueEnterChat( );
-
-			// the game creation message will be sent on the next refresh
+			if (((*i)->GetServerAlias().find("ICCup") == string::npos) &&((*i)->GetServerAlias().find("Rubattle")==string::npos)){
+				(*i)->QueueGameCreate( m_GameState, m_GameName + random_string(2) , string( ), m_Map, NULL, m_HostCounter );
+			}
 		}
+		
 
 		m_CreationTime = GetTime( );
 		m_LastRefreshTime = GetTime( );
@@ -579,23 +581,14 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) )
 				{
-					if ((*i)->GetLoggedIn()){
-						std:: string game_name = m_GameName + random_string(2);
-						CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
-						(*i)->UnqueueGameRefreshes( );
-						(*i)->QueueGameUncreate( );
-						(*i)->QueueEnterChat( );
-						(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
-						(*i)->QueueGameRefresh( m_GameState, game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
-						m_RubattleHosted = 1;
-						break;
-					}
-					else
-					{
-						CONSOLE_Print("Skipping rubattle account due to NOT LOGGED IN reason. Username = " + (*i)->GetUserName());
-						continue;
-					}
-					
+					std:: string game_name = m_GameName + random_string(2);
+					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+					(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
+					m_RubattleHosted = 1;
+					break;					
 				}		
 			}
 		}
@@ -614,26 +607,18 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				current_iccup_index++;
 				std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					if ((*i)->GetLoggedIn()){
-						CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
-						(*i)->UnqueueGameRefreshes( );
-						(*i)->QueueGameUncreate( );
-						(*i)->QueueEnterChat( );
-						(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
-						(*i)->QueueGameRefresh( m_GameState, iccup_game_name, string( ), m_Map, m_SaveGame, 0, m_HostCounter );
-					}
-					else
-					{
-						CONSOLE_Print("Skipping iccup account due to NOT LOGGED IN reason. Username = " + (*i)->GetUserName());
-						break;
-					}
+					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
+					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
 					break;
 				}
 				
 			}
 		}
 		m_RefreshError = false;
-		m_RefreshRehosted = true;
+		// m_RefreshRehosted = true;
 		m_LastICCupRehostTime = GetTime( );
 		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount-1 ? 0 : current_iccup_index;
 
@@ -4758,7 +4743,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 	{
 		// check if enough players are present
 
-		if( GetNumHumanPlayers( )< m_AutoStartPlayers)
+		if( GetNumHumanPlayers( ) < m_AutoStartPlayers + GetNumJudgePlayers())
 		{
 //			SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( UTIL_ToString( m_AutoStartPlayers ), UTIL_ToString( m_AutoStartPlayers - GetNumHumanPlayers( ) ) ) );
 			return;
