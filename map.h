@@ -120,7 +120,8 @@ private:
 	string m_MapDefaultHCL;						// config value: map default HCL to use (this should really be specified elsewhere and not part of the map config)
 	uint32_t m_MapDefaultPlayerScore;			// config value: map default player score (for matchmaking)
 	string m_MapLocalPath;						// config value: map local path
-	bool m_MapLoadInGame;
+	bool m_MapLoadInGame;						// config value: another way to load game
+	bool m_MapEvenPlayersStartup;				// config value: startup on even players count
 	string m_MapData;							// the map data itself, for sending the map to players
 	uint32_t m_MapNumPlayers;
 	uint32_t m_MapNumTeams;
@@ -155,6 +156,7 @@ public:
 	uint32_t GetMapDefaultPlayerScore( )	{ return m_MapDefaultPlayerScore; }
 	string GetMapLocalPath( )				{ return m_MapLocalPath; }
 	bool GetMapLoadInGame( )				{ return m_MapLoadInGame; }
+	bool GetMapEvenPlayersStartup( )		{ return m_MapEvenPlayersStartup; }
 	string *GetMapData( )					{ return &m_MapData; }
 	uint32_t GetMapNumPlayers( )			{ return m_MapNumPlayers; }
 	uint32_t GetMapNumTeams( )				{ return m_MapNumTeams; }
