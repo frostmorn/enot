@@ -4756,7 +4756,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 		if ( m_EvenPlayersStartup ){
 			if(GetNumHumanPlayers( )-GetNumJudgePlayers()%2 != 0)
 			{
-				SendAllChat("Автозапуск отменен. Игра начнется при четном кол-ве игроков.")
+				SendAllChat("Автозапуск отменен. Игра начнется при четном кол-ве игроков.");
 				return;
 			}
 		}
