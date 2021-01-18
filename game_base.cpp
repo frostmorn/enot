@@ -752,10 +752,19 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	// try to auto start every 5 seconds
 
+
 	if( !m_CountDownStarted && m_AutoStartPlayers != 0 && GetTime( ) - m_LastAutoStartTime >= 5 )
 	{
-		StartCountDownAuto( m_GHost->m_RequireSpoofChecks );
-		m_LastAutoStartTime = GetTime( );
+		if ( m_Map->GetMapEvenPlayersStartup( ) ){
+			if(GetNumHumanPlayers( )%2 != 0)
+			{
+				
+			}
+			else
+			{
+				StartCountDownAuto( m_GHost->m_RequireSpoofChecks );
+				m_LastAutoStartTime = GetTime( );
+			}
 	}
 
 	// countdown every 500 ms
@@ -4741,8 +4750,16 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 {
 	if( !m_CountDownStarted )
 	{
-		// check if enough players are present
+		// Check on even players if map have such config
 
+		if ( this->m_Map->GetMapEvenPlayersStartup( ) ){
+			if(GetNumHumanPlayers( )%2 != 0)
+			{
+				SendAllChat("Автозапуск отменен. Игра начнется при четном кол-ве игроков.")
+				return;
+			}
+		}
+		// check if enough players are present
 		if( GetNumHumanPlayers( ) < m_AutoStartPlayers + GetNumJudgePlayers())
 		{
 //			SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( UTIL_ToString( m_AutoStartPlayers ), UTIL_ToString( m_AutoStartPlayers - GetNumHumanPlayers( ) ) ) );
