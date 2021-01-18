@@ -4759,7 +4759,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 		// Check on even players if map have such config
 
 		if ( m_EvenPlayersStartup ){
-			if(GetNumHumanPlayers( )-GetNumJudgePlayers()%2 != 0)
+			if((GetNumHumanPlayers( )-GetNumJudgePlayers())%2 != 0)
 			{
 				SendAllChat("Автозапуск отменен. Игра начнется при четном кол-ве игроков.");
 				return;
