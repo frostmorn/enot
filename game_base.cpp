@@ -765,6 +765,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				StartCountDownAuto( m_GHost->m_RequireSpoofChecks );
 				m_LastAutoStartTime = GetTime( );
 			}
+		}
 	}
 
 	// countdown every 500 ms
