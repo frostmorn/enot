@@ -58,12 +58,12 @@ BYTEARRAY CSocket :: GetIP( )
 	return UTIL_CreateByteArray( (uint32_t)m_SIN.sin_addr.s_addr, false );
 }
 
-string CSocket :: GetIPString( )
+std::string CSocket :: GetIPString( )
 {
 	return inet_ntoa( m_SIN.sin_addr );
 }
 
-string CSocket :: GetErrorString( )
+std::string CSocket :: GetErrorString( )
 {
 	if( !m_HasError )
 		return "NO ERROR";
@@ -210,25 +210,25 @@ void CTCPSocket :: Reset( )
 
 	if( !m_LogFile.empty( ) )
 	{
-		ofstream Log;
-		Log.open( m_LogFile.c_str( ), ios :: app );
+		std::ofstream Log;
+		Log.open( m_LogFile.c_str( ), std::ios :: app );
 
 		if( !Log.fail( ) )
 		{
-			Log << "----------RESET----------" << endl;
+			Log << "----------RESET----------" << std::endl;
 			Log.close( );
 		}
 	}
 }
 
-void CTCPSocket :: PutBytes( string bytes )
+void CTCPSocket :: PutBytes( std::string bytes )
 {
 	m_SendBuffer += bytes;
 }
 
 void CTCPSocket :: PutBytes( BYTEARRAY bytes )
 {
-	m_SendBuffer += string( bytes.begin( ), bytes.end( ) );
+	m_SendBuffer += std::string( bytes.begin( ), bytes.end( ) );
 }
 
 void CTCPSocket :: DoRecv( fd_set *fd )
@@ -249,17 +249,17 @@ void CTCPSocket :: DoRecv( fd_set *fd )
 
 			if( !m_LogFile.empty( ) )
 			{
-				ofstream Log;
-				Log.open( m_LogFile.c_str( ), ios :: app );
+				std::ofstream Log;
+				Log.open( m_LogFile.c_str( ), std::ios :: app );
 
 				if( !Log.fail( ) )
 				{
-					Log << "					RECEIVE <<< " << UTIL_ByteArrayToHexString( UTIL_CreateByteArray( (unsigned char *)buffer, c ) ) << endl;
+					Log << "					RECEIVE <<< " << UTIL_ByteArrayToHexString( UTIL_CreateByteArray( (unsigned char *)buffer, c ) ) << std::endl;
 					Log.close( );
 				}
 			}
 
-			m_RecvBuffer += string( buffer, c );
+			m_RecvBuffer += std::string( buffer, c );
 			m_LastRecv = GetTime( );
 		}
 		else if( c == SOCKET_ERROR && GetLastError( ) != EWOULDBLOCK )
@@ -298,12 +298,12 @@ void CTCPSocket :: DoSend( fd_set *send_fd )
 
 			if( !m_LogFile.empty( ) )
 			{
-				ofstream Log;
-				Log.open( m_LogFile.c_str( ), ios :: app );
+				std::ofstream Log;
+				Log.open( m_LogFile.c_str( ), std::ios :: app );
 
 				if( !Log.fail( ) )
 				{
-					Log << "SEND >>> " << UTIL_ByteArrayToHexString( BYTEARRAY( m_SendBuffer.begin( ), m_SendBuffer.begin( ) + s ) ) << endl;
+					Log << "SEND >>> " << UTIL_ByteArrayToHexString( BYTEARRAY( m_SendBuffer.begin( ), m_SendBuffer.begin( ) + s ) ) << std::endl;
 					Log.close( );
 				}
 			}
@@ -368,7 +368,7 @@ void CTCPClient :: Disconnect( )
 	m_Connecting = false;
 }
 
-void CTCPClient :: Connect( string localaddress, string address, uint16_t port )
+void CTCPClient :: Connect( std::string localaddress, std::string address, uint16_t port )
 {
 	if( m_Socket == INVALID_SOCKET || m_HasError || m_Connecting || m_Connected )
 		return;
@@ -492,7 +492,7 @@ CTCPServer :: ~CTCPServer( )
 
 }
 
-bool CTCPServer :: Listen( string address, uint16_t port )
+bool CTCPServer :: Listen( std::string address, uint16_t port )
 {
 	if( m_Socket == INVALID_SOCKET || m_HasError )
 		return false;
@@ -589,7 +589,7 @@ bool CUDPSocket :: SendTo( struct sockaddr_in sin, BYTEARRAY message )
 	if( m_Socket == INVALID_SOCKET || m_HasError )
 		return false;
 
-	string MessageString = string( message.begin( ), message.end( ) );
+	std::string MessageString = std::string( message.begin( ), message.end( ) );
 
 	if( sendto( m_Socket, MessageString.c_str( ), MessageString.size( ), 0, (struct sockaddr *)&sin, sizeof( sin ) ) == -1 )
 		return false;
@@ -597,7 +597,7 @@ bool CUDPSocket :: SendTo( struct sockaddr_in sin, BYTEARRAY message )
 	return true;
 }
 
-bool CUDPSocket :: SendTo( string address, uint16_t port, BYTEARRAY message )
+bool CUDPSocket :: SendTo( std::string address, uint16_t port, BYTEARRAY message )
 {
 	if( m_Socket == INVALID_SOCKET || m_HasError )
 		return false;
@@ -635,7 +635,7 @@ bool CUDPSocket :: Broadcast( uint16_t port, BYTEARRAY message )
 	sin.sin_addr.s_addr = m_BroadcastTarget.s_addr;
 	sin.sin_port = htons( port );
 
-	string MessageString = string( message.begin( ), message.end( ) );
+	std::string MessageString = std::string( message.begin( ), message.end( ) );
 
 	if( sendto( m_Socket, MessageString.c_str( ), MessageString.size( ), 0, (struct sockaddr *)&sin, sizeof( sin ) ) == -1 )
 	{
@@ -646,7 +646,7 @@ bool CUDPSocket :: Broadcast( uint16_t port, BYTEARRAY message )
 	return true;
 }
 
-void CUDPSocket :: SetBroadcastTarget( string subnet )
+void CUDPSocket :: SetBroadcastTarget( std::string subnet )
 {
 	if( subnet.empty( ) )
 	{
@@ -656,7 +656,7 @@ void CUDPSocket :: SetBroadcastTarget( string subnet )
 	else
 	{
 		// this function does not check whether the given subnet is a valid subnet the user is on
-		// convert string representation of ip/subnet to in_addr
+		// convert std::string representation of ip/subnet to in_addr
 
 		CONSOLE_Print( "[UDPSOCKET] using broadcast target [" + subnet + "]" );
 		m_BroadcastTarget.s_addr = inet_addr( subnet.c_str( ) );
@@ -734,7 +734,7 @@ bool CUDPServer :: Bind( struct sockaddr_in sin )
 	return true;
 }
 
-bool CUDPServer :: Bind( string address, uint16_t port )
+bool CUDPServer :: Bind( std::string address, uint16_t port )
 {
 	if( m_Socket == INVALID_SOCKET || m_HasError )
 		return false;
@@ -755,7 +755,7 @@ bool CUDPServer :: Bind( string address, uint16_t port )
 	return Bind( sin );
 }
 
-void CUDPServer :: RecvFrom( fd_set *fd, struct sockaddr_in *sin, string *message )
+void CUDPServer :: RecvFrom( fd_set *fd, struct sockaddr_in *sin, std::string *message )
 {
 	if( m_Socket == INVALID_SOCKET || m_HasError || !sin || !message )
 		return;
@@ -778,7 +778,7 @@ void CUDPServer :: RecvFrom( fd_set *fd, struct sockaddr_in *sin, string *messag
 		{
 			// success!
 
-			*message = string( buffer, c );
+			*message = std::string( buffer, c );
 		}
 		else if( c == SOCKET_ERROR && GetLastError( ) != EWOULDBLOCK )
 		{

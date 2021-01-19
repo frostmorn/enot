@@ -45,7 +45,7 @@
 //
 
 
-CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, string nGameName, string nOwnerName, string nCreatorName, string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ),m_LastICCupRehostTime(0),m_LastRubattleRehostTime(0), m_LastICCupRehostIndex(0), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ),m_EvenPlayersStartup(nMap->GetMapEvenPlayersStartup()), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 ){
+CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, std::string nGameName, std::string nOwnerName, std::string nCreatorName, std::string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ),m_LastICCupRehostTime(0),m_LastRubattleRehostTime(0), m_LastICCupRehostIndex(0), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ),m_EvenPlayersStartup(nMap->GetMapEvenPlayersStartup()), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 ){
 	m_LastConnectedUserTime = 0;
 	m_RubattleHosted = 0;
 	m_Socket = new CTCPServer( );
@@ -78,7 +78,7 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 		// we really just want the open/closed/computer entries
 		// so open all the player slots
 
-		for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+		for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 		{
 			if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 )
 			{
@@ -96,7 +96,7 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 	}
 	if( !m_GHost->m_IPBlackListFile.empty( ) )
 	{
-		ifstream in;
+		std::ifstream in;
 		in.open( m_GHost->m_IPBlackListFile.c_str( ) );
 
 		if( in.fail( ) )
@@ -104,7 +104,7 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 		else
 		{
 			CONSOLE_Print( "[GAME: " + m_GameName + "] loading IP blacklist file [" + m_GHost->m_IPBlackListFile + "]" );
-			string Line;
+			std::string Line;
 
 			while( !in.eof( ) )
 			{
@@ -123,7 +123,7 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 
 				// ignore lines that don't look like IP addresses
 
-				if( Line.find_first_not_of( "1234567890." ) != string :: npos )
+				if( Line.find_first_not_of( "1234567890." ) != std::string :: npos )
 					continue;
 
 				m_IPBlackList.insert( Line );
@@ -158,15 +158,15 @@ CBaseGame :: ~CBaseGame( )
 	delete m_Map;
 	delete m_Replay;
 
-	for( vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
+	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
 		delete *i;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		delete *i;
 
 	m_GHost->m_CallablesMutex.lock();
 	
-	for( vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); ++i )
+	for( std::vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( *i );
 	
 	m_GHost->m_CallablesMutex.unlock( );
@@ -251,8 +251,8 @@ void CBaseGame :: loop( )
 		char Time[17];
 		memset( Time, 0, sizeof( char ) * 17 );
 		strftime( Time, sizeof( char ) * 17, "%Y-%m-%d %H-%M", localtime( &Now ) );
-		string MinString = UTIL_ToString( ( m_GameTicks / 1000 ) / 60 );
-		string SecString = UTIL_ToString( ( m_GameTicks / 1000 ) % 60 );
+		std::string MinString = UTIL_ToString( ( m_GameTicks / 1000 ) / 60 );
+		std::string SecString = UTIL_ToString( ( m_GameTicks / 1000 ) % 60 );
 
 		if( MinString.size( ) == 1 )
 			MinString.insert( 0, "0" );
@@ -263,14 +263,14 @@ void CBaseGame :: loop( )
 		CONSOLE_Print("ENOT is trying to save replay...");
 		CONSOLE_Print("Game HCL is : " + this->m_HCLCommandString);
 		CONSOLE_Print("Players :");
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			CONSOLE_Print("Player " + (*i)->GetNameTerminated());
 		}
 
 		m_Replay->BuildReplay( m_GameName, m_StatString, m_GHost->m_ReplayWar3Version, m_GHost->m_ReplayBuildNumber );
 		
-		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
+		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + std::string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
 	}
 
 	if(m_DoDelete == 1)
@@ -301,7 +301,7 @@ uint32_t CBaseGame :: GetSlotsOccupied( )
 {
 	uint32_t NumSlotsOccupied = 0;
 
-	for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 	{
 		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED )
 			++NumSlotsOccupied;
@@ -314,7 +314,7 @@ uint32_t CBaseGame :: GetSlotsOpen( )
 {
 	uint32_t NumSlotsOpen = 0;
 
-	for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 	{
 		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OPEN )
 			++NumSlotsOpen;
@@ -337,7 +337,7 @@ uint32_t CBaseGame :: GetNumHumanPlayers( )
 {
 	uint32_t NumHumanPlayers = 0;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) )
 			++NumHumanPlayers;
@@ -357,9 +357,9 @@ uint32_t CBaseGame ::GetNumJudgePlayers(){
 	return NumJudgePlayers;
 }
 
-string CBaseGame :: GetDescription( )
+std::string CBaseGame :: GetDescription( )
 {
-	string Description = m_GameName + " : " + m_OwnerName + " : " + UTIL_ToString( GetNumHumanPlayers( ) ) + "/" + UTIL_ToString( m_GameLoading || m_GameLoaded ? m_StartPlayers : m_Slots.size( ) );
+	std::string Description = m_GameName + " : " + m_OwnerName + " : " + UTIL_ToString( GetNumHumanPlayers( ) ) + "/" + UTIL_ToString( m_GameLoading || m_GameLoaded ? m_StartPlayers : m_Slots.size( ) );
 
 	if( m_GameLoading || m_GameLoaded )
 		Description += " : " + UTIL_ToString( ( m_GameTicks / 1000 ) / 60 ) + "m";
@@ -369,7 +369,7 @@ string CBaseGame :: GetDescription( )
 	return Description;
 }
 
-void CBaseGame :: SetAnnounce( uint32_t interval, string message )
+void CBaseGame :: SetAnnounce( uint32_t interval, std::string message )
 {
 	m_AnnounceInterval = interval;
 	m_AnnounceMessage = message;
@@ -386,7 +386,7 @@ unsigned int CBaseGame :: SetFD( void *fd, void *send_fd, int *nfds )
 		++NumFDs;
 	}
 
-	for( vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
+	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
 	{
 		if( (*i)->GetSocket( ) )
 		{
@@ -395,7 +395,7 @@ unsigned int CBaseGame :: SetFD( void *fd, void *send_fd, int *nfds )
 		}
 	}
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( (*i)->GetSocket( ) )
 		{
@@ -411,13 +411,13 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 {
 	// update callables
 
-	for( vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); )
+	for( std::vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); )
 	{
 		if( (*i)->GetReady( ) )
 		{
 			double Score = (*i)->GetResult( );
 
-			for( vector<CPotentialPlayer *> :: iterator j = m_Potentials.begin( ); j != m_Potentials.end( ); ++j )
+			for( std::vector<CPotentialPlayer *> :: iterator j = m_Potentials.begin( ); j != m_Potentials.end( ); ++j )
 			{
 				if( (*j)->GetJoinPlayer( ) && (*j)->GetJoinPlayer( )->GetName( ) == (*i)->GetName( ) )
 					EventPlayerJoinedWithScore( *j, (*j)->GetJoinPlayer( ), Score );
@@ -433,7 +433,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	// update players
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); )
 	{
 		if( (*i)->Update( fd ) )
 		{
@@ -445,7 +445,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			++i;
 	}
 
-	for( vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); )
+	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); )
 	{
 		if( (*i)->Update( fd ) )
 		{
@@ -545,7 +545,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		// however, if autohosting is enabled and this game is public and this game is set to autostart, it's probably autohosted
 		// so rehost it using the current autohost game name
 
-		string GameName = m_GHost->m_AutoHostGameName;
+		std::string GameName = m_GHost->m_AutoHostGameName;
 		// CONSOLE_Print( "[GAME: " + m_GameName + "] automatically trying to rehost as public game [" + GameName + "] due to refresh failure" );
 
 		//need to synchronize here because we're using host counter variable from GHost
@@ -557,12 +557,12 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 		{
 			(*i)->QueueGameUncreate( );
 			(*i)->QueueEnterChat( );
-			if (((*i)->GetServerAlias().find("ICCup") == string::npos) &&((*i)->GetServerAlias().find("Rubattle")==string::npos)){
-				(*i)->QueueGameCreate( m_GameState, m_GameName + random_string(2) , string( ), m_Map, NULL, m_HostCounter );
+			if (((*i)->GetServerAlias().find("ICCup") == std::string::npos) &&((*i)->GetServerAlias().find("Rubattle")==std::string::npos)){
+				(*i)->QueueGameCreate( m_GameState, m_GameName + random_string(2) , std::string( ), m_Map, NULL, m_HostCounter );
 			}
 		}
 		
@@ -576,17 +576,17 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && m_GHost->m_RubattleBnetCount &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0)
 	{
 
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
+		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) )
 				{
-					std:: string game_name = m_GameName + random_string(2);
+					std::string game_name = m_GameName + random_string(2);
 					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-					(*i)->QueueGameCreate( m_GameState, game_name , string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
 					m_RubattleHosted = 1;
 					break;					
 				}		
@@ -600,18 +600,18 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		 ((GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))|| m_LastICCupRehostTime == 0))
 	{
 		uint32_t current_iccup_index = 0;
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
+		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
-				std:: string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
+				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
 					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-					(*i)->QueueGameCreate( m_GameState, iccup_game_name, string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueGameCreate( m_GameState, iccup_game_name, std::string( ), m_Map, NULL, m_HostCounter );
 					break;
 				}
 				
@@ -643,7 +643,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		uint32_t Downloaders = 0;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( (*i)->GetDownloadStarted( ) && !(*i)->GetDownloadFinished( ) )
 			{
@@ -708,7 +708,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		m_SayGamesMutex.lock();
 		
-		for( vector<string> :: iterator i = m_DoSayGames.begin( ); i != m_DoSayGames.end( ); ++i )
+		for( std::vector<std::string> :: iterator i = m_DoSayGames.begin( ); i != m_DoSayGames.end( ); ++i )
 			SendAllChat( "FIONA ADMIN: " + *i );
 		
 		m_DoSayGames.clear( );
@@ -722,7 +722,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		m_SpoofAddMutex.lock();
 		
-		for( vector<QueuedSpoofAdd> :: iterator i = m_DoSpoofAdd.begin( ); i != m_DoSpoofAdd.end( ); ++i )
+		for( std::vector<QueuedSpoofAdd> :: iterator i = m_DoSpoofAdd.begin( ); i != m_DoSpoofAdd.end( ); ++i )
 		{
 			if( (*i).failMessage.empty( ) )
 				AddToSpoofed( (*i).server, (*i).name, (*i).sendMessage );
@@ -738,7 +738,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	if( !m_CountDownStarted && m_GHost->m_RequireSpoofChecks && m_GameState == GAME_PUBLIC && !m_GHost->m_AutoHostGameName.empty( ) && m_GHost->m_AutoHostMaximumGames != 0 && m_GHost->m_AutoHostAutoStartPlayers != 0 && m_AutoStartPlayers != 0 )
 	{
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( !(*i)->GetSpoofed( ) && GetTime( ) - (*i)->GetJoinTime( ) >= 20 )
 			{
@@ -798,7 +798,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		// check if there's a player with reserved status in the game
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( (*i)->GetReserved( ) )
 				m_LastReservedSeen = GetTime( );
@@ -819,7 +819,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		bool FinishedLoading = true;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			FinishedLoading = (*i)->GetFinishedLoading( );
 
@@ -842,19 +842,19 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			{
 				bool UsingGProxy = false;
 
-				for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 				{
 					if( (*i)->GetGProxy( ) )
 						UsingGProxy = true;
 				}
 
-				for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 				{
 					if( (*i)->GetFinishedLoading( ) )
 					{
 						// stop the lag screen
 
-						for( vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+						for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
 						{
 							if( !(*j)->GetFinishedLoading( ) )
 								Send( *i, m_Protocol->SEND_W3GS_STOP_LAG( *j, true ) );
@@ -873,10 +873,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 							// empty actions are used to extend the time a player can use when reconnecting
 
 							for( unsigned char j = 0; j < m_GProxyEmptyActions; ++j )
-								Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( queue<CIncomingAction *>( ), 0 ) );
+								Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 						}
 
-						Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( queue<CIncomingAction *>( ), 0 ) );
+						Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 
 						// start the lag screen
 
@@ -893,10 +893,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 							// empty actions are used to extend the time a player can use when reconnecting
 
 							for( unsigned char j = 0; j < m_GProxyEmptyActions; ++j )
-								(*i)->AddLoadInGameData( m_Protocol->SEND_W3GS_INCOMING_ACTION( queue<CIncomingAction *>( ), 0 ) );
+								(*i)->AddLoadInGameData( m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 						}
 
-						(*i)->AddLoadInGameData( m_Protocol->SEND_W3GS_INCOMING_ACTION( queue<CIncomingAction *>( ), 0 ) );
+						(*i)->AddLoadInGameData( m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 					}
 				}
 
@@ -907,10 +907,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					if( UsingGProxy )
 					{
 						for( unsigned char i = 0; i < m_GProxyEmptyActions; ++i )
-							m_Replay->AddTimeSlot( 0, queue<CIncomingAction *>( ) );
+							m_Replay->AddTimeSlot( 0, std::queue<CIncomingAction *>( ) );
 					}
 
-					m_Replay->AddTimeSlot( 0, queue<CIncomingAction *>( ) );
+					m_Replay->AddTimeSlot( 0, std::queue<CIncomingAction *>( ) );
 				}
 
 				// Warcraft III doesn't seem to respond to empty actions
@@ -934,9 +934,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 		if( !m_Lagging )
 		{
-			string LaggingString;
+			std::string LaggingString;
 
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( m_SyncCounter - (*i)->GetSyncCounter( ) > m_SyncLimit )
 				{
@@ -961,7 +961,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 				// reset everyone's drop vote
 
-				for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 					(*i)->SetDropVote( false );
 
 				m_LastLagScreenResetTime = GetTime( );
@@ -972,7 +972,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			bool UsingGProxy = false;
 
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( (*i)->GetGProxy( ) )
 					UsingGProxy = true;
@@ -993,11 +993,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			if( GetTime( ) - m_LastLagScreenResetTime >= 60 )
 			{
-				for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 				{
 					// stop the lag screen
 
-					for( vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+					for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
 					{
 						if( (*j)->GetLagging( ) )
 							Send( *i, m_Protocol->SEND_W3GS_STOP_LAG( *j ) );
@@ -1013,10 +1013,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 						// empty actions are used to extend the time a player can use when reconnecting
 
 						for( unsigned char j = 0; j < m_GProxyEmptyActions; ++j )
-							Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( queue<CIncomingAction *>( ), 0 ) );
+							Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 					}
 
-					Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( queue<CIncomingAction *>( ), 0 ) );
+					Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 
 					// start the lag screen
 
@@ -1030,10 +1030,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					if( UsingGProxy )
 					{
 						for( unsigned char i = 0; i < m_GProxyEmptyActions; ++i )
-							m_Replay->AddTimeSlot( 0, queue<CIncomingAction *>( ) );
+							m_Replay->AddTimeSlot( 0, std::queue<CIncomingAction *>( ) );
 					}
 
-					m_Replay->AddTimeSlot( 0, queue<CIncomingAction *>( ) );
+					m_Replay->AddTimeSlot( 0, std::queue<CIncomingAction *>( ) );
 				}
 
 				// Warcraft III doesn't seem to respond to empty actions
@@ -1048,7 +1048,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			// check if anyone has stopped lagging normally
 			// we consider a player to have stopped lagging if they're less than half m_SyncLimit keepalives behind
 
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( (*i)->GetLagging( ) && m_SyncCounter - (*i)->GetSyncCounter( ) < m_SyncLimit / 2 )
 				{
@@ -1065,7 +1065,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			bool Lagging = false;
 
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( (*i)->GetLagging( ) )
 					Lagging = true;
@@ -1089,7 +1089,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			
 			m_GHost->m_ReconnectMutex.lock();
 			
-			for( vector<GProxyReconnector *> :: iterator i = m_GHost->m_PendingReconnects.begin( ); i != m_GHost->m_PendingReconnects.end( ); )
+			for( std::vector<GProxyReconnector *> :: iterator i = m_GHost->m_PendingReconnects.begin( ); i != m_GHost->m_PendingReconnects.end( ); )
 			{
 				CGamePlayer *Player = GetPlayerFromPID( (*i)->PID );
 				
@@ -1148,7 +1148,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		bool AlreadyStopped = true;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( !(*i)->GetDeleteMe( ) )
 			{
@@ -1216,13 +1216,13 @@ void CBaseGame :: UpdatePost( void *send_fd )
 	// this is in case player 2 generates a packet for player 1 during the update but it doesn't get sent because player 1 already finished updating
 	// in reality since we're queueing actions it might not make a big difference but oh well
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( (*i)->GetSocket( ) )
 			(*i)->GetSocket( )->DoSend( (fd_set *)send_fd );
 	}
 
-	for( vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
+	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
 	{
 		if( (*i)->GetSocket( ) )
 			(*i)->GetSocket( )->DoSend( (fd_set *)send_fd );
@@ -1248,11 +1248,11 @@ void CBaseGame :: Send( BYTEARRAY PIDs, BYTEARRAY data )
 
 void CBaseGame :: SendAll( BYTEARRAY data )
 {
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		(*i)->Send( data );
 }
 
-void CBaseGame :: SendChat( unsigned char fromPID, CGamePlayer *player, string message )
+void CBaseGame :: SendChat( unsigned char fromPID, CGamePlayer *player, std::string message )
 {
 	// send a private message to one player - it'll be marked [Private] in Warcraft 3
 
@@ -1284,22 +1284,22 @@ void CBaseGame :: SendChat( unsigned char fromPID, CGamePlayer *player, string m
 	}
 }
 
-void CBaseGame :: SendChat( unsigned char fromPID, unsigned char toPID, string message )
+void CBaseGame :: SendChat( unsigned char fromPID, unsigned char toPID, std::string message )
 {
 	SendChat( fromPID, GetPlayerFromPID( toPID ), message );
 }
 
-void CBaseGame :: SendChat( CGamePlayer *player, string message )
+void CBaseGame :: SendChat( CGamePlayer *player, std::string message )
 {
 	SendChat( GetHostPID( ), player, message );
 }
 
-void CBaseGame :: SendChat( unsigned char toPID, string message )
+void CBaseGame :: SendChat( unsigned char toPID, std::string message )
 {
 	SendChat( GetHostPID( ), toPID, message );
 }
 
-void CBaseGame :: SendAllChat( unsigned char fromPID, string message )
+void CBaseGame :: SendAllChat( unsigned char fromPID, std::string message )
 {
 	// send a public message to all players - it'll be marked [All] in Warcraft 3
 
@@ -1327,12 +1327,12 @@ void CBaseGame :: SendAllChat( unsigned char fromPID, string message )
 	}
 }
 
-void CBaseGame :: SendAllChat( string message )
+void CBaseGame :: SendAllChat( std::string message )
 {
 	SendAllChat( GetHostPID( ), message );
 }
 
-void CBaseGame :: SendLocalAdminChat( string message )
+void CBaseGame :: SendLocalAdminChat( std::string message )
 {
 	if( !m_LocalAdminMessages )
 		return;
@@ -1341,7 +1341,7 @@ void CBaseGame :: SendLocalAdminChat( string message )
 	// at the time of this writing it is only possible for the game owner to meet this criteria because being an admin requires spoof checking
 	// this is mainly used for relaying battle.net whispers, chat messages, and emotes to these players
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( (*i)->GetSpoofed( ) && IsOwner( (*i)->GetName( ) ) && ( UTIL_IsLanIP( (*i)->GetExternalIP( ) ) || UTIL_IsLocalIP( (*i)->GetExternalIP( ), m_GHost->m_LocalAddresses ) ) )
 		{
@@ -1396,7 +1396,7 @@ void CBaseGame :: SendAllActions( )
 {
 	bool UsingGProxy = false;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( (*i)->GetGProxy( ) )
 			UsingGProxy = true;
@@ -1410,19 +1410,19 @@ void CBaseGame :: SendAllActions( )
 		// GProxy++ will insert these itself so we don't need to send them to GProxy++ players
 		// empty actions are used to extend the time a player can use when reconnecting
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( !(*i)->GetGProxy( ) )
 			{
 				for( unsigned char j = 0; j < m_GProxyEmptyActions; ++j )
-					Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( queue<CIncomingAction *>( ), 0 ) );
+					Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 			}
 		}
 
 		if( m_Replay )
 		{
 			for( unsigned char i = 0; i < m_GProxyEmptyActions; ++i )
-				m_Replay->AddTimeSlot( 0, queue<CIncomingAction *>( ) );
+				m_Replay->AddTimeSlot( 0, std::queue<CIncomingAction *>( ) );
 		}
 	}
 
@@ -1440,7 +1440,7 @@ void CBaseGame :: SendAllActions( )
 		// we use a "sub actions queue" which we keep adding actions to until we reach the size limit
 		// start by adding one action to the sub actions queue
 
-		queue<CIncomingAction *> SubActions;
+		std::queue<CIncomingAction *> SubActions;
 		CIncomingAction *Action = m_Actions.front( );
 		m_Actions.pop( );
 		SubActions.push( Action );
@@ -1524,7 +1524,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 	SendChat( player, message );
 	CONSOLE_Print(message);
 	// read from motd.txt if available (thanks to zeeg for this addition)
-	ifstream in;
+	std::ifstream in;
 	in.open( m_GHost->m_MOTDFile.c_str( ) );
 
 	if( in.fail( ) )
@@ -1552,7 +1552,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		// don't print more than 7 lines
 
 		uint32_t Count = 0;
-		string Line;
+		std::string Line;
 		
 		if (!m_HCLCommandString.empty())
 		{
@@ -1578,7 +1578,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		in.close( );
 	}
 
-	std:: string output;
+	std::string output;
 	uint32_t time_elapsed = GetTime()- m_CreationTime;
 	uint32_t hours = time_elapsed / 3600;
 	uint32_t mins = time_elapsed /60 % 60;
@@ -1600,7 +1600,7 @@ void CBaseGame :: SendEndMessage( )
 {
 	// read from gameover.txt if available
 
-	ifstream in;
+	std::ifstream in;
 	in.open( m_GHost->m_GameOverFile.c_str( ) );
 
 	if( !in.fail( ) )
@@ -1608,7 +1608,7 @@ void CBaseGame :: SendEndMessage( )
 		// don't print more than 8 lines
 
 		uint32_t Count = 0;
-		string Line;
+		std::string Line;
 
 		while( !in.eof( ) && Count < 8 )
 		{
@@ -1643,7 +1643,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 
 	if( player->GetWhoisSent( ) && !player->GetJoinedRealm( ).empty( ) && player->GetSpoofedRealm( ).empty( ) )
 	{
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 		{
 			if( (*i)->GetServer( ) == player->GetJoinedRealm( ) )
 			{
@@ -1676,7 +1676,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 
 	if( m_GameLoaded && player->GetLeftCode( ) == PLAYERLEAVE_DISCONNECT && m_AutoSave )
 	{
-		string SaveGameName = UTIL_FileSafeName( "GHost++ AutoSave " + m_GameName + " (" + player->GetName( ) + ").w3z" );
+		std::string SaveGameName = UTIL_FileSafeName( "GHost++ AutoSave " + m_GameName + " (" + player->GetName( ) + ").w3z" );
 		CONSOLE_Print( "[GAME: " + m_GameName + "] auto saving [" + SaveGameName + "] before player drop, shortened send interval = " + UTIL_ToString( GetTicks( ) - m_LastActionSentTicks ) );
 		BYTEARRAY CRC;
 		BYTEARRAY Action;
@@ -1694,7 +1694,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 		// we must buffer player leave messages when using "load in game" to prevent desyncs
 		// this ensures the player leave messages are correctly interleaved with the empty updates sent to each player
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( (*i)->GetFinishedLoading( ) )
 			{
@@ -1912,9 +1912,9 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// note: this is not a replacement for spoof checking since it doesn't verify the player's name and it can be spoofed anyway
 
 	uint32_t HostCounterID = joinPlayer->GetHostCounter( ) >> 24;
-	string JoinedRealm;
+	std::string JoinedRealm;
 
-	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 	{
 		if( (*i)->GetHostCounterID( ) == HostCounterID )
 			JoinedRealm = (*i)->GetServer( );
@@ -1944,7 +1944,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	if( m_GHost->m_BanMethod != 0 )
 	{
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 		{
 			if( (*i)->GetServer( ) == JoinedRealm )
 			{
@@ -1966,7 +1966,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 						// let banned players "join" the game with an arbitrary PID then immediately close the connection
 						// this causes them to be kicked back to the chat channel on battle.net
 
-						vector<CGameSlot> Slots = m_Map->GetSlots( );
+						std::vector<CGameSlot> Slots = m_Map->GetSlots( );
 						potential->Send( m_Protocol->SEND_W3GS_SLOTINFOJOIN( 1, potential->GetSocket( )->GetPort( ), potential->GetExternalIP( ), Slots, 0, m_Map->GetMapLayoutStyle( ), m_Map->GetMapNumPlayers( ) ) );
 						potential->SetDeleteMe( true );
 						return;
@@ -1994,7 +1994,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 					// let banned players "join" the game with an arbitrary PID then immediately close the connection
 					// this causes them to be kicked back to the chat channel on battle.net
 
-					vector<CGameSlot> Slots = m_Map->GetSlots( );
+					std::vector<CGameSlot> Slots = m_Map->GetSlots( );
 					potential->Send( m_Protocol->SEND_W3GS_SLOTINFOJOIN( 1, potential->GetSocket( )->GetPort( ), potential->GetExternalIP( ), Slots, 0, m_Map->GetMapLayoutStyle( ), m_Map->GetMapNumPlayers( ) ) );
 					potential->SetDeleteMe( true );
 					return;
@@ -2020,7 +2020,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	bool AnyAdminCheck = false;
 
-	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 	{
 		if( (*i)->IsAdmin( joinPlayer->GetName( ) ) || (*i)->IsRootAdmin( joinPlayer->GetName( ) ) )
 		{
@@ -2044,13 +2044,13 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 		// unfortunately we don't know how to extract the player layout from the saved game so we use the data from a replay instead
 		// the !enforcesg command defines the player layout by parsing a replay
 
-		for( vector<PIDPlayer> :: iterator i = m_EnforcePlayers.begin( ); i != m_EnforcePlayers.end( ); ++i )
+		for( std::vector<PIDPlayer> :: iterator i = m_EnforcePlayers.begin( ); i != m_EnforcePlayers.end( ); ++i )
 		{
 			if( (*i).second == joinPlayer->GetName( ) )
 				EnforcePID = (*i).first;
 		}
 
-		for( vector<CGameSlot> :: iterator i = m_EnforceSlots.begin( ); i != m_EnforceSlots.end( ); ++i )
+		for( std::vector<CGameSlot> :: iterator i = m_EnforceSlots.begin( ); i != m_EnforceSlots.end( ); ++i )
 		{
 			if( (*i).GetPID( ) == EnforcePID )
 			{
@@ -2148,7 +2148,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	if( m_GHost->m_BanMethod == 0 )
 	{
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 		{
 			if( (*i)->GetServer( ) == JoinedRealm )
 			{
@@ -2260,7 +2260,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	BlankIP.push_back( 0 );
 	BlankIP.push_back( 0 );
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) && *i != Player )
 		{
@@ -2301,17 +2301,17 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	if( m_GHost->m_RequireSpoofChecks && !Player->GetWhoisShouldBeSent( ) )
 	{
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 		{
 			// note: the following (commented out) line of code will crash because calling GetUniqueName( ) twice will result in two different return values
 			// and unfortunately iterators are not valid if compared against different containers
 			// this comment shall serve as warning to not make this mistake again since it has now been made twice before in GHost++
-			// string( (*i)->GetUniqueName( ).begin( ), (*i)->GetUniqueName( ).end( ) )
+			// std::string( (*i)->GetUniqueName( ).begin( ), (*i)->GetUniqueName( ).end( ) )
 
 			BYTEARRAY UniqueName = (*i)->GetUniqueName( );
 
 			if( (*i)->GetServer( ) == JoinedRealm )
-				SendChat( Player, m_GHost->m_Language->SpoofCheckByWhispering( string( UniqueName.begin( ), UniqueName.end( ) )  ) );
+				SendChat( Player, m_GHost->m_Language->SpoofCheckByWhispering( std::string( UniqueName.begin( ), UniqueName.end( ) )  ) );
 		}
 	}
 
@@ -2319,9 +2319,9 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	if( m_GHost->m_CheckMultipleIPUsage )
 	{
-		string Others;
+		std::string Others;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( Player != *i && Player->GetExternalIPString( ) == (*i)->GetExternalIPString( ) )
 			{
@@ -2403,7 +2403,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	bool AnyAdminCheck = false;
 
-	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 	{
 		if( (*i)->IsAdmin( joinPlayer->GetName( ) ) || (*i)->IsRootAdmin( joinPlayer->GetName( ) ) )
 		{
@@ -2438,7 +2438,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 				PlayersScored = 1;
 			}
 
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( (*i)->GetScore( ) > -99999.0 )
 				{
@@ -2454,7 +2454,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 			CGamePlayer *FurthestPlayer = NULL;
 
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( !FurthestPlayer || (*i)->GetScore( ) < -99999.0 || abs( (*i)->GetScore( ) - AverageScore ) > abs( FurthestPlayer->GetScore( ) - AverageScore ) )
 					FurthestPlayer = *i;
@@ -2514,7 +2514,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 			CGamePlayer *LowestPlayer = NULL;
 
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( !LowestPlayer || (*i)->GetScore( ) < -99999.0 || (*i)->GetScore( ) < LowestPlayer->GetScore( ) )
 					LowestPlayer = *i;
@@ -2588,11 +2588,11 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	// note: this is not a replacement for spoof checking since it doesn't verify the player's name and it can be spoofed anyway
 
 	uint32_t HostCounterID = joinPlayer->GetHostCounter( ) >> 24;
-	string JoinedRealm;
+	std::string JoinedRealm;
 
 	// we use an ID value of 0 to denote joining via LAN
 
-	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 	{
 		if( (*i)->GetHostCounterID( ) == HostCounterID )
 			JoinedRealm = (*i)->GetServer( );
@@ -2656,7 +2656,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	BlankIP.push_back( 0 );
 	BlankIP.push_back( 0 );
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) && *i != Player )
 		{
@@ -2698,17 +2698,17 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	if( m_GHost->m_RequireSpoofChecks && !Player->GetWhoisShouldBeSent( ) )
 	{
-		for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 		{
 			// note: the following (commented out) line of code will crash because calling GetUniqueName( ) twice will result in two different return values
 			// and unfortunately iterators are not valid if compared against different containers
 			// this comment shall serve as warning to not make this mistake again since it has now been made twice before in GHost++
-			// string( (*i)->GetUniqueName( ).begin( ), (*i)->GetUniqueName( ).end( ) )
+			// std::string( (*i)->GetUniqueName( ).begin( ), (*i)->GetUniqueName( ).end( ) )
 
 			BYTEARRAY UniqueName = (*i)->GetUniqueName( );
 
 			if( (*i)->GetServer( ) == JoinedRealm )
-				SendChat( Player, m_GHost->m_Language->SpoofCheckByWhispering( string( UniqueName.begin( ), UniqueName.end( ) )  ) );
+				SendChat( Player, m_GHost->m_Language->SpoofCheckByWhispering( std::string( UniqueName.begin( ), UniqueName.end( ) )  ) );
 		}
 	}
 
@@ -2724,7 +2724,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	double MaxScore = 0.0;
 	bool Found = false;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) )
 		{
@@ -2753,9 +2753,9 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	if( m_GHost->m_CheckMultipleIPUsage )
 	{
-		string Others;
+		std::string Others;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( Player != *i && Player->GetExternalIPString( ) == (*i)->GetExternalIPString( ) )
 			{
@@ -2821,7 +2821,7 @@ void CBaseGame :: EventPlayerLoaded( CGamePlayer *player )
 		// see the Update function for more information about why we do this
 		// this includes player loaded messages, game updates, and player leave messages
 
-		queue<BYTEARRAY> *LoadInGameData = player->GetLoadInGameData( );
+		std::queue<BYTEARRAY> *LoadInGameData = player->GetLoadInGameData( );
 
 		while( !LoadInGameData->empty( ) )
 		{
@@ -2833,7 +2833,7 @@ void CBaseGame :: EventPlayerLoaded( CGamePlayer *player )
 
 		bool FinishedLoading = true;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			FinishedLoading = (*i)->GetFinishedLoading( );
 
@@ -2846,7 +2846,7 @@ void CBaseGame :: EventPlayerLoaded( CGamePlayer *player )
 
 		// remove the new player from previously loaded players' lag screens
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( *i != player && (*i)->GetFinishedLoading( ) )
 				Send( *i, m_Protocol->SEND_W3GS_STOP_LAG( player ) );
@@ -2854,7 +2854,7 @@ void CBaseGame :: EventPlayerLoaded( CGamePlayer *player )
 
 		// send a chat message to previously loaded players
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( *i != player && (*i)->GetFinishedLoading( ) )
 				SendChat( *i, m_GHost->m_Language->PlayerFinishedLoading( player->GetName( ) ) );
@@ -2903,7 +2903,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 	// however, it's possible that not every player has sent a checksum for this frame yet
 	// first we verify that we have enough checksums to work with otherwise we won't know exactly who desynced
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetDeleteMe( ) && (*i)->GetCheckSums( )->empty( ) )
 			return;
@@ -2914,7 +2914,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 	bool FoundPlayer = false;
 	uint32_t FirstCheckSum = 0;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetDeleteMe( ) )
 		{
@@ -2929,7 +2929,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 
 	bool AddToReplay = true;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetDeleteMe( ) && (*i)->GetCheckSums( )->front( ) != FirstCheckSum )
 		{
@@ -2942,19 +2942,19 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 			// this is complicated by the fact that we don't know what the correct game state is so we let the players vote
 			// put the players into bins based on their game state
 
-			map<uint32_t, vector<unsigned char> > Bins;
+			std::map<uint32_t, std::vector<unsigned char> > Bins;
 
-			for( vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+			for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
 			{
 				if( !(*j)->GetDeleteMe( ) )
 					Bins[(*j)->GetCheckSums( )->front( )].push_back( (*j)->GetPID( ) );
 			}
 
 			uint32_t StateNumber = 1;
-			map<uint32_t, vector<unsigned char> > :: iterator LargestBin = Bins.begin( );
+			std::map<uint32_t, std::vector<unsigned char> > :: iterator LargestBin = Bins.begin( );
 			bool Tied = false;
 
-			for( map<uint32_t, vector<unsigned char> > :: iterator j = Bins.begin( ); j != Bins.end( ); ++j )
+			for( std::map<uint32_t, std::vector<unsigned char> > :: iterator j = Bins.begin( ); j != Bins.end( ); ++j )
 			{
 				if( (*j).second.size( ) > (*LargestBin).second.size( ) )
 				{
@@ -2964,9 +2964,9 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 				else if( j != LargestBin && (*j).second.size( ) == (*LargestBin).second.size( ) )
 					Tied = true;
 
-				string Players;
+				std::string Players;
 
-				for( vector<unsigned char> :: iterator k = (*j).second.begin( ); k != (*j).second.end( ); ++k )
+				for( std::vector<unsigned char> :: iterator k = (*j).second.begin( ); k != (*j).second.end( ); ++k )
 				{
 					CGamePlayer *Player = GetPlayerFromPID( *k );
 
@@ -3002,7 +3002,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 			{
 				CONSOLE_Print( "[GAME: " + m_GameName + "] kicking desynced players" );
 
-				for( map<uint32_t, vector<unsigned char> > :: iterator j = Bins.begin( ); j != Bins.end( ); ++j )
+				for( std::map<uint32_t, std::vector<unsigned char> > :: iterator j = Bins.begin( ); j != Bins.end( ); ++j )
 				{
 					// kick players who are NOT in the largest bin
 					// examples: suppose there are 10 players
@@ -3011,7 +3011,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 
 					if( (*j).first != (*LargestBin).first )
 					{
-						for( vector<unsigned char> :: iterator k = (*j).second.begin( ); k != (*j).second.end( ); ++k )
+						for( std::vector<unsigned char> :: iterator k = (*j).second.begin( ); k != (*j).second.end( ); ++k )
 						{
 							CGamePlayer *Player = GetPlayerFromPID( *k );
 
@@ -3032,7 +3032,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 		}
 	}
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetDeleteMe( ) )
 			(*i)->GetCheckSums( )->pop( );
@@ -3057,8 +3057,8 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 
 			// calculate timestamp
 
-			string MinString = UTIL_ToString( ( m_GameTicks / 1000 ) / 60 );
-			string SecString = UTIL_ToString( ( m_GameTicks / 1000 ) % 60 );
+			std::string MinString = UTIL_ToString( ( m_GameTicks / 1000 ) / 60 );
+			std::string SecString = UTIL_ToString( ( m_GameTicks / 1000 ) % 60 );
 
 			if( MinString.size( ) == 1 )
 				MinString.insert( 0, "0" );
@@ -3122,20 +3122,20 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 
 			// handle bot commands
 
-			string Message = chatPlayer->GetMessage( );
+			std::string Message = chatPlayer->GetMessage( );
 
 			if( Message == "?trigger" )
-				SendChat( player, m_GHost->m_Language->CommandTrigger( string( 1, m_GHost->m_CommandTrigger ) ) );
+				SendChat( player, m_GHost->m_Language->CommandTrigger( std::string( 1, m_GHost->m_CommandTrigger ) ) );
 			else if( !Message.empty( ) && Message[0] == m_GHost->m_CommandTrigger )
 			{
 				// extract the command trigger, the command, and the payload
 				// e.g. "!say hello world" -> command: "say", payload: "hello world"
 
-				string Command;
-				string Payload;
-				string :: size_type PayloadStart = Message.find( " " );
+				std::string Command;
+				std::string Payload;
+				std::string :: size_type PayloadStart = Message.find( " " );
 
-				if( PayloadStart != string :: npos )
+				if( PayloadStart != std::string :: npos )
 				{
 					Command = Message.substr( 1, PayloadStart - 1 );
 					Payload = Message.substr( PayloadStart + 1 );
@@ -3166,7 +3166,7 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 	}
 }
 
-bool CBaseGame :: EventPlayerBotCommand( CGamePlayer *player, string command, string payload )
+bool CBaseGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, std::string payload )
 {
 	// return true if the command itself should be hidden from other players
 
@@ -3325,7 +3325,7 @@ void CBaseGame :: EventPlayerDropRequest( CGamePlayer *player )
 
 		uint32_t Votes = 0;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( (*i)->GetDropVote( ) )
 				++Votes;
@@ -3351,7 +3351,7 @@ void CBaseGame :: EventPlayerMapSize( CGamePlayer *player, CIncomingMapSize *map
 
 		if( m_GHost->m_AllowDownloads != 0 )
 		{
-			string *MapData = m_Map->GetMapData( );
+			std::string *MapData = m_Map->GetMapData( );
 
 			if( !MapData->empty( ) )
 			{
@@ -3447,7 +3447,7 @@ void CBaseGame :: EventPlayerPongToHost( CGamePlayer *player, uint32_t pong )
 	}
 }
 
-void CBaseGame :: EventGameRefreshed( string server )
+void CBaseGame :: EventGameRefreshed( std::string server )
 {
 	if( m_RefreshRehosted )
 	{
@@ -3468,10 +3468,10 @@ void CBaseGame :: EventGameStarted( )
 	CONSOLE_Print("Judges in a game = "+ UTIL_ToString(GetNumJudgePlayers()));
 	CONSOLE_Print( "[GAME: " + m_GameName + "] started loading with " + UTIL_ToString( GetNumHumanPlayers( ) ) + " players" );
 
-	// encode the HCL command string in the slot handicaps
+	// encode the HCL command std::string in the slot handicaps
 	// here's how it works:
-	//  the user inputs a command string to be sent to the map
-	//  it is almost impossible to send a message from the bot to the map so we encode the command string in the slot handicaps
+	//  the user inputs a command std::string to be sent to the map
+	//  it is almost impossible to send a message from the bot to the map so we encode the command std::string in the slot handicaps
 	//  this works because there are only 6 valid handicaps but Warcraft III allows the bot to set up to 256 handicaps
 	//  we encode the original (unmodified) handicaps in the new handicaps and use the remaining space to store a short message
 	//  only occupied slots deliver their handicaps to the map and we can send one character (from a list) per handicap
@@ -3486,9 +3486,9 @@ void CBaseGame :: EventGameStarted( )
 	{
 		if( m_HCLCommandString.size( ) <= GetSlotsOccupied( ) )
 		{
-			string HCLChars = "abcdefghijklmnopqrstuvwxyz0123456789 -=,.";
+			std::string HCLChars = "abcdefghijklmnopqrstuvwxyz0123456789 -=,.";
 
-			if( m_HCLCommandString.find_first_not_of( HCLChars ) == string :: npos )
+			if( m_HCLCommandString.find_first_not_of( HCLChars ) == std::string :: npos )
 			{
 				unsigned char EncodingMap[256];
 				unsigned char j = 0;
@@ -3505,7 +3505,7 @@ void CBaseGame :: EventGameStarted( )
 
 				unsigned char CurrentSlot = 0;
 
-				for( string :: iterator si = m_HCLCommandString.begin( ); si != m_HCLCommandString.end( ); ++si )
+				for( std::string :: iterator si = m_HCLCommandString.begin( ); si != m_HCLCommandString.end( ); ++si )
 				{
 					while( m_Slots[CurrentSlot].GetSlotStatus( ) != SLOTSTATUS_OCCUPIED )
 						++CurrentSlot;
@@ -3516,13 +3516,13 @@ void CBaseGame :: EventGameStarted( )
 				}
 
 				SendAllSlotInfo( );
-				CONSOLE_Print( "[GAME: " + m_GameName + "] successfully encoded HCL command string [" + m_HCLCommandString + "]" );
+				CONSOLE_Print( "[GAME: " + m_GameName + "] successfully encoded HCL command std::string [" + m_HCLCommandString + "]" );
 			}
 			else
-				CONSOLE_Print( "[GAME: " + m_GameName + "] encoding HCL command string [" + m_HCLCommandString + "] failed because it contains invalid characters" );
+				CONSOLE_Print( "[GAME: " + m_GameName + "] encoding HCL command std::string [" + m_HCLCommandString + "] failed because it contains invalid characters" );
 		}
 		else
-			CONSOLE_Print( "[GAME: " + m_GameName + "] encoding HCL command string [" + m_HCLCommandString + "] failed because there aren't enough occupied slots" );
+			CONSOLE_Print( "[GAME: " + m_GameName + "] encoding HCL command std::string [" + m_HCLCommandString + "] failed because there aren't enough occupied slots" );
 	}
 
 	// send a final slot info update if necessary
@@ -3567,7 +3567,7 @@ void CBaseGame :: EventGameStarted( )
 
 	// delete any potential players that are still hanging around
 
-	for( vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
+	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
 		delete *i;
 
 	m_Potentials.clear( );
@@ -3576,7 +3576,7 @@ void CBaseGame :: EventGameStarted( )
 
 	if( m_Replay )
 	{
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			m_Replay->AddPlayer( (*i)->GetPID( ), (*i)->GetName( ) );
 
 		if( m_FakePlayerPID != 255 )
@@ -3616,7 +3616,7 @@ void CBaseGame :: EventGameStarted( )
 		}
 	}
 
-	// build a stat string for use when saving the replay
+	// build a stat std::string for use when saving the replay
 	// we have to build this now because the map data is going to be deleted
 
 	BYTEARRAY StatString;
@@ -3630,7 +3630,7 @@ void CBaseGame :: EventGameStarted( )
 	StatString.push_back( 0 );
 	UTIL_AppendByteArray( StatString, m_Map->GetMapSHA1( ) );		// note: in replays generated by Warcraft III it stores 20 zeros for the SHA1 instead of the real thing
 	StatString = UTIL_EncodeStatString( StatString );
-	m_StatString = string( StatString.begin( ), StatString.end( ) );
+	m_StatString = std::string( StatString.begin( ), StatString.end( ) );
 
 	// delete the map data
 
@@ -3643,9 +3643,9 @@ void CBaseGame :: EventGameStarted( )
 		// this ensures that every player receives the same set of player loaded messages in the same order, even if someone leaves during loading
 		// if someone leaves during loading we buffer the leave message to ensure it gets sent in the correct position but the player loaded message wouldn't get sent if we didn't buffer it now
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
-			for( vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+			for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
 				(*j)->AddLoadInGameData( m_Protocol->SEND_W3GS_GAMELOADED_OTHERS( (*i)->GetPID( ) ) );
 		}
 	}
@@ -3659,7 +3659,7 @@ void CBaseGame :: EventGameStarted( )
 
 	// and finally reenter battle.net chat
 
-	for( vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
 	{
 		(*i)->QueueGameUncreate( );
 		(*i)->QueueEnterChat( );
@@ -3675,7 +3675,7 @@ void CBaseGame :: EventGameLoaded( )
 	CGamePlayer *Shortest = NULL;
 	CGamePlayer *Longest = NULL;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !Shortest || (*i)->GetFinishedLoadingTicks( ) < Shortest->GetFinishedLoadingTicks( ) )
 			Shortest = *i;
@@ -3690,12 +3690,12 @@ void CBaseGame :: EventGameLoaded( )
 		SendAllChat( m_GHost->m_Language->LongestLoadByPlayer( Longest->GetName( ), UTIL_ToString( (float)( Longest->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000, 2 ) ) );
 	}
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		SendChat( *i, m_GHost->m_Language->YourLoadingTimeWas( UTIL_ToString( (float)( (*i)->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000, 2 ) ) );
 
 	// read from gameloaded.txt if available
 
-	ifstream in;
+	std::ifstream in;
 	in.open( m_GHost->m_GameLoadedFile.c_str( ) );
 
 	if( !in.fail( ) )
@@ -3703,7 +3703,7 @@ void CBaseGame :: EventGameLoaded( )
 		// don't print more than 8 lines
 
 		uint32_t Count = 0;
-		string Line;
+		std::string Line;
 
 		while( !in.eof( ) && Count < 8 )
 		{
@@ -3740,7 +3740,7 @@ unsigned char CBaseGame :: GetSIDFromPID( unsigned char PID )
 
 CGamePlayer *CBaseGame :: GetPlayerFromPID( unsigned char PID )
 {
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) && (*i)->GetPID( ) == PID )
 			return *i;
@@ -3757,16 +3757,16 @@ CGamePlayer *CBaseGame :: GetPlayerFromSID( unsigned char SID )
 	return NULL;
 }
 
-CGamePlayer *CBaseGame :: GetPlayerFromName( string name, bool sensitive )
+CGamePlayer *CBaseGame :: GetPlayerFromName( std::string name, bool sensitive )
 {
 	if( !sensitive )
 		transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) )
 		{
-			string TestName = (*i)->GetName( );
+			std::string TestName = (*i)->GetName( );
 
 			if( !sensitive )
 				transform( TestName.begin( ), TestName.end( ), TestName.begin( ), (int(*)(int))tolower );
@@ -3779,22 +3779,22 @@ CGamePlayer *CBaseGame :: GetPlayerFromName( string name, bool sensitive )
 	return NULL;
 }
 
-uint32_t CBaseGame :: GetPlayerFromNamePartial( string name, CGamePlayer **player )
+uint32_t CBaseGame :: GetPlayerFromNamePartial( std::string name, CGamePlayer **player )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 	uint32_t Matches = 0;
 	*player = NULL;
 
-	// try to match each player with the passed string (e.g. "Varlock" would be matched with "lock")
+	// try to match each player with the passed std::string (e.g. "Varlock" would be matched with "lock")
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) )
 		{
-			string TestName = (*i)->GetName( );
+			std::string TestName = (*i)->GetName( );
 			transform( TestName.begin( ), TestName.end( ), TestName.begin( ), (int(*)(int))tolower );
 
-			if( TestName.find( name ) != string :: npos )
+			if( TestName.find( name ) != std::string :: npos )
 			{
 				++Matches;
 				*player = *i;
@@ -3835,7 +3835,7 @@ unsigned char CBaseGame :: GetNewPID( )
 
 		bool InUse = false;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( !(*i)->GetLeftMessageSent( ) && (*i)->GetPID( ) == TestPID )
 			{
@@ -3883,7 +3883,7 @@ BYTEARRAY CBaseGame :: GetPIDs( )
 {
 	BYTEARRAY result;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) )
 			result.push_back( (*i)->GetPID( ) );
@@ -3896,7 +3896,7 @@ BYTEARRAY CBaseGame :: GetPIDs( unsigned char excludePID )
 {
 	BYTEARRAY result;
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) && (*i)->GetPID( ) != excludePID )
 			result.push_back( (*i)->GetPID( ) );
@@ -3920,7 +3920,7 @@ unsigned char CBaseGame :: GetHostPID( )
 
 	// try to find the owner player next
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) && IsOwner( (*i)->GetName( ) ) )
 			return (*i)->GetPID( );
@@ -3928,7 +3928,7 @@ unsigned char CBaseGame :: GetHostPID( )
 
 	// okay then, just use the first available player
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( !(*i)->GetLeftMessageSent( ) )
 			return (*i)->GetPID( );
@@ -3947,7 +3947,7 @@ unsigned char CBaseGame :: GetEmptySlot( bool reserved )
 		// unfortunately we don't know which slot each player was assigned in the savegame
 		// but we do know which slots were occupied and which weren't so let's at least force players to use previously occupied slots
 
-		vector<CGameSlot> SaveGameSlots = m_SaveGame->GetSlots( );
+		std::vector<CGameSlot> SaveGameSlots = m_SaveGame->GetSlots( );
 
 		for( unsigned char i = 0; i < m_Slots.size( ); ++i )
 		{
@@ -4034,7 +4034,7 @@ unsigned char CBaseGame :: GetEmptySlot( unsigned char team, unsigned char PID )
 
 		if( m_SaveGame )
 		{
-			vector<CGameSlot> SaveGameSlots = m_SaveGame->GetSlots( );
+			std::vector<CGameSlot> SaveGameSlots = m_SaveGame->GetSlots( );
 
 			for( unsigned char i = StartSlot; i < m_Slots.size( ); ++i )
 			{
@@ -4213,7 +4213,7 @@ void CBaseGame :: OpenAllSlots( )
 {
 	bool Changed = false;
 
-	for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 	{
 		if( (*i).GetSlotStatus( ) == SLOTSTATUS_CLOSED )
 		{
@@ -4230,7 +4230,7 @@ void CBaseGame :: CloseAllSlots( )
 {
 	bool Changed = false;
 
-	for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 	{
 		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OPEN )
 		{
@@ -4249,9 +4249,9 @@ void CBaseGame :: ShuffleSlots( )
 	// that means we need to prevent this function from shuffling the open/closed/computer slots too
 	// so we start by copying the player slots to a temporary vector
 
-	vector<CGameSlot> PlayerSlots;
+	std::vector<CGameSlot> PlayerSlots;
 
-	for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 	{
 		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 && (*i).GetTeam( ) != 12 )
 			PlayerSlots.push_back( *i );
@@ -4266,7 +4266,7 @@ void CBaseGame :: ShuffleSlots( )
 		// unfortunately we can't just use PlayerSlots because the team/colour/race shouldn't be modified
 		// so make a vector we can use
 
-		vector<unsigned char> SIDs;
+		std::vector<unsigned char> SIDs;
 
 		for( unsigned char i = 0; i < PlayerSlots.size( ); ++i )
 			SIDs.push_back( i );
@@ -4275,7 +4275,7 @@ void CBaseGame :: ShuffleSlots( )
 
 		// now put the PlayerSlots vector in the same order as the SIDs vector
 
-		vector<CGameSlot> Slots;
+		std::vector<CGameSlot> Slots;
 
 		// as usual don't modify the team/colour/race
 
@@ -4294,10 +4294,10 @@ void CBaseGame :: ShuffleSlots( )
 
 	// now we put m_Slots back together again
 
-	vector<CGameSlot> :: iterator CurrentPlayer = PlayerSlots.begin( );
-	vector<CGameSlot> Slots;
+	std::vector<CGameSlot> :: iterator CurrentPlayer = PlayerSlots.begin( );
+	std::vector<CGameSlot> Slots;
 
-	for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 	{
 		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 && (*i).GetTeam( ) != 12 )
 		{
@@ -4315,7 +4315,7 @@ void CBaseGame :: ShuffleSlots( )
 	SendAllSlotInfo( );
 }
 
-vector<unsigned char> CBaseGame :: BalanceSlotsRecursive( vector<unsigned char> PlayerIDs, unsigned char *TeamSizes, double *PlayerScores, unsigned char StartTeam )
+std::vector<unsigned char> CBaseGame :: BalanceSlotsRecursive( std::vector<unsigned char> PlayerIDs, unsigned char *TeamSizes, double *PlayerScores, unsigned char StartTeam )
 {
 	// take a brute force approach to finding the best balance by iterating through every possible combination of players
 	// 1.) since the number of teams is arbitrary this algorithm must be recursive
@@ -4324,7 +4324,7 @@ vector<unsigned char> CBaseGame :: BalanceSlotsRecursive( vector<unsigned char> 
 	// 4.) for every possible combination, check the largest difference in total scores between any two actual teams
 	// 5.) minimize this value by choosing the combination of players with the smallest difference
 
-	vector<unsigned char> BestOrdering = PlayerIDs;
+	std::vector<unsigned char> BestOrdering = PlayerIDs;
 	double BestDifference = -1.0;
 
 	for( unsigned char i = StartTeam; i < 12; ++i )
@@ -4343,17 +4343,17 @@ vector<unsigned char> CBaseGame :: BalanceSlotsRecursive( vector<unsigned char> 
 				// for example, it could contain one, two, or more actual teams worth of players
 				// so recurse using the second "team" as the full set of players to perform the balancing on
 
-				vector<unsigned char> BestSubOrdering = BalanceSlotsRecursive( vector<unsigned char>( PlayerIDs.begin( ) + Mid, PlayerIDs.end( ) ), TeamSizes, PlayerScores, i + 1 );
+				std::vector<unsigned char> BestSubOrdering = BalanceSlotsRecursive( std::vector<unsigned char>( PlayerIDs.begin( ) + Mid, PlayerIDs.end( ) ), TeamSizes, PlayerScores, i + 1 );
 
 				// BestSubOrdering now contains the best ordering of all the remaining players (the "right team") given this particular combination of players into two "teams"
 				// in order to calculate the largest difference in total scores we need to recombine the subordering with the first team
 
-				vector<unsigned char> TestOrdering = vector<unsigned char>( PlayerIDs.begin( ), PlayerIDs.begin( ) + Mid );
+				std::vector<unsigned char> TestOrdering = std::vector<unsigned char>( PlayerIDs.begin( ), PlayerIDs.begin( ) + Mid );
 				TestOrdering.insert( TestOrdering.end( ), BestSubOrdering.begin( ), BestSubOrdering.end( ) );
 
 				// now calculate the team scores for all the teams that we know about (e.g. on subsequent recursion steps this will NOT be every possible team)
 
-				vector<unsigned char> :: iterator CurrentPID = TestOrdering.begin( );
+				std::vector<unsigned char> :: iterator CurrentPID = TestOrdering.begin( );
 				double TeamScores[12];
 
 				for( unsigned char j = StartTeam; j < 12; ++j )
@@ -4413,12 +4413,12 @@ void CBaseGame :: BalanceSlots( )
 	// setup the necessary variables for the balancing algorithm
 	// use an array of 13 elements for 12 players because GHost++ allocates PID's from 1-12 (i.e. excluding 0) and we use the PID to index the array
 
-	vector<unsigned char> PlayerIDs;
+	std::vector<unsigned char> PlayerIDs;
 	unsigned char TeamSizes[12];
 	double PlayerScores[13];
 	memset( TeamSizes, 0, sizeof( unsigned char ) * 12 );
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		unsigned char PID = (*i)->GetPID( );
 
@@ -4490,13 +4490,13 @@ void CBaseGame :: BalanceSlots( )
 	}
 
 	uint32_t StartTicks = GetTicks( );
-	vector<unsigned char> BestOrdering = BalanceSlotsRecursive( PlayerIDs, TeamSizes, PlayerScores, 0 );
+	std::vector<unsigned char> BestOrdering = BalanceSlotsRecursive( PlayerIDs, TeamSizes, PlayerScores, 0 );
 	uint32_t EndTicks = GetTicks( );
 
 	// the BestOrdering assumes the teams are in slot order although this may not be the case
 	// so put the players on the correct teams regardless of slot order
 
-	vector<unsigned char> :: iterator CurrentPID = BestOrdering.begin( );
+	std::vector<unsigned char> :: iterator CurrentPID = BestOrdering.begin( );
 
 	for( unsigned char i = 0; i < 12; ++i )
 	{
@@ -4541,7 +4541,7 @@ void CBaseGame :: BalanceSlots( )
 		bool TeamHasPlayers = false;
 		double TeamScore = 0.0;
 
-		for( vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+		for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
 		{
 			unsigned char SID = GetSIDFromPID( (*j)->GetPID( ) );
 
@@ -4562,7 +4562,7 @@ void CBaseGame :: BalanceSlots( )
 	}
 }
 
-void CBaseGame :: AddToSpoofed( string server, string name, bool sendMessage )
+void CBaseGame :: AddToSpoofed( std::string server, std::string name, bool sendMessage )
 {
 	CGamePlayer *Player = GetPlayerFromName( name, true );
 
@@ -4576,13 +4576,13 @@ void CBaseGame :: AddToSpoofed( string server, string name, bool sendMessage )
 	}
 }
 
-void CBaseGame :: AddToReserved( string name )
+void CBaseGame :: AddToReserved( std::string name )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 
 	// check that the user is not already reserved
 
-	for( vector<string> :: iterator i = m_Reserved.begin( ); i != m_Reserved.end( ); ++i )
+	for( std::vector<std::string> :: iterator i = m_Reserved.begin( ); i != m_Reserved.end( ); ++i )
 	{
 		if( *i == name )
 			return;
@@ -4592,9 +4592,9 @@ void CBaseGame :: AddToReserved( string name )
 
 	// upgrade the user if they're already in the game
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
-		string NameLower = (*i)->GetName( );
+		std::string NameLower = (*i)->GetName( );
 		transform( NameLower.begin( ), NameLower.end( ), NameLower.begin( ), (int(*)(int))tolower );
 
 		if( NameLower == name )
@@ -4602,19 +4602,19 @@ void CBaseGame :: AddToReserved( string name )
 	}
 }
 
-bool CBaseGame :: IsOwner( string name )
+bool CBaseGame :: IsOwner( std::string name )
 {
-	string OwnerLower = m_OwnerName;
+	std::string OwnerLower = m_OwnerName;
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 	transform( OwnerLower.begin( ), OwnerLower.end( ), OwnerLower.begin( ), (int(*)(int))tolower );
 	return name == OwnerLower;
 }
 
-bool CBaseGame :: IsReserved( string name )
+bool CBaseGame :: IsReserved( std::string name )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 
-	for( vector<string> :: iterator i = m_Reserved.begin( ); i != m_Reserved.end( ); ++i )
+	for( std::vector<std::string> :: iterator i = m_Reserved.begin( ); i != m_Reserved.end( ); ++i )
 	{
 		if( *i == name )
 			return true;
@@ -4627,7 +4627,7 @@ bool CBaseGame :: IsDownloading( )
 {
 	// returns true if at least one player is downloading the map
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( (*i)->GetDownloadStarted( ) && !(*i)->GetDownloadFinished( ) )
 			return true;
@@ -4671,7 +4671,7 @@ void CBaseGame :: StartCountDown( bool force )
 		}
 		else
 		{
-			// check if the HCL command string is short enough
+			// check if the HCL command std::string is short enough
 
 			if( m_HCLCommandString.size( ) > GetSlotsOccupied( ) )
 			{
@@ -4681,9 +4681,9 @@ void CBaseGame :: StartCountDown( bool force )
 
 			// check if everyone has the map
 
-			string StillDownloading;
+			std::string StillDownloading;
 
-			for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+			for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 			{
 				if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 && (*i).GetDownloadStatus( ) != 100 )
 				{
@@ -4704,11 +4704,11 @@ void CBaseGame :: StartCountDown( bool force )
 
 			// check if everyone is spoof checked
 
-			string NotSpoofChecked;
+			std::string NotSpoofChecked;
 
 			if( m_GHost->m_RequireSpoofChecks )
 			{
-				for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 				{
 					if( !(*i)->GetSpoofed( ) )
 					{
@@ -4726,9 +4726,9 @@ void CBaseGame :: StartCountDown( bool force )
 			// check if everyone has been pinged enough (3 times) that the autokicker would have kicked them by now
 			// see function EventPlayerPongToHost for the autokicker code
 
-			string NotPinged;
+			std::string NotPinged;
 
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 1 )
 				{
@@ -4756,15 +4756,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 {
 	if( !m_CountDownStarted )
 	{
-		// Check on even players if map have such config
 
-		if ( m_EvenPlayersStartup ){
-			if((GetNumHumanPlayers( )-GetNumJudgePlayers())%2 != 0)
-			{
-				SendAllChat("Автозапуск отменен. Игра начнется при четном кол-ве игроков.");
-				return;
-			}
-		}
 		// check if enough players are present
 		if( GetNumHumanPlayers( ) < m_AutoStartPlayers + GetNumJudgePlayers())
 		{
@@ -4774,9 +4766,9 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 
 		// check if everyone has the map
 
-		string StillDownloading;
+		std::string StillDownloading;
 
-		for( vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+		for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
 		{
 			if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 && (*i).GetDownloadStatus( ) != 100 )
 			{
@@ -4800,11 +4792,11 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 
 		// check if everyone is spoof checked
 
-		string NotSpoofChecked;
+		std::string NotSpoofChecked;
 
 		if( requireSpoofChecks )
 		{
-			for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 			{
 				if( !(*i)->GetSpoofed( ) )
 				{
@@ -4822,9 +4814,9 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 		// check if everyone has been pinged enough (3 times) that the autokicker would have kicked them by now
 		// see function EventPlayerPongToHost for the autokicker code
 
-		string NotPinged;
+		std::string NotPinged;
 
-		for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 		{
 			if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 2 )
 			{
@@ -4840,6 +4832,15 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 			SendAllChat( m_GHost->m_Language->PlayersNotYetPingedAutoStart( NotPinged ) );
 			return;
 		}
+				// Check on even players if map have such config
+
+		if ( m_EvenPlayersStartup ){
+			if((GetNumHumanPlayers( )-GetNumJudgePlayers())%2 != 0)
+			{
+				SendAllChat("Автозапуск отменен. Игра начнется при четном кол-ве игроков.");
+				return;
+			}
+		}
 
 		// if no problems found start the game
 
@@ -4851,14 +4852,14 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 	}
 }
 
-void CBaseGame :: StopPlayers( string reason )
+void CBaseGame :: StopPlayers( std::string reason )
 {
-	// disconnect every player and set their left reason to the passed string
+	// disconnect every player and set their left reason to the passed std::string
 	// we use this function when we want the code in the Update function to run before the destructor (e.g. saving players to the database)
 	// therefore calling this function when m_GameLoading || m_GameLoaded is roughly equivalent to setting m_Exiting = true
 	// the only difference is whether the code in the Update function is executed or not
 
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		(*i)->SetDeleteMe( true );
 		(*i)->SetLeftReason( reason );
@@ -4866,9 +4867,9 @@ void CBaseGame :: StopPlayers( string reason )
 	}
 }
 
-void CBaseGame :: StopLaggers( string reason )
+void CBaseGame :: StopLaggers( std::string reason )
 {
-	for( vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
 	{
 		if( (*i)->GetLagging( ) )
 		{

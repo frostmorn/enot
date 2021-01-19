@@ -60,7 +60,7 @@ CIncomingGameHost *CBNETProtocol :: RECEIVE_SID_GETADVLISTEX( BYTEARRAY data )
 	//		10 bytes			-> ???
 	//		2 bytes				-> Port
 	//		4 bytes				-> IP
-	//		null term string	-> GameName
+	//		null term std::string	-> GameName
 	//		2 bytes				-> ???
 	//		8 bytes				-> HostCounter
 
@@ -83,7 +83,7 @@ CIncomingGameHost *CBNETProtocol :: RECEIVE_SID_GETADVLISTEX( BYTEARRAY data )
 				HostCounter.push_back( UTIL_ExtractHex( data, GameName.size( ) + 33, true ) );
 				return new CIncomingGameHost(	IP,
 												UTIL_ByteArrayToUInt16( Port, false ),
-												string( GameName.begin( ), GameName.end( ) ),
+												std::string( GameName.begin( ), GameName.end( ) ),
 												HostCounter );
 			}
 		}
@@ -99,7 +99,7 @@ bool CBNETProtocol :: RECEIVE_SID_ENTERCHAT( BYTEARRAY data )
 
 	// 2 bytes					-> Header
 	// 2 bytes					-> Length
-	// null terminated string	-> UniqueName
+	// null terminated std::string	-> UniqueName
 
 	if( ValidateLength( data ) && data.size( ) >= 5 )
 	{
@@ -121,8 +121,8 @@ CIncomingChatEvent *CBNETProtocol :: RECEIVE_SID_CHATEVENT( BYTEARRAY data )
 	// 4 bytes					-> ???
 	// 4 bytes					-> Ping
 	// 12 bytes					-> ???
-	// null terminated string	-> User
-	// null terminated string	-> Message
+	// null terminated std::string	-> User
+	// null terminated std::string	-> Message
 
 	if( ValidateLength( data ) && data.size( ) >= 29 )
 	{
@@ -150,8 +150,8 @@ CIncomingChatEvent *CBNETProtocol :: RECEIVE_SID_CHATEVENT( BYTEARRAY data )
 		case CBNETProtocol :: EID_EMOTE:
 			return new CIncomingChatEvent(	(CBNETProtocol :: IncomingChatEvent)UTIL_ByteArrayToUInt32( EventID, false ),
 												UTIL_ByteArrayToUInt32( Ping, false ),
-												string( User.begin( ), User.end( ) ),
-												string( Message.begin( ), Message.end( ) ) );
+												std::string( User.begin( ), User.end( ) ),
+												std::string( Message.begin( ), Message.end( ) ) );
 		}
 
 	}
@@ -236,8 +236,8 @@ bool CBNETProtocol :: RECEIVE_SID_AUTH_INFO( BYTEARRAY data )
 	// 4 bytes					-> ServerToken
 	// 4 bytes					-> ???
 	// 8 bytes					-> MPQFileTime
-	// null terminated string	-> IX86VerFileName
-	// null terminated string	-> ValueStringFormula
+	// null terminated std::string	-> IX86VerFileName
+	// null terminated std::string	-> ValueStringFormula
 
 	if( ValidateLength( data ) && data.size( ) >= 25 )
 	{
@@ -260,7 +260,7 @@ bool CBNETProtocol :: RECEIVE_SID_AUTH_CHECK( BYTEARRAY data )
 	// 2 bytes					-> Header
 	// 2 bytes					-> Length
 	// 4 bytes					-> KeyState
-	// null terminated string	-> KeyStateDescription
+	// null terminated std::string	-> KeyStateDescription
 
 	if( ValidateLength( data ) && data.size( ) >= 9 )
 	{
@@ -336,7 +336,7 @@ BYTEARRAY CBNETProtocol :: RECEIVE_SID_WARDEN( BYTEARRAY data )
 	return BYTEARRAY( );
 }
 
-vector<CIncomingFriendList *> CBNETProtocol :: RECEIVE_SID_FRIENDSLIST( BYTEARRAY data )
+std::vector<CIncomingFriendList *> CBNETProtocol :: RECEIVE_SID_FRIENDSLIST( BYTEARRAY data )
 {
 	// DEBUG_Print( "RECEIVED SID_FRIENDSLIST" );
 	// DEBUG_Print( data );
@@ -345,13 +345,13 @@ vector<CIncomingFriendList *> CBNETProtocol :: RECEIVE_SID_FRIENDSLIST( BYTEARRA
 	// 2 bytes					-> Length
 	// 1 byte					-> Total
 	// for( 1 .. Total )
-	//		null term string	-> Account
+	//		null term std::string	-> Account
 	//		1 byte				-> Status
 	//		1 byte				-> Area
 	//		4 bytes				-> ???
-	//		null term string	-> Location
+	//		null term std::string	-> Location
 
-	vector<CIncomingFriendList *> Friends;
+	std::vector<CIncomingFriendList *> Friends;
 
 	if( ValidateLength( data ) && data.size( ) >= 5 )
 	{
@@ -376,17 +376,17 @@ vector<CIncomingFriendList *> CBNETProtocol :: RECEIVE_SID_FRIENDSLIST( BYTEARRA
 			i += 6;
 			BYTEARRAY Location = UTIL_ExtractCString( data, i );
 			i += Location.size( ) + 1;
-			Friends.push_back( new CIncomingFriendList(	string( Account.begin( ), Account.end( ) ),
+			Friends.push_back( new CIncomingFriendList(	std::string( Account.begin( ), Account.end( ) ),
 														Status,
 														Area,
-														string( Location.begin( ), Location.end( ) ) ) );
+														std::string( Location.begin( ), Location.end( ) ) ) );
 		}
 	}
 
 	return Friends;
 }
 #ifdef GHOST_CLANS
-vector<CIncomingClanList *> CBNETProtocol :: RECEIVE_SID_CLANMEMBERLIST( BYTEARRAY data )
+std::vector<CIncomingClanList *> CBNETProtocol :: RECEIVE_SID_CLANMEMBERLIST( BYTEARRAY data )
 {
 	// DEBUG_Print( "RECEIVED SID_CLANMEMBERLIST" );
 	// DEBUG_Print( data );
@@ -396,12 +396,12 @@ vector<CIncomingClanList *> CBNETProtocol :: RECEIVE_SID_CLANMEMBERLIST( BYTEARR
 	// 4 bytes					-> ???
 	// 1 byte					-> Total
 	// for( 1 .. Total )
-	//		null term string	-> Name
+	//		null term std::string	-> Name
 	//		1 byte				-> Rank
 	//		1 byte				-> Status
-	//		null term string	-> Location
+	//		null term std::string	-> Location
 
-	vector<CIncomingClanList *> ClanList;
+	std::vector<CIncomingClanList *> ClanList;
 
 	if( ValidateLength( data ) && data.size( ) >= 9 )
 	{
@@ -425,11 +425,11 @@ vector<CIncomingClanList *> CBNETProtocol :: RECEIVE_SID_CLANMEMBERLIST( BYTEARR
 			unsigned char Status = data[i + 1];
 			i += 2;
 
-			// in the original VB source the location string is read but discarded, so that's what I do here
+			// in the original VB source the location std::string is read but discarded, so that's what I do here
 
 			BYTEARRAY Location = UTIL_ExtractCString( data, i );
 			i += Location.size( ) + 1;
-			ClanList.push_back( new CIncomingClanList(	string( Name.begin( ), Name.end( ) ),
+			ClanList.push_back( new CIncomingClanList(	std::string( Name.begin( ), Name.end( ) ),
 														Rank,
 														Status ) );
 		}
@@ -445,10 +445,10 @@ CIncomingClanList *CBNETProtocol :: RECEIVE_SID_CLANMEMBERSTATUSCHANGE( BYTEARRA
 
 	// 2 bytes					-> Header
 	// 2 bytes					-> Length
-	// null terminated string	-> Name
+	// null terminated std::string	-> Name
 	// 1 byte					-> Rank
 	// 1 byte					-> Status
-	// null terminated string	-> Location
+	// null terminated std::string	-> Location
 
 	if( ValidateLength( data ) && data.size( ) >= 5 )
 	{
@@ -459,10 +459,10 @@ CIncomingClanList *CBNETProtocol :: RECEIVE_SID_CLANMEMBERSTATUSCHANGE( BYTEARRA
 			unsigned char Rank = data[Name.size( ) + 5];
 			unsigned char Status = data[Name.size( ) + 6];
 
-			// in the original VB source the location string is read but discarded, so that's what I do here
+			// in the original VB source the location std::string is read but discarded, so that's what I do here
 
 			BYTEARRAY Location = UTIL_ExtractCString( data, Name.size( ) + 7 );
-			return new CIncomingClanList(	string( Name.begin( ), Name.end( ) ),
+			return new CIncomingClanList(	std::string( Name.begin( ), Name.end( ) ),
 											Rank,
 											Status );
 		}
@@ -471,7 +471,7 @@ CIncomingClanList *CBNETProtocol :: RECEIVE_SID_CLANMEMBERSTATUSCHANGE( BYTEARRA
 	return NULL;
 }
 
-string CBNETProtocol :: RECEIVE_SID_CLANCREATIONINVITATION( BYTEARRAY data )
+std::string CBNETProtocol :: RECEIVE_SID_CLANCREATIONINVITATION( BYTEARRAY data )
 {
 	if( ValidateLength( data ) && data.size( ) >= 12 )
 	{
@@ -480,13 +480,13 @@ string CBNETProtocol :: RECEIVE_SID_CLANCREATIONINVITATION( BYTEARRAY data )
 		BYTEARRAY ClanName = UTIL_ExtractCString( data, 12 );
 		m_ClanLastInviteName = UTIL_ExtractCString( data, 12 + ClanName.size( ) );
 		
-		return string( m_ClanLastInviteName.begin( ), m_ClanLastInviteName.end( ) );
+		return std::string( m_ClanLastInviteName.begin( ), m_ClanLastInviteName.end( ) );
 	}
 
 	return NULL;
 }
 
-string CBNETProtocol :: RECEIVE_SID_CLANINVITATIONRESPONSE( BYTEARRAY data )
+std::string CBNETProtocol :: RECEIVE_SID_CLANINVITATIONRESPONSE( BYTEARRAY data )
 {
 	if( ValidateLength( data ) && data.size( ) >= 12 )
 	{
@@ -495,7 +495,7 @@ string CBNETProtocol :: RECEIVE_SID_CLANINVITATIONRESPONSE( BYTEARRAY data )
 		BYTEARRAY ClanName = UTIL_ExtractCString( data, 12 );
 		m_ClanLastInviteName = UTIL_ExtractCString( data, 12 + ClanName.size( ) );
 		
-		return string( m_ClanLastInviteName.begin( ), m_ClanLastInviteName.end( ) );
+		return std::string( m_ClanLastInviteName.begin( ), m_ClanLastInviteName.end( ) );
 	}
 
 	return NULL;
@@ -540,7 +540,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_STOPADV( )
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_GETADVLISTEX( string gameName )
+BYTEARRAY CBNETProtocol :: SEND_SID_GETADVLISTEX( std::string gameName )
 {
 	unsigned char MapFilter1[]	= { 255, 3, 0, 0 };
 	unsigned char MapFilter2[]	= { 255, 3, 0, 0 };
@@ -580,7 +580,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_ENTERCHAT( )
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_JOINCHANNEL( string channel )
+BYTEARRAY CBNETProtocol :: SEND_SID_JOINCHANNEL( std::string channel )
 {
 	unsigned char NoCreateJoin[]	= { 2, 0, 0, 0 };
 	unsigned char FirstJoin[]		= { 1, 0, 0, 0 };
@@ -603,7 +603,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_JOINCHANNEL( string channel )
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_CHATCOMMAND( string command )
+BYTEARRAY CBNETProtocol :: SEND_SID_CHATCOMMAND( std::string command )
 {
 	BYTEARRAY packet;
 	packet.push_back( BNET_HEADER_CONSTANT );		// BNET header constant
@@ -636,7 +636,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_CHECKAD( )
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_STARTADVEX3( unsigned char state, BYTEARRAY mapGameType, BYTEARRAY mapFlags, BYTEARRAY mapWidth, BYTEARRAY mapHeight, string gameName, string hostName, uint32_t upTime, string mapPath, BYTEARRAY mapCRC, BYTEARRAY mapSHA1, uint32_t hostCounter )
+BYTEARRAY CBNETProtocol :: SEND_SID_STARTADVEX3( unsigned char state, BYTEARRAY mapGameType, BYTEARRAY mapFlags, BYTEARRAY mapWidth, BYTEARRAY mapHeight, std::string gameName, std::string hostName, uint32_t upTime, std::string mapPath, BYTEARRAY mapCRC, BYTEARRAY mapSHA1, uint32_t hostCounter )
 {
 	// todotodo: sort out how GameType works, the documentation is horrendous
 
@@ -667,16 +667,16 @@ Flags:
 	unsigned char Unknown[]		= { 255,  3,  0,  0 };
 	unsigned char CustomGame[]	= {   0,  0,  0,  0 };
 
-	string HostCounterString = UTIL_ToHexString( hostCounter );
+	std::string HostCounterString = UTIL_ToHexString( hostCounter );
 
 	if( HostCounterString.size( ) < 8 )
 		HostCounterString.insert( 0, 8 - HostCounterString.size( ), '0' );
 
-	HostCounterString = string( HostCounterString.rbegin( ), HostCounterString.rend( ) );
+	HostCounterString = std::string( HostCounterString.rbegin( ), HostCounterString.rend( ) );
 
 	BYTEARRAY packet;
 
-	// make the stat string
+	// make the stat std::string
 
 	BYTEARRAY StatString;
 	UTIL_AppendByteArrayFast( StatString, mapFlags );
@@ -711,7 +711,7 @@ Flags:
 		packet.push_back( 98 );											// Slots Free (ascii 98 = char 'b' = 11 slots free) - note: do not reduce this as this is the # of PID's Warcraft III will allocate
 		UTIL_AppendByteArrayFast( packet, HostCounterString, false );	// Host Counter
 		UTIL_AppendByteArrayFast( packet, StatString );					// Stat String
-		packet.push_back( 0 );											// Stat String null terminator (the stat string is encoded to remove all even numbers i.e. zeros)
+		packet.push_back( 0 );											// Stat String null terminator (the stat std::string is encoded to remove all even numbers i.e. zeros)
 		AssignLength( packet );
 	}
 	else
@@ -722,7 +722,7 @@ Flags:
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_NOTIFYJOIN( string gameName )
+BYTEARRAY CBNETProtocol :: SEND_SID_NOTIFYJOIN( std::string gameName )
 {
 	unsigned char ProductID[]		= {  0, 0, 0, 0 };
 	unsigned char ProductVersion[]	= { 14, 0, 0, 0 };	// Warcraft III is 14
@@ -763,7 +763,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_PING( BYTEARRAY pingValue )
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_LOGONRESPONSE( BYTEARRAY clientToken, BYTEARRAY serverToken, BYTEARRAY passwordHash, string accountName )
+BYTEARRAY CBNETProtocol :: SEND_SID_LOGONRESPONSE( BYTEARRAY clientToken, BYTEARRAY serverToken, BYTEARRAY passwordHash, std::string accountName )
 {
 	// todotodo: check that the passed BYTEARRAY sizes are correct (don't know what they should be right now so I can't do this today)
 
@@ -796,7 +796,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_NETGAMEPORT( uint16_t serverPort )
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_INFO( unsigned char ver, bool TFT, uint32_t localeID, string countryAbbrev, string country, uint32_t LocalIP )
+BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_INFO( unsigned char ver, bool TFT, uint32_t localeID, std::string countryAbbrev, std::string country, uint32_t LocalIP )
 {
 	unsigned char ProtocolID[]		= {   0,   0,   0,   0 };
 	unsigned char PlatformID[]		= {  54,  56,  88,  73 };	// "IX86"
@@ -834,7 +834,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_INFO( unsigned char ver, bool TFT, uint
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_CHECK( bool TFT, BYTEARRAY clientToken, BYTEARRAY exeVersion, BYTEARRAY exeVersionHash, BYTEARRAY keyInfoROC, BYTEARRAY keyInfoTFT, string exeInfo, string keyOwnerName )
+BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_CHECK( bool TFT, BYTEARRAY clientToken, BYTEARRAY exeVersion, BYTEARRAY exeVersionHash, BYTEARRAY keyInfoROC, BYTEARRAY keyInfoTFT, std::string exeInfo, std::string keyOwnerName )
 {
 	uint32_t NumKeys = 0;
 
@@ -873,7 +873,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_CHECK( bool TFT, BYTEARRAY clientToken,
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_ACCOUNTLOGON( BYTEARRAY clientPublicKey, string accountName )
+BYTEARRAY CBNETProtocol :: SEND_SID_AUTH_ACCOUNTLOGON( BYTEARRAY clientPublicKey, std::string accountName )
 {
 	BYTEARRAY packet;
 
@@ -959,7 +959,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_CLANMEMBERLIST( )
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_CLANINVITATION( string accountName )
+BYTEARRAY CBNETProtocol :: SEND_SID_CLANINVITATION( std::string accountName )
 {
 	unsigned char Cookie[] = { 0, 0, 0, 0 };
 
@@ -974,7 +974,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_CLANINVITATION( string accountName )
 	return packet;	
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_CLANREMOVEMEMBER( string accountName )
+BYTEARRAY CBNETProtocol :: SEND_SID_CLANREMOVEMEMBER( std::string accountName )
 {
 	unsigned char Cookie[] = { 0, 0, 0, 0 };
 
@@ -990,7 +990,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_CLANREMOVEMEMBER( string accountName )
 	return packet;	
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_CLANCHANGERANK( string accountName,  CBNETProtocol :: RankCode rank )
+BYTEARRAY CBNETProtocol :: SEND_SID_CLANCHANGERANK( std::string accountName,  CBNETProtocol :: RankCode rank )
 {
 	unsigned char Cookie[] = { 0, 0, 0, 0 };
 
@@ -1006,7 +1006,7 @@ BYTEARRAY CBNETProtocol :: SEND_SID_CLANCHANGERANK( string accountName,  CBNETPr
 	return packet;
 }
 
-BYTEARRAY CBNETProtocol :: SEND_SID_CLANSETMOTD( string motd )
+BYTEARRAY CBNETProtocol :: SEND_SID_CLANSETMOTD( std::string motd )
 {
 	unsigned char Cookie[] = { 0, 0, 0, 0 };
 
@@ -1110,7 +1110,7 @@ bool CBNETProtocol :: ValidateLength( BYTEARRAY &content )
 // CIncomingGameHost
 //
 
-CIncomingGameHost :: CIncomingGameHost( BYTEARRAY &nIP, uint16_t nPort, string nGameName, BYTEARRAY &nHostCounter ) : m_IP( nIP ), m_Port( nPort ), m_GameName( nGameName ), m_HostCounter( nHostCounter )
+CIncomingGameHost :: CIncomingGameHost( BYTEARRAY &nIP, uint16_t nPort, std::string nGameName, BYTEARRAY &nHostCounter ) : m_IP( nIP ), m_Port( nPort ), m_GameName( nGameName ), m_HostCounter( nHostCounter )
 {
 
 }
@@ -1120,9 +1120,9 @@ CIncomingGameHost :: ~CIncomingGameHost( )
 
 }
 
-string CIncomingGameHost :: GetIPString( )
+std::string CIncomingGameHost :: GetIPString( )
 {
-	string Result;
+	std::string Result;
 
 	if( m_IP.size( ) >= 4 )
 	{
@@ -1142,7 +1142,7 @@ string CIncomingGameHost :: GetIPString( )
 // CIncomingChatEvent
 //
 
-CIncomingChatEvent :: CIncomingChatEvent( CBNETProtocol :: IncomingChatEvent nChatEvent, int32_t nPing, string nUser, string nMessage ) : m_ChatEvent( nChatEvent ), m_Ping( nPing ), m_User( nUser ), m_Message( nMessage )
+CIncomingChatEvent :: CIncomingChatEvent( CBNETProtocol :: IncomingChatEvent nChatEvent, int32_t nPing, std::string nUser, std::string nMessage ) : m_ChatEvent( nChatEvent ), m_Ping( nPing ), m_User( nUser ), m_Message( nMessage )
 {
 
 }
@@ -1156,7 +1156,7 @@ CIncomingChatEvent :: ~CIncomingChatEvent( )
 // CIncomingFriendList
 //
 
-CIncomingFriendList :: CIncomingFriendList( string nAccount, unsigned char nStatus, unsigned char nArea, string nLocation ) : m_Account( nAccount ), m_Status( nStatus ), m_Area( nArea ), m_Location( nLocation )
+CIncomingFriendList :: CIncomingFriendList( std::string nAccount, unsigned char nStatus, unsigned char nArea, std::string nLocation ) : m_Account( nAccount ), m_Status( nStatus ), m_Area( nArea ), m_Location( nLocation )
 {
 
 }
@@ -1166,9 +1166,9 @@ CIncomingFriendList :: ~CIncomingFriendList( )
 
 }
 
-string CIncomingFriendList :: GetDescription( )
+std::string CIncomingFriendList :: GetDescription( )
 {
-	string Description;
+	std::string Description;
 	Description += GetAccount( ) + "\n";
 	Description += ExtractStatus( GetStatus( ) ) + "\n";
 	Description += ExtractArea( GetArea( ) ) + "\n";
@@ -1176,9 +1176,9 @@ string CIncomingFriendList :: GetDescription( )
 	return Description;
 }
 
-string CIncomingFriendList :: ExtractStatus( unsigned char status )
+std::string CIncomingFriendList :: ExtractStatus( unsigned char status )
 {
-	string Result;
+	std::string Result;
 
 	if( status & 1 )
 		Result += "<Mutual>";
@@ -1195,7 +1195,7 @@ string CIncomingFriendList :: ExtractStatus( unsigned char status )
 	return Result;
 }
 
-string CIncomingFriendList :: ExtractArea( unsigned char area )
+std::string CIncomingFriendList :: ExtractArea( unsigned char area )
 {
 	switch( area )
 	{
@@ -1210,9 +1210,9 @@ string CIncomingFriendList :: ExtractArea( unsigned char area )
 	return "<Unknown>";
 }
 
-string CIncomingFriendList :: ExtractLocation( string location )
+std::string CIncomingFriendList :: ExtractLocation( std::string location )
 {
-	string Result;
+	std::string Result;
 
 	if( location.substr( 0, 4 ) == "PX3W" )
 		Result = location.substr( 4 );
@@ -1227,7 +1227,7 @@ string CIncomingFriendList :: ExtractLocation( string location )
 // CIncomingClanList
 //
 #ifdef GHOST_CLANS
-CIncomingClanList :: CIncomingClanList( string nName, unsigned char nRank, unsigned char nStatus ) : m_Name( nName ), m_Rank( nRank ), m_Status( nStatus )
+CIncomingClanList :: CIncomingClanList( std::string nName, unsigned char nRank, unsigned char nStatus ) : m_Name( nName ), m_Rank( nRank ), m_Status( nStatus )
 {
 
 }
@@ -1237,7 +1237,7 @@ CIncomingClanList :: ~CIncomingClanList( )
 
 }
 
-string CIncomingClanList :: GetRank( )
+std::string CIncomingClanList :: GetRank( )
 {
 	switch( m_Rank )
 	{
@@ -1251,7 +1251,7 @@ string CIncomingClanList :: GetRank( )
 	return "Rank Unknown";
 }
 
-string CIncomingClanList :: GetStatus( )
+std::string CIncomingClanList :: GetStatus( )
 {
 	if( m_Status == 0 )
 		return "Offline";
@@ -1259,9 +1259,9 @@ string CIncomingClanList :: GetStatus( )
 		return "Online";
 }
 
-string CIncomingClanList :: GetDescription( )
+std::string CIncomingClanList :: GetDescription( )
 {
-	string Description;
+	std::string Description;
 	Description += GetName( ) + "\n";
 	Description += GetStatus( ) + "\n";
 	Description += GetRank( ) + "\n\n";

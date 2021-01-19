@@ -51,16 +51,16 @@ protected:
 	std::thread* m_GameThread;
 	CTCPServer *m_Socket;							// listening socket
 	CGameProtocol *m_Protocol;						// game protocol
-	vector<CGameSlot> m_Slots;						// vector of slots
-	vector<CPotentialPlayer *> m_Potentials;		// vector of potential players (connections that haven't sent a W3GS_REQJOIN packet yet)
-	vector<CGamePlayer *> m_Players;				// vector of players
-	vector<CCallableScoreCheck *> m_ScoreChecks;
-	queue<CIncomingAction *> m_Actions;				// queue of actions to be sent
-	vector<string> m_Reserved;						// vector of player names with reserved slots (from the !hold command)
-	set<string> m_IgnoredNames;						// set of player names to NOT print ban messages for when joining because they've already been printed
-	set<string> m_IPBlackList;						// set of IP addresses to blacklist from joining (todotodo: convert to uint32's for efficiency)
-	vector<CGameSlot> m_EnforceSlots;				// vector of slots to force players to use (used with saved games)
-	vector<PIDPlayer> m_EnforcePlayers;				// vector of pids to force players to use (used with saved games)
+	std::vector<CGameSlot> m_Slots;						// vector of slots
+	std::vector<CPotentialPlayer *> m_Potentials;		// vector of potential players (connections that haven't sent a W3GS_REQJOIN packet yet)
+	std::vector<CGamePlayer *> m_Players;				// vector of players
+	std::vector<CCallableScoreCheck *> m_ScoreChecks;
+	std::queue<CIncomingAction *> m_Actions;				// queue of actions to be sent
+	std::vector<std::string> m_Reserved;						// vector of player names with reserved slots (from the !hold command)
+	std::set<std::string> m_IgnoredNames;						// set of player names to NOT print ban messages for when joining because they've already been printed
+	std::set<std::string> m_IPBlackList;						// set of IP addresses to blacklist from joining (todotodo: convert to uint32's for efficiency)
+	std::vector<CGameSlot> m_EnforceSlots;				// vector of slots to force players to use (used with saved games)
+	std::vector<PIDPlayer> m_EnforcePlayers;				// vector of pids to force players to use (used with saved games)
 	CMap *m_Map;									// map data
 	CSaveGame *m_SaveGame;							// savegame data (this is a pointer to global data)
 	CReplay *m_Replay;								// replay
@@ -71,16 +71,16 @@ protected:
 	unsigned char m_VirtualHostPID;					// virtual host's PID
 	unsigned char m_FakePlayerPID;					// the fake player's PID (if present)
 	unsigned char m_GProxyEmptyActions;
-	string m_GameName;								// game name
-	string m_LastGameName;							// last game name (the previous game name before it was rehosted)
-	string m_VirtualHostName;						// virtual host's name
-	string m_OwnerName;								// name of the player who owns this game (should be considered an admin)
-	string m_CreatorName;							// name of the player who created this game
-	string m_CreatorServer;							// battle.net server the player who created this game was on
-	string m_AnnounceMessage;						// a message to be sent every m_AnnounceInterval seconds
-	string m_StatString;							// the stat string when the game started (used when saving replays)
-	string m_KickVotePlayer;						// the player to be kicked with the currently running kick vote
-	string m_HCLCommandString;						// the "HostBot Command Library" command string, used to pass a limited amount of data to specially designed maps
+	std::string m_GameName;								// game name
+	std::string m_LastGameName;							// last game name (the previous game name before it was rehosted)
+	std::string m_VirtualHostName;						// virtual host's name
+	std::string m_OwnerName;								// name of the player who owns this game (should be considered an admin)
+	std::string m_CreatorName;							// name of the player who created this game
+	std::string m_CreatorServer;							// battle.net server the player who created this game was on
+	std::string m_AnnounceMessage;						// a message to be sent every m_AnnounceInterval seconds
+	std::string m_StatString;							// the stat std::string when the game started (used when saving replays)
+	std::string m_KickVotePlayer;						// the player to be kicked with the currently running kick vote
+	std::string m_HCLCommandString;						// the "HostBot Command Library" command std::string, used to pass a limited amount of data to specially designed maps
 	uint32_t m_RandomSeed;							// the random seed sent to the Warcraft III clients
 	uint32_t m_HostCounter;							// a unique game number
 	uint32_t m_EntryKey;							// random entry key for LAN, used to prove that a player is actually joining from LAN
@@ -142,32 +142,32 @@ protected:
 	
 
 public:
-	vector<string> m_DoSayGames;					// vector of strings we should announce to the current game
+	std::vector<std::string> m_DoSayGames;					// vector of strings we should announce to the current game
 	std::mutex m_SayGamesMutex;					// mutex for the above vector
-	vector<QueuedSpoofAdd> m_DoSpoofAdd;			// vector of spoof add function call structures
+	std::vector<QueuedSpoofAdd> m_DoSpoofAdd;			// vector of spoof add function call structures
 	std::mutex m_SpoofAddMutex;
 
 public:
-	CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, string nGameName, string nOwnerName, string nCreatorName, string nCreatorServer );
+	CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, std::string nGameName, std::string nOwnerName, std::string nCreatorName, std::string nCreatorServer );
 	virtual ~CBaseGame( );
 
 	virtual void loop( );
 	virtual void doDelete( );
 	virtual bool readyDelete( );
 
-	virtual vector<CGameSlot> GetEnforceSlots( )	{ return m_EnforceSlots; }
-	virtual vector<PIDPlayer> GetEnforcePlayers( )	{ return m_EnforcePlayers; }
+	virtual std::vector<CGameSlot> GetEnforceSlots( )	{ return m_EnforceSlots; }
+	virtual std::vector<PIDPlayer> GetEnforcePlayers( )	{ return m_EnforcePlayers; }
 	virtual CSaveGame *GetSaveGame( )				{ return m_SaveGame; }
 	virtual uint16_t GetHostPort( )					{ return m_HostPort; }
 	virtual unsigned char GetGameState( )			{ return m_GameState; }
 	std::thread * GetGameThread( )			{ return m_GameThread; }
 	virtual unsigned char GetGProxyEmptyActions( )	{ return m_GProxyEmptyActions; }
-	virtual string GetGameName( )					{ return m_GameName; }
-	virtual string GetLastGameName( )				{ return m_LastGameName; }
-	virtual string GetVirtualHostName( )			{ return m_VirtualHostName; }
-	virtual string GetOwnerName( )					{ return m_OwnerName; }
-	virtual string GetCreatorName( )				{ return m_CreatorName; }
-	virtual string GetCreatorServer( )				{ return m_CreatorServer; }
+	virtual std::string GetGameName( )					{ return m_GameName; }
+	virtual std::string GetLastGameName( )				{ return m_LastGameName; }
+	virtual std::string GetVirtualHostName( )			{ return m_VirtualHostName; }
+	virtual std::string GetOwnerName( )					{ return m_OwnerName; }
+	virtual std::string GetCreatorName( )				{ return m_CreatorName; }
+	virtual std::string GetCreatorServer( )				{ return m_CreatorServer; }
 	virtual uint32_t GetHostCounter( )				{ return m_HostCounter; }
 	virtual uint32_t GetLastLagScreenTime( )		{ return m_LastLagScreenTime; }
 	virtual bool GetLocked( )						{ return m_Locked; }
@@ -176,10 +176,10 @@ public:
 	virtual bool GetGameLoading( )					{ return m_GameLoading; }
 	virtual bool GetGameLoaded( )					{ return m_GameLoaded; }
 	virtual bool GetLagging( )						{ return m_Lagging; }
-	string GetGameOwner()							{ return m_OwnerName;}
+	std::string GetGameOwner()							{ return m_OwnerName;}
 
-	virtual void SetEnforceSlots( vector<CGameSlot> nEnforceSlots )		{ m_EnforceSlots = nEnforceSlots; }
-	virtual void SetEnforcePlayers( vector<PIDPlayer> nEnforcePlayers )	{ m_EnforcePlayers = nEnforcePlayers; }
+	virtual void SetEnforceSlots( std::vector<CGameSlot> nEnforceSlots )		{ m_EnforceSlots = nEnforceSlots; }
+	virtual void SetEnforcePlayers( std::vector<PIDPlayer> nEnforcePlayers )	{ m_EnforcePlayers = nEnforcePlayers; }
 	virtual void SetExiting( bool nExiting )							{ m_Exiting = nExiting; }
 	virtual void SetAutoStartPlayers( uint32_t nAutoStartPlayers )		{ m_AutoStartPlayers = nAutoStartPlayers; }
 	virtual void SetMinimumScore( double nMinimumScore )				{ m_MinimumScore = nMinimumScore; }
@@ -193,9 +193,9 @@ public:
 	virtual uint32_t GetNumPlayers( );
 	virtual uint32_t GetNumHumanPlayers( );
 	virtual uint32_t GetNumJudgePlayers();
-	virtual string GetDescription( );
+	virtual std::string GetDescription( );
 	uint32_t GetCreationTime(){return m_CreationTime;}
-	virtual void SetAnnounce( uint32_t interval, string message );
+	virtual void SetAnnounce( uint32_t interval, std::string message );
 
 	// processing functions
 
@@ -212,13 +212,13 @@ public:
 
 	// functions to send packets to players
 
-	virtual void SendChat( unsigned char fromPID, CGamePlayer *player, string message );
-	virtual void SendChat( unsigned char fromPID, unsigned char toPID, string message );
-	virtual void SendChat( CGamePlayer *player, string message );
-	virtual void SendChat( unsigned char toPID, string message );
-	virtual void SendAllChat( unsigned char fromPID, string message );
-	virtual void SendAllChat( string message );
-	virtual void SendLocalAdminChat( string message );
+	virtual void SendChat( unsigned char fromPID, CGamePlayer *player, std::string message );
+	virtual void SendChat( unsigned char fromPID, unsigned char toPID, std::string message );
+	virtual void SendChat( CGamePlayer *player, std::string message );
+	virtual void SendChat( unsigned char toPID, std::string message );
+	virtual void SendAllChat( unsigned char fromPID, std::string message );
+	virtual void SendAllChat( std::string message );
+	virtual void SendLocalAdminChat( std::string message );
 	virtual void SendAllSlotInfo( );
 	virtual void SendVirtualHostPlayerInfo( CGamePlayer *player );
 	virtual void SendFakePlayerInfo( CGamePlayer *player );
@@ -242,7 +242,7 @@ public:
 	virtual bool EventPlayerAction( CGamePlayer *player, CIncomingAction *action );
 	virtual void EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum );
 	virtual void EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlayer *chatPlayer );
-	virtual bool EventPlayerBotCommand( CGamePlayer *player, string command, string payload );
+	virtual bool EventPlayerBotCommand( CGamePlayer *player, std::string command, std::string payload );
 	virtual void EventPlayerChangeTeam( CGamePlayer *player, unsigned char team );
 	virtual void EventPlayerChangeColour( CGamePlayer *player, unsigned char colour );
 	virtual void EventPlayerChangeRace( CGamePlayer *player, unsigned char race );
@@ -253,7 +253,7 @@ public:
 
 	// these events are called outside of any iterations
 
-	virtual void EventGameRefreshed( string server );
+	virtual void EventGameRefreshed( std::string server );
 	virtual void EventGameStarted( );
 	virtual void EventGameLoaded( );
 
@@ -262,8 +262,8 @@ public:
 	virtual unsigned char GetSIDFromPID( unsigned char PID );
 	virtual CGamePlayer *GetPlayerFromPID( unsigned char PID );
 	virtual CGamePlayer *GetPlayerFromSID( unsigned char SID );
-	virtual CGamePlayer *GetPlayerFromName( string name, bool sensitive );
-	virtual uint32_t GetPlayerFromNamePartial( string name, CGamePlayer **player );
+	virtual CGamePlayer *GetPlayerFromName( std::string name, bool sensitive );
+	virtual uint32_t GetPlayerFromNamePartial( std::string name, CGamePlayer **player );
 	virtual CGamePlayer *GetPlayerFromColour( unsigned char colour );
 	virtual unsigned char GetNewPID( );
 	virtual unsigned char GetNewColour( );
@@ -280,20 +280,20 @@ public:
 	virtual void OpenAllSlots( );
 	virtual void CloseAllSlots( );
 	virtual void ShuffleSlots( );
-	virtual vector<unsigned char> BalanceSlotsRecursive( vector<unsigned char> PlayerIDs, unsigned char *TeamSizes, double *PlayerScores, unsigned char StartTeam );
+	virtual std::vector<unsigned char> BalanceSlotsRecursive( std::vector<unsigned char> PlayerIDs, unsigned char *TeamSizes, double *PlayerScores, unsigned char StartTeam );
 	virtual void BalanceSlots( );
-	virtual void AddToSpoofed( string server, string name, bool sendMessage );
-	virtual void AddToReserved( string name );
-	virtual bool IsOwner( string name );
-	virtual bool IsReserved( string name );
+	virtual void AddToSpoofed( std::string server, std::string name, bool sendMessage );
+	virtual void AddToReserved( std::string name );
+	virtual bool IsOwner( std::string name );
+	virtual bool IsReserved( std::string name );
 	virtual bool IsDownloading( );
 	virtual bool IsGameDataSaved( );
 	virtual void SaveGameData( );
 	virtual void StartCountDown( bool force );
 	virtual void StartVoteMode();
 	virtual void StartCountDownAuto( bool requireSpoofChecks );
-	virtual void StopPlayers( string reason );
-	virtual void StopLaggers( string reason );
+	virtual void StopPlayers( std::string reason );
+	virtual void StopLaggers( std::string reason );
 	virtual void CreateVirtualHost( );
 	virtual void DeleteVirtualHost( );
 	virtual void CreateFakePlayer( );
@@ -302,10 +302,10 @@ public:
 };
 
 struct QueuedSpoofAdd {
-	string server;
-	string name;
+	std::string server;
+	std::string name;
 	bool sendMessage;
-	string failMessage; //empty if no failure
+	std::string failMessage; //empty if no failure
 };
 
 #endif

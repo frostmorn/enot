@@ -56,7 +56,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 	BYTEARRAY Key;
 	BYTEARRAY Value;
 
-	// dota actions with real time replay data start with 0x6b then the null terminated string "dr.x"
+	// dota actions with real time replay data start with 0x6b then the null terminated std::string "dr.x"
 	// unfortunately more than one action can be sent in a single packet and the length of each action isn't explicitly represented in the packet
 	// so we have to either parse all the actions and calculate the length based on the type or we can search for an identifying sequence
 	// parsing the actions would be more correct but would be a lot more difficult to write for relatively little gain
@@ -76,7 +76,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 
 			if( ActionData->size( ) >= i + 7 )
 			{
-				// the first null terminated string should either be the strings "Data" or "Global" or a player id in ASCII representation, e.g. "1" or "2"
+				// the first null terminated std::string should either be the strings "Data" or "Global" or a player id in ASCII representation, e.g. "1" or "2"
 
 				Data = UTIL_ExtractCString( *ActionData, i + 6 );
 				auto DataDebug = UTIL_ExtractCString( *ActionData, 0 );
@@ -84,7 +84,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 				
 				if( ActionData->size( ) >= i + 8 + Data.size( ) )
 				{
-					// the second null terminated string should be the key
+					// the second null terminated std::string should be the key
 
 					Key = UTIL_ExtractCString( *ActionData, i + 7 + Data.size( ) );
 
@@ -93,8 +93,8 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 						// the 4 byte integer should be the value
 
 						Value = BYTEARRAY( ActionData->begin( ) + i + 8 + Data.size( ) + Key.size( ), ActionData->begin( ) + i + 12 + Data.size( ) + Key.size( ) );
-						string DataString = string( Data.begin( ), Data.end( ) );
-						string KeyString = string( Key.begin( ), Key.end( ) );
+						std::string DataString = std::string( Data.begin( ), Data.end( ) );
+						std::string KeyString = std::string( Key.begin( ), Key.end( ) );
 						uint32_t ValueInt = UTIL_ByteArrayToUInt32( Value, false );
 
 						// game end on eog
@@ -124,7 +124,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 								}
 							}
 						}
-						else if (DataString.find("DEBUG") != string::npos)
+						else if (DataString.find("DEBUG") != std::string::npos)
 						{
 							
 							CONSOLE_Print( "[MAPDEBUG:"+m_Game->GetGameName()+"/CREATION TIMESTAMP:" + UTIL_ToString(m_Game->GetCreationTime())+"] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );

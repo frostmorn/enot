@@ -47,7 +47,7 @@ void CSVParser::SkipSpaces(void)
     m_nPos++;
 }
 
-const CSVParser & CSVParser::operator <<(const string & sIn)
+const CSVParser & CSVParser::operator <<(const std::string & sIn)
 {
   this->m_sData = sIn;
   this->m_nPos = 0;
@@ -63,7 +63,7 @@ const CSVParser & CSVParser::operator <<(const char *sIn)
 
 CSVParser & CSVParser::operator >>(int & nOut)
 {
-  string sTmp = "";
+  std::string sTmp = "";
   SkipSpaces();
   while (m_nPos < m_sData.length() && m_sData[m_nPos] != ',')
     sTmp += m_sData[m_nPos++];
@@ -75,7 +75,7 @@ CSVParser & CSVParser::operator >>(int & nOut)
 
 CSVParser & CSVParser::operator >>(double & nOut)
 {
-  string sTmp = "";
+  std::string sTmp = "";
   SkipSpaces();
   while (m_nPos < m_sData.length() && m_sData[m_nPos] != ',')
     sTmp += m_sData[m_nPos++];
@@ -85,7 +85,7 @@ CSVParser & CSVParser::operator >>(double & nOut)
   return *this;
 }
 
-CSVParser & CSVParser::operator >>(string & sOut)
+CSVParser & CSVParser::operator >>(std::string & sOut)
 {
   bool bQuotes = false;
   sOut = "";

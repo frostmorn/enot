@@ -38,9 +38,9 @@ CConfig :: ~CConfig( )
 
 }
 
-void CConfig :: Read( string file )
+void CConfig :: Read( std::string file )
 {
-	ifstream in;
+	std::ifstream in;
 	in.open( file.c_str( ) );
 
 	if( in.fail( ) )
@@ -48,7 +48,7 @@ void CConfig :: Read( string file )
 	else
 	{
 		CONSOLE_Print( "[CONFIG] loading file [" + file + "]" );
-		string Line;
+		std::string Line;
 
 		while( !in.eof( ) )
 		{
@@ -64,9 +64,9 @@ void CConfig :: Read( string file )
 			Line.erase( remove( Line.begin( ), Line.end( ), '\r' ), Line.end( ) );
 			Line.erase( remove( Line.begin( ), Line.end( ), '\n' ), Line.end( ) );
 			Line = boost::algorithm::trim_copy(Line);		
-			string :: size_type Split = Line.find( "=" );
+			std::string :: size_type Split = Line.find( "=" );
 
-			if( Split == string :: npos )
+			if( Split == std::string :: npos )
 				continue;
 			m_CFG[boost::algorithm::trim_copy(Line.substr(0, Split))] = boost::algorithm::trim_copy(Line.substr(Split+1, Line.size()));
 		
@@ -76,12 +76,12 @@ void CConfig :: Read( string file )
 	}
 }
 
-bool CConfig :: Exists( string key )
+bool CConfig :: Exists( std::string key )
 {
 	return m_CFG.find( key ) != m_CFG.end( );
 }
 
-int CConfig :: GetInt( string key, int x )
+int CConfig :: GetInt( std::string key, int x )
 {
 	if( m_CFG.find( key ) == m_CFG.end( ) )
 		return x;
@@ -89,7 +89,7 @@ int CConfig :: GetInt( string key, int x )
 		return atoi( m_CFG[key].c_str( ) );
 }
 
-uint32_t CConfig :: GetUInt32( string key, uint32_t x )
+uint32_t CConfig :: GetUInt32( std::string key, uint32_t x )
 {
 	if( m_CFG.find( key ) == m_CFG.end( ) )
 		return x;
@@ -97,7 +97,7 @@ uint32_t CConfig :: GetUInt32( string key, uint32_t x )
 		return UTIL_ToUInt32( m_CFG[key] );
 }
 
-string CConfig :: GetString( string key, string x )
+std::string CConfig :: GetString( std::string key, std::string x )
 {
 	if( m_CFG.find( key ) == m_CFG.end( ) )
 		return x;
@@ -105,7 +105,7 @@ string CConfig :: GetString( string key, string x )
 		return m_CFG[key];
 }
 
-void CConfig :: Set( string key, string x )
+void CConfig :: Set( std::string key, std::string x )
 {
 	m_CFG[key] = x;
 }
