@@ -2343,6 +2343,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 		SendAllChat( m_GHost->m_Language->CountDownAborted( ) );
 		m_CountDownStarted = false;
 	}
+	
 
 	// auto lock the game
 
@@ -4678,6 +4679,13 @@ void CBaseGame :: StartCountDown( bool force )
 				SendAllChat( m_GHost->m_Language->TheHCLIsTooLongUseForceToStart( ) );
 				return;
 			}
+			if ( m_EvenPlayersStartup ){
+				if((GetNumHumanPlayers( ) - GetNumJudgePlayers())%2 != 0)
+				{
+					SendAllChat("Запуск игры приостановлен. Повторный запуск начнется при достижении четного кол-ва игроков.");
+					return;		
+				}
+			}
 
 			// check if everyone has the map
 
@@ -4746,7 +4754,7 @@ void CBaseGame :: StartCountDown( bool force )
 			if( StillDownloading.empty( ) && NotSpoofChecked.empty( ) && NotPinged.empty( ) )
 			{
 				m_CountDownStarted = true;
-				m_CountDownCounter = 3;
+				m_CountDownCounter = 5;
 			}
 		}
 	}
@@ -4763,7 +4771,13 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 //			SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( UTIL_ToString( m_AutoStartPlayers ), UTIL_ToString( m_AutoStartPlayers - GetNumHumanPlayers( ) ) ) );
 			return;
 		}
-
+		if ( m_EvenPlayersStartup ){
+			if((GetNumHumanPlayers( ) - GetNumJudgePlayers())%2 != 0)
+			{
+				SendAllChat("Запуск игры приостановлен. Повторный запуск начнется при достижении четного кол-ва игроков.");
+				return;		
+			}
+		}
 		// check if everyone has the map
 
 		std::string StillDownloading;
@@ -4831,15 +4845,6 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 		{
 			SendAllChat( m_GHost->m_Language->PlayersNotYetPingedAutoStart( NotPinged ) );
 			return;
-		}
-				// Check on even players if map have such config
-
-		if ( m_EvenPlayersStartup ){
-			if((GetNumHumanPlayers( )-GetNumJudgePlayers())%2 != 0)
-			{
-				SendAllChat("Автозапуск отменен. Игра начнется при четном кол-ве игроков.");
-				return;
-			}
 		}
 
 		// if no problems found start the game
