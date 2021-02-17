@@ -806,7 +806,7 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 	m_MapDefaultHCL = CFG->GetString( "map_defaulthcl", std::string( ) );
 	m_MapDefaultPlayerScore = CFG->GetInt( "map_defaultplayerscore", 1000 );
 	m_MapLoadInGame = CFG->GetInt( "map_loadingame", 1 ) == 0 ? false : true;
-	m_MapEvenPlayersStartup = CFG->GetInt("map_evenplayersstartup", 0) ? false : true;
+	m_MapEvenPlayersStartup = CFG->GetInt("map_evenplayersstartup", 0) == 0 ? false : true;
 
 	if( MapNumPlayers == 0 )
 		MapNumPlayers = CFG->GetInt( "map_numplayers", 0 );
