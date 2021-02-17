@@ -755,22 +755,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	if( !m_CountDownStarted && m_AutoStartPlayers != 0 && GetTime( ) - m_LastAutoStartTime >= 5 )
 	{
-		if ( m_EvenPlayersStartup ){
-			if((GetNumHumanPlayers( ) - GetNumJudgePlayers())%2 != 0)
-			{
-				
-			}
-			else
-			{
-				StartCountDownAuto( m_GHost->m_RequireSpoofChecks );
-				m_LastAutoStartTime = GetTime( );
-			}
-		}
-		else
-		{
-			StartCountDownAuto( m_GHost->m_RequireSpoofChecks );
-			m_LastAutoStartTime = GetTime( );
-		}
+		StartCountDownAuto( m_GHost->m_RequireSpoofChecks );
+		m_LastAutoStartTime = GetTime( );
 	}
 
 	// countdown every 500 ms
