@@ -553,7 +553,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_GHost->m_GamesMutex.lock();
 
 		m_LastGameName = m_GameName;
-		m_GameName = GameName;
+		m_GameName = GameName+random_string(1);
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 
@@ -562,7 +562,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			(*i)->QueueGameUncreate( );
 			(*i)->QueueEnterChat( );
 			if (((*i)->GetServerAlias().find("ICCup") == std::string::npos) &&((*i)->GetServerAlias().find("Rubattle")==std::string::npos)){
-				(*i)->QueueGameCreate( m_GameState, m_GameName + random_string(2) , std::string( ), m_Map, NULL, m_HostCounter );
+				(*i)->QueueGameCreate( m_GameState, m_GameName , std::string( ), m_Map, NULL, m_HostCounter );
 			}
 		}
 		
@@ -581,7 +581,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) )
 				{
-					std::string game_name = m_GameName + random_string(2);
+					std::string game_name = m_GameName + random_string(1);
 					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
@@ -605,7 +605,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
-				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index)+random_string(1);
+				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToHexString(m_HostCounter*current_iccup_index);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
 					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
