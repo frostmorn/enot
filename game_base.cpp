@@ -583,10 +583,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				{
 					std::string game_name = m_GameName + random_string(1);
 					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
-					(*i)->UnqueueGameRefreshes( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
 					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueEnterChat( );
+					(*i)->QueueGameUncreate( );
+					(*i)->UnqueueGameRefreshes( );
 					m_RubattleHosted = 1;
 					break;					
 				}		
@@ -606,10 +606,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				{
 					std::string game_name = m_GameName + " "+UTIL_ToHexString(m_HostCounter*current_iccup_index);
 					CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
-					(*i)->UnqueueGameRefreshes( );
+					// Lol, looks like we must invert that shit
+					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+					(*i)->UnqueueGameRefreshes( );
 					break;
 				}		
 			}
