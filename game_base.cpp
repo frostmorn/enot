@@ -573,6 +573,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_GHost->m_GamesMutex.unlock( );
 	}
 		// host Rubattle
+	uint8_t rubattle_hosted_count = 0;
 	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && m_GHost->m_RubattleBnetCount &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0)
 	{
 
@@ -587,27 +588,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
 					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
-					m_RubattleHosted = 1;
+					rubattle_hosted_count++;
+					if (rubattle_hosted_count == 2){
+						m_RubattleHosted = 1;
+					}
 					break;					
-				}		
-			}
-		}
-	}
-	// unhost iccup
-	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0)
-	{
-		uint32_t current_iccup_index = 0;
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
-			current_iccup_index++;
-			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 25) )
-				{
-					std::string game_name = m_GameName + " "+UTIL_ToHexString(m_HostCounter*current_iccup_index);
-					CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
-					(*i)->UnqueueGameRefreshes( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
 				}		
 			}
 		}
@@ -624,7 +609,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				{
 					std::string game_name = m_GameName + " "+UTIL_ToHexString(m_HostCounter*current_iccup_index);
 					CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
-
+					(*i)->UnqueueGameRefreshes( );
+					(*i)->QueueGameUncreate( );
+					(*i)->QueueEnterChat( );
 					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
 					break;
 				}		
