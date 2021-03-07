@@ -594,7 +594,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		}
 	}
 
-	uint32_t iccup_count_hosted = 0
 	// rehost ICCup
 	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0)
 	{
