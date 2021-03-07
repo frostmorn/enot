@@ -605,7 +605,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				current_iccup_index++;
-				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index);
+				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToString(current_iccup_index)+random_string(1);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
 					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
