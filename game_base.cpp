@@ -553,7 +553,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_GHost->m_GamesMutex.lock();
 
 		m_LastGameName = m_GameName;
-		m_GameName = GameName+random_string(1);
+		m_GameName = GameName+" "+random_string(1);
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 
@@ -576,22 +576,20 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	uint8_t rubattle_hosted_count = 0;
 	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && m_GHost->m_RubattleBnetCount &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0)
 	{
-
+		uint32_t current_rubattle_index = 0;
 		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
+			current_rubattle_index++;
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
 				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) )
 				{
-					std::string game_name = m_GameName + random_string(1);
+					std::string game_name = m_GameName + " "+UTIL_ToHexString(m_HostCounter*current_rubattle_index);
 					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
 					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
-					rubattle_hosted_count++;
-					if (rubattle_hosted_count == 2){
-						m_RubattleHosted = 1;
-					}
+					m_RubattleHosted = 1;
 					break;					
 				}		
 			}
