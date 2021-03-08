@@ -596,25 +596,32 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		}
 	}
 	// rehost ICCup
-	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0)
+	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0 &&
+		 ((GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))|| m_LastICCupRehostTime == 0))
 	{
 		uint32_t current_iccup_index = 0;
 		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
-			current_iccup_index++;
+
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 50) )
-				{
-					std::string game_name = m_GameName + " "+UTIL_ToHexString(m_HostCounter*current_iccup_index)+random_string(2);
-					CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
+				current_iccup_index++;
+				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToHexString(m_HostCounter*current_iccup_index)+random_string(1);
+				if (current_iccup_index == m_LastICCupRehostIndex+1){
+					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
 					(*i)->QueueEnterChat( );
-					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+					(*i)->QueueGameCreate( m_GameState, iccup_game_name, std::string( ), m_Map, NULL, m_HostCounter );
 					break;
-				}		
+				}
+				
 			}
 		}
+		// m_RefreshError = false;
+		// m_RefreshRehosted = true;
+		m_LastICCupRehostTime = GetTime( );
+		m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount-1 ? 0 : current_iccup_index;
+
 	}
 	//	refresh every 3 seconds
 
