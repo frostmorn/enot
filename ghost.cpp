@@ -1724,11 +1724,11 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 			//	we can't host 20 games to servers which makes us to do shit
 			//	so we will do it later
 			if( saveGame ){
-				(*i)->QueueGameCreate( gameState, gameName+random_string(2), std::string( ), map, m_SaveGame, m_CurrentGame->GetHostCounter( ) );
+				(*i)->QueueGameCreate( gameState, gameName + UTIL_ToHexString(m_HostCounter), std::string( ), map, m_SaveGame, m_CurrentGame->GetHostCounter( ) );
 			}
 			else
 			{
-				(*i)->QueueGameCreate( gameState, gameName+random_string(2), std::string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
+				(*i)->QueueGameCreate( gameState, gameName + UTIL_ToHexString(m_HostCounter), std::string( ), map, NULL, m_CurrentGame->GetHostCounter( ) );
 			}
 		}
 		
