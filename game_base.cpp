@@ -605,7 +605,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
 				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 50) )
 				{
-					std::string game_name = m_GameName + " "+UTIL_ToHexString(m_HostCounter*current_iccup_index);
+					std::string game_name = m_GameName + " "+UTIL_ToHexString(m_HostCounter*current_iccup_index)+random_string(2);
 					CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
 					(*i)->UnqueueGameRefreshes( );
 					(*i)->QueueGameUncreate( );
