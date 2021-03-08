@@ -603,7 +603,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 
-			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos && (GetTime() - (*i)->GetLastGameCreateTime() > 50){
+			if ( (*i)->GetServerAlias().find("ICCup") != std::string::npos && (GetTime() - (*i)->GetLastGameCreateTime() > 50)){
 				current_iccup_index++;
 				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToHexString(m_HostCounter*current_iccup_index)+random_string(1);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
