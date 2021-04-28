@@ -23,7 +23,7 @@ DFLAGS += -D__SOLARIS__
 LFLAGS += -lresolv -lsocket -lnsl
 endif
 
-CFLAGS += $(OFLAGS) $(DFLAGS) -I. -I./bncsutil/src/ -I./StormLib/src
+CFLAGS += $(OFLAGS) $(DFLAGS) -I. -I./bncsutil/src/ -I./StormLib/
 
 ifeq ($(SYSTEM),Darwin)
 CFLAGS += -I./mysql/include/
