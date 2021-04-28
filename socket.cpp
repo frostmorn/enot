@@ -265,10 +265,12 @@ void CTCPSocket :: DoRecv( fd_set *fd )
 		else if( c == SOCKET_ERROR && GetLastError( ) != EWOULDBLOCK )
 		{
 			// receive error
-
+			// DOS attack fixage
+			MILLISLEEP(50);	
 			m_HasError = true;
 			m_Error = GetLastError( );
-			CONSOLE_Print( "[TCPSOCKET] error (recv) - " + GetErrorString( ) );
+			// don't spam to logs
+			//CONSOLE_Print( "[TCPSOCKET] error (recv) - " + GetErrorString( ) );
 			return;
 		}
 		else if( c == 0 )
