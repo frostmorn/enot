@@ -269,8 +269,8 @@ void CTCPSocket :: DoRecv( fd_set *fd )
 			MILLISLEEP(50);	
 			m_HasError = true;
 			m_Error = GetLastError( );
-			// don't spam to logs
-			//CONSOLE_Print( "[TCPSOCKET] error (recv) - " + GetErrorString( ) );
+			// log ips
+			CONSOLE_Print( "[TCPSOCKET] error (recv) - " + GetErrorString( )+":"+this->GetIPString() );
 			return;
 		}
 		else if( c == 0 )
