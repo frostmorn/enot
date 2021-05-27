@@ -33,7 +33,7 @@
 #endif
 
 #include <mysql/mysql.h>
-#include <boost/thread.hpp>
+#include <thread>
 
 //
 // CGHostDBMySQL
@@ -132,20 +132,21 @@ void CGHostDBMySQL :: CreateThread( CBaseCallable *callable )
 {
 	try
 	{
-		boost :: thread Thread( boost :: ref( *callable ) );
+		std::thread Thread( std :: ref( *callable ) );
 	}
-	catch( boost :: thread_resource_error tre )
+	// catch( boost :: thread_resource_error tre )
+	catch (...)
 	{
-		CONSOLE_Print( "[MYSQL] error spawning thread on attempt #1 [" + std::string( tre.what( ) ) + "], pausing execution and trying again in 50ms" );
+		CONSOLE_Print( "[MYSQL] error spawning thread on attempt #1 [], pausing execution and trying again in 50ms" );
 		MILLISLEEP( 50 );
 
 		try
 		{
-			boost :: thread Thread( boost :: ref( *callable ) );
+			std::thread Thread( std :: ref( *callable ) );
 		}
-		catch( boost :: thread_resource_error tre2 )
+		catch( ... )
 		{
-			CONSOLE_Print( "[MYSQL] error spawning thread on attempt #2 [" + std::string( tre2.what( ) ) + "], giving up" );
+			CONSOLE_Print( "[MYSQL] error spawning thread on attempt #2 [], giving up" );
 			callable->SetReady( true );
 		}
 	}
