@@ -2,9 +2,9 @@ SHELL = /bin/sh
 SYSTEM = $(shell uname)
 C++ = g++
 CC = gcc
-DFLAGS = 
+DFLAGS = -DGHOST_MYSQL
 OFLAGS = -O3
-LFLAGS = -L. -L./bncsutil/src/bncsutil/ -L./StormLib/stormlib/ -lbncsutil -lpthread -ldl -lz -lStorm -lboost_date_time -lboost_system -lboost_filesystem -lgmp
+LFLAGS = -L. -L./bncsutil/src/bncsutil/ -L./StormLib/stormlib/ -lbncsutil -lpthread -ldl -lz -lStorm -lboost_date_time -lboost_system -lboost_filesystem -lgmp -lmysqlclient
 CFLAGS = -g3 -Wall
 
 ifeq ($(SYSTEM),Darwin)

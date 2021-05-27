@@ -477,9 +477,9 @@ std::string MySQLEscapeString( void *conn, std::string str )
 	return result;
 }
 
-std::vector<ctor<std::string> MySQLFetchRow( MYSQL_RES *res )
+std::vector<std::string> MySQLFetchRow( MYSQL_RES *res )
 {
-	std::vector<ctor<std::string> Result;
+	std::vector<std::string> Result;
 
 	MYSQL_ROW Row = mysql_fetch_row( res );
 
@@ -518,7 +518,7 @@ uint32_t MySQLAdminCount( void *conn, std::string *error, uint32_t botid, std::s
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 1 )
 				Count = UTIL_ToUInt32( Row[0] );
@@ -550,7 +550,7 @@ bool MySQLAdminCheck( void *conn, std::string *error, uint32_t botid, std::strin
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			if( !Row.empty( ) )
 				IsAdmin = true;
@@ -596,10 +596,10 @@ bool MySQLAdminRemove( void *conn, std::string *error, uint32_t botid, std::stri
 	return Success;
 }
 
-std::vector<ctor<std::string> MySQLAdminList( void *conn, std::string *error, uint32_t botid, std::string server )
+std::vector<std::string> MySQLAdminList( void *conn, std::string *error, uint32_t botid, std::string server )
 {
 	std::string EscServer = MySQLEscapeString( conn, server );
-	std::vector<ctor<std::string> AdminList;
+	std::vector<std::string> AdminList;
 	std::string Query = "SELECT name FROM admins WHERE server='" + EscServer + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
@@ -610,7 +610,7 @@ std::vector<ctor<std::string> MySQLAdminList( void *conn, std::string *error, ui
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			while( !Row.empty( ) )
 			{
@@ -641,7 +641,7 @@ uint32_t MySQLBanCount( void *conn, std::string *error, uint32_t botid, std::str
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 1 )
 				Count = UTIL_ToUInt32( Row[0] );
@@ -679,7 +679,7 @@ CDBBan *MySQLBanCheck( void *conn, std::string *error, uint32_t botid, std::stri
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 6 )
 				Ban = new CDBBan( server, Row[0], Row[1], Row[2], Row[3], Row[4], Row[5] );
@@ -746,10 +746,10 @@ bool MySQLBanRemove( void *conn, std::string *error, uint32_t botid, std::string
 	return Success;
 }
 
-std::vector<ctor<CDBBan *> MySQLBanList( void *conn, std::string *error, uint32_t botid, std::string server )
+ std::vector<CDBBan *> MySQLBanList( void *conn, std::string *error, uint32_t botid, std::string server )
 {
 	std::string EscServer = MySQLEscapeString( conn, server );
-	std::vector<ctor<CDBBan *> BanList;
+	 std::vector<CDBBan *> BanList;
 	std::string Query = "SELECT name, ip, DATE(date), gamename, admin, reason FROM bans WHERE server='" + EscServer + "'";
 
 	if( mysql_real_query( (MYSQL *)conn, Query.c_str( ), Query.size( ) ) != 0 )
@@ -760,7 +760,7 @@ std::vector<ctor<CDBBan *> MySQLBanList( void *conn, std::string *error, uint32_
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			while( Row.size( ) == 6 )
 			{
@@ -829,7 +829,7 @@ CDBGamePlayerSummary *MySQLGamePlayerSummaryCheck( void *conn, std::string *erro
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 12 )
 			{
@@ -907,7 +907,7 @@ CDBDotAPlayerSummary *MySQLDotAPlayerSummaryCheck( void *conn, std::string *erro
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 10 )
 			{
@@ -939,7 +939,7 @@ CDBDotAPlayerSummary *MySQLDotAPlayerSummaryCheck( void *conn, std::string *erro
 
 						if( Result2 )
 						{
-							std::vector<ctor<std::string> Row2 = MySQLFetchRow( Result2 );
+							std::vector<std::string> Row2 = MySQLFetchRow( Result2 );
 
 							if( Row2.size( ) == 1 )
 								TotalWins = UTIL_ToUInt32( Row2[0] );
@@ -964,7 +964,7 @@ CDBDotAPlayerSummary *MySQLDotAPlayerSummaryCheck( void *conn, std::string *erro
 
 						if( Result3 )
 						{
-							std::vector<ctor<std::string> Row3 = MySQLFetchRow( Result3 );
+							std::vector<std::string> Row3 = MySQLFetchRow( Result3 );
 
 							if( Row3.size( ) == 1 )
 								TotalLosses = UTIL_ToUInt32( Row3[0] );
@@ -1028,7 +1028,7 @@ double MySQLScoreCheck( void *conn, std::string *error, uint32_t botid, std::str
 
 		if( Result )
 		{
-			std::vector<ctor<std::string> Row = MySQLFetchRow( Result );
+			std::vector<std::string> Row = MySQLFetchRow( Result );
 
 			if( Row.size( ) == 1 )
 				Score = UTIL_ToDouble( Row[0] );
