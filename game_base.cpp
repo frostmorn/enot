@@ -596,8 +596,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		}
 	}
 	// rehost ICCup
-	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0 &&
-		 ((GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))|| m_LastICCupRehostTime > 10))
+	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0  &&
+		  ((GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))|| m_LastICCupRehostTime == 0))
 	{
 		uint32_t current_iccup_index = 0;
 		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
