@@ -17,7 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-
+#define ICCUP_REHOST_TIME 60
 #include "lia.h"
 #include "ghost.h"
 #include "util.h"
@@ -597,13 +597,13 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	}
 	// rehost ICCup
 	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0  &&
-		  ((GetTime() > m_LastICCupRehostTime + (50/m_GHost->m_ICCupBnetCount))))
+		  ((GetTime() > m_LastICCupRehostTime + (ICCUP_REHOST_TIME/m_GHost->m_ICCupBnetCount))))
 	{
 		uint32_t current_iccup_index = 0;
 		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 		{
 
-			if ( (*i)->GetServerAlias().find("ICCup") != std::string::npos && (GetTime() - (*i)->GetLastGameCreateTime() > 50)){
+			if ( (*i)->GetServerAlias().find("ICCup") != std::string::npos && (GetTime() - (*i)->GetLastGameCreateTime() > ICCUP_REHOST_TIME)){
 				current_iccup_index++;
 				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToHexString(m_HostCounter*current_iccup_index)+random_string(1);
 				if (current_iccup_index == m_LastICCupRehostIndex+1){
