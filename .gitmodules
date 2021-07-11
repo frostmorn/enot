@@ -1,0 +1,6 @@
+[submodule "bncsutil"]
+	path = bncsutil
+	url = https://github.com/cen1/bncsutil.git
+[submodule "StormLib"]
+	path = StormLib
+	url = https://github.com/ladislav-zezula/StormLib.git
