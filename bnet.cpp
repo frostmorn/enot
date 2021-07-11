@@ -24,7 +24,7 @@
 #include "language.h"
 #include "socket.h"
 #include "commandpacket.h"
-#include "ghostdb.h"
+#include "database/ghostdb.h"
 // Needed for !calculate command
 #include <cstdio>
 #include <string>
@@ -39,9 +39,7 @@
 #include "gameprotocol.h"
 #include "game_base.h"
 
-#include <boost/filesystem.hpp>
-
-using namespace boost :: filesystem;
+#include <filesystem>
 
 
 //
@@ -78,7 +76,7 @@ CBNET :: CBNET( CGHost *nGHost,
 		uint32_t nHostCounterID,
 		uint32_t nLastTimeGameCreate )
 {
-	// todotodo: append path seperator to Warcraft3Path if needed
+	// todotodo: append std::filesystem::pathseperator to Warcraft3Path if needed
 
 	m_GHost = nGHost;
 	m_Socket = new CTCPClient( );
@@ -512,7 +510,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			delete *i;
 
 		m_Bans = m_CallableBanList->GetResult( );
-		m_BansMutex.unlock( );
+		m_BansMutex.unlock();
 		
 		m_GHost->m_DB->RecoverCallable( m_CallableBanList );
 		delete m_CallableBanList;
@@ -902,7 +900,7 @@ void CBNET :: ProcessPackets( )
 					}
 					else
 					{
-						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] logon failed - bncsutil key hash failed (check your Warcraft 3 path and cd keys), disconnecting" );
+						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] logon failed - bncsutil key hash failed (check your Warcraft 3 std::filesystem::pathand cd keys), disconnecting" );
 						m_Socket->Disconnect( );
 						delete Packet;
 						return;
@@ -1203,7 +1201,7 @@ void CBNET :: ProcessChatEvent( CIncomingChatEvent *chatEvent )
 			{
 				m_GHost->m_CurrentGame->m_SayGamesMutex.lock();
 				m_GHost->m_CurrentGame->m_DoSayGames.push_back( FailMessage );
-				m_GHost->m_CurrentGame->m_SayGamesMutex.unlock( );
+				m_GHost->m_CurrentGame->m_SayGamesMutex.unlock();
 			}
 
 			if( Message.find( "is using Warcraft III The Frozen Throne in game" ) != std::string :: npos || Message.find( "is using Warcraft III Frozen Throne and is currently in  game" ) != std::string :: npos )
@@ -1227,7 +1225,7 @@ void CBNET :: ProcessChatEvent( CIncomingChatEvent *chatEvent )
 			}
 		}
 		
-		m_GHost->m_GamesMutex.unlock( );
+		m_GHost->m_GamesMutex.unlock();
 	}
 	else if( Event == CBNETProtocol :: EID_ERROR )
 		CONSOLE_Print( "[ERROR: " + m_ServerAlias + "] " + Message );
@@ -1696,7 +1694,7 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 			else
 				QueueChatCommand( m_GHost->m_Language->GameNumberDoesntExist( Payload ), User, Whisper );
 			
-			m_GHost->m_GamesMutex.unlock( );
+			m_GHost->m_GamesMutex.unlock();
 		}
 
 		//
@@ -1712,7 +1710,7 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 			else
 				QueueChatCommand( m_GHost->m_Language->ThereIsNoGameInTheLobby( UTIL_ToString( m_GHost->m_Games.size( ) ), UTIL_ToString( m_GHost->m_MaxGames ) ), User, Whisper );
 			
-			m_GHost->m_GamesMutex.unlock( );
+			m_GHost->m_GamesMutex.unlock();
 		}
 
 		//
@@ -1759,29 +1757,29 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 
 				try
 				{
-					path MapCFGPath( m_GHost->m_MapCFGPath );
+					std::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
 
-					if( !exists( MapCFGPath ) )
+					if( ! std::filesystem::is_directory(MapCFGPath))
 					{
-						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing map configs - map config path doesn't exist" );
+						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing map configs - map config std::filesystem::pathdoesn't exist" );
 						QueueChatCommand( m_GHost->m_Language->ErrorListingMapConfigs( ), User, Whisper );
 					}
 					else
 					{
-						directory_iterator EndIterator;
-						path LastMatch;
+						std::filesystem::directory_iterator  EndIterator;
+						std::filesystem::path LastMatch;
 						uint32_t Matches = 0;
 
-						for( directory_iterator i( MapCFGPath ); i != EndIterator; ++i )
+						for( std::filesystem::directory_iterator  i( MapCFGPath ); i != EndIterator; ++i )
 						{
 							std::string FileName = i->path( ).filename( ).string( );
 							std::string Stem = i->path( ).stem( ).string( );
 							transform( FileName.begin( ), FileName.end( ), FileName.begin( ), (int(*)(int))tolower );
 							transform( Stem.begin( ), Stem.end( ), Stem.begin( ), (int(*)(int))tolower );
 
-							if( !is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
+							if( !std::filesystem::is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
 							{
 								LastMatch = i->path( );
 								++Matches;
@@ -1870,29 +1868,29 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 
 				try
 				{
-					path MapPath( m_GHost->m_MapPath );
+					std::filesystem::path MapPath( m_GHost->m_MapPath );
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
 
-					if( !exists( MapPath ) )
+					if( !std::filesystem::exists( MapPath ) )
 					{
-						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing maps - map path doesn't exist" );
+						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing maps - map std::filesystem::pathdoesn't exist" );
 						QueueChatCommand( m_GHost->m_Language->ErrorListingMaps( ), User, Whisper );
 					}
 					else
 					{
-						directory_iterator EndIterator;
-						path LastMatch;
+						std::filesystem::directory_iterator  EndIterator;
+						std::filesystem::path LastMatch;
 						uint32_t Matches = 0;
 
-						for( directory_iterator i( MapPath ); i != EndIterator; ++i )
+						for( std::filesystem::directory_iterator  i( MapPath ); i != EndIterator; ++i )
 						{
 							std::string FileName = i->path( ).filename( ).string( );
 							std::string Stem = i->path( ).stem( ).string( );
 							transform( FileName.begin( ), FileName.end( ), FileName.begin( ), (int(*)(int))tolower );
 							transform( Stem.begin( ), Stem.end( ), Stem.begin( ), (int(*)(int))tolower );
 
-							if( !is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
+							if( !std::filesystem::is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
 							{
 								LastMatch = i->path( );
 								++Matches;
@@ -2069,7 +2067,7 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 				{
 					m_GHost->m_CurrentGame->m_SayGamesMutex.lock();
 					m_GHost->m_CurrentGame->m_DoSayGames.push_back( Payload );
-					m_GHost->m_CurrentGame->m_SayGamesMutex.unlock( );
+					m_GHost->m_CurrentGame->m_SayGamesMutex.unlock();
 				}
 
 				for( std::vector<CBaseGame *> :: iterator i = m_GHost->m_Games.begin( ); i != m_GHost->m_Games.end( ); ++i )
@@ -2079,7 +2077,7 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 					(*i)->m_SayGamesMutex.unlock(); 
 				}
 		
-				m_GHost->m_GamesMutex.unlock( );
+				m_GHost->m_GamesMutex.unlock();
 			}
 			else
 				QueueChatCommand( m_GHost->m_Language->YouDontHaveAccessToThatCommand( ), User, Whisper );
@@ -2115,7 +2113,7 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 						QueueChatCommand( m_GHost->m_Language->UnhostingGame( m_GHost->m_CurrentGame->GetDescription( ) ), User, Whisper );
 						m_GHost->m_CurrentGame->SetExiting( true );	
 						
-						m_GHost->m_GamesMutex.unlock( );
+						m_GHost->m_GamesMutex.unlock();
 					}
 			}
 			else
@@ -2587,7 +2585,7 @@ void CBNET :: AddBan( std::string name, std::string ip, std::string gamename, st
 	
 	m_BansMutex.lock();
 	m_Bans.push_back( new CDBBan( m_Server, name, ip, "N/A", gamename, admin, reason ) );
-	m_BansMutex.unlock( );
+	m_BansMutex.unlock();
 }
 
 void CBNET :: RemoveAdmin( std::string name )
@@ -2617,7 +2615,7 @@ void CBNET :: RemoveBan( std::string name )
 			++i;
 	}
 	
-	m_BansMutex.unlock( );
+	m_BansMutex.unlock();
 }
 
 void CBNET :: HoldFriends( CBaseGame *game )

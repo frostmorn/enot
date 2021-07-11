@@ -23,7 +23,7 @@
 #include "config.h"
 #include "language.h"
 #include "socket.h"
-#include "ghostdb.h"
+#include "database/ghostdb.h"
 #include "bnet.h"
 #include "map.h"
 #include "packed.h"
@@ -36,9 +36,9 @@
 
 #include <string.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
-using namespace boost :: filesystem;
+
 
 //
 // CAdminGame
@@ -910,29 +910,29 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 
 				try
 				{
-					path MapCFGPath( m_GHost->m_MapCFGPath );
+					std::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
 
-					if( !exists( MapCFGPath ) )
+					if( !std::filesystem::exists( MapCFGPath ) )
 					{
 						CONSOLE_Print( "[ADMINGAME] error listing map configs - map config path doesn't exist" );
 						SendChat( player, m_GHost->m_Language->ErrorListingMapConfigs( ) );
 					}
 					else
 					{
-						directory_iterator EndIterator;
-						path LastMatch;
+						std::filesystem::directory_iterator  EndIterator;
+						std::filesystem::path LastMatch;
 						uint32_t Matches = 0;
 
-						for( directory_iterator i( MapCFGPath ); i != EndIterator; ++i )
+						for( std::filesystem::directory_iterator  i( MapCFGPath ); i != EndIterator; ++i )
 						{
 							std::string FileName = i->path( ).filename( ).string( );
 							std::string Stem = i->path( ).stem( ).string( );
 							transform( FileName.begin( ), FileName.end( ), FileName.begin( ), (int(*)(int))tolower );
 							transform( Stem.begin( ), Stem.end( ), Stem.begin( ), (int(*)(int))tolower );
 
-							if( !is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
+							if( !std::filesystem::is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
 							{
 								LastMatch = i->path( );
 								++Matches;
@@ -1021,29 +1021,29 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 
 				try
 				{
-					path MapPath( m_GHost->m_MapPath );
+					std::filesystem::path MapPath( m_GHost->m_MapPath );
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
 
-					if( !exists( MapPath ) )
+					if( !std::filesystem::exists( MapPath ) )
 					{
 						CONSOLE_Print( "[ADMINGAME] error listing maps - map path doesn't exist" );
 						SendChat( player, m_GHost->m_Language->ErrorListingMaps( ) );
 					}
 					else
 					{
-						directory_iterator EndIterator;
-						path LastMatch;
+						std::filesystem::directory_iterator  EndIterator;
+						std::filesystem::path LastMatch;
 						uint32_t Matches = 0;
 
-						for( directory_iterator i( MapPath ); i != EndIterator; ++i )
+						for( std::filesystem::directory_iterator  i( MapPath ); i != EndIterator; ++i )
 						{
 							std::string FileName = i->path( ).filename( ).string( );
 							std::string Stem = i->path( ).stem( ).string( );
 							transform( FileName.begin( ), FileName.end( ), FileName.begin( ), (int(*)(int))tolower );
 							transform( Stem.begin( ), Stem.end( ), Stem.begin( ), (int(*)(int))tolower );
 
-							if( !is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
+							if( !std::filesystem::is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
 							{
 								LastMatch = i->path( );
 								++Matches;

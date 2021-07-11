@@ -24,7 +24,7 @@
 #include "config.h"
 #include "language.h"
 #include "socket.h"
-#include "ghostdb.h"
+#include "database/ghostdb.h"
 #include "bnet.h"
 #include "map.h"
 #include "packed.h"
@@ -169,7 +169,7 @@ CBaseGame :: ~CBaseGame( )
 	for( std::vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( *i );
 	
-	m_GHost->m_CallablesMutex.unlock( );
+	m_GHost->m_CallablesMutex.unlock();
 
 	while( !m_Actions.empty( ) )
 	{
@@ -570,7 +570,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_CreationTime = GetTime( );
 		m_LastRefreshTime = GetTime( );
 		
-		m_GHost->m_GamesMutex.unlock( );
+		m_GHost->m_GamesMutex.unlock();
 	}
 		// host Rubattle
 	uint8_t rubattle_hosted_count = 0;
@@ -714,7 +714,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		
 		m_DoSayGames.clear( );
 		
-		m_SayGamesMutex.unlock( );
+		m_SayGamesMutex.unlock();
 	}
 	
 	// handle add to spoofed vector
@@ -732,7 +732,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		}
 		
 		m_DoSpoofAdd.clear( );
-		m_SpoofAddMutex.unlock( );
+		m_SpoofAddMutex.unlock();
 	}
 
 	// kick players who don't spoof check within 20 seconds when spoof checks are required and the game is autohosted
@@ -3643,7 +3643,7 @@ void CBaseGame :: EventGameStarted( )
 	m_GHost->m_GamesMutex.lock();
 	m_GHost->m_CurrentGame = NULL;
 	m_GHost->m_Games.push_back( this );
-	m_GHost->m_GamesMutex.unlock( );
+	m_GHost->m_GamesMutex.unlock();
 
 	// and finally reenter battle.net chat
 

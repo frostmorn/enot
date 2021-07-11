@@ -23,7 +23,6 @@
 #include "config.h"
 
 #include <stdlib.h>
-
 //
 // CConfig
 //
@@ -36,6 +35,31 @@ CConfig :: CConfig( )
 CConfig :: ~CConfig( )
 {
 
+}
+template <std::ctype_base::mask mask>
+class IsNot
+{
+    std::locale myLocale;       // To ensure lifetime of facet...
+    std::ctype<char> const* myCType;
+public:
+    IsNot( std::locale const& l = std::locale() )
+        : myLocale( l )
+        , myCType( &std::use_facet<std::ctype<char> >( l ) )
+    {
+    }
+    bool operator()( char ch ) const
+    {
+        return ! myCType->is( mask, ch );
+    }
+};
+
+typedef IsNot<std::ctype_base::space> IsNotSpace;
+std::string
+trim( std::string const& original )
+{
+    std::string::const_iterator right = std::find_if( original.rbegin(), original.rend(), IsNotSpace() ).base();
+    std::string::const_iterator left = std::find_if(original.begin(), right, IsNotSpace() );
+    return std::string( left, right );
 }
 
 void CConfig :: Read( std::string file )
@@ -63,12 +87,15 @@ void CConfig :: Read( std::string file )
 			
 			Line.erase( remove( Line.begin( ), Line.end( ), '\r' ), Line.end( ) );
 			Line.erase( remove( Line.begin( ), Line.end( ), '\n' ), Line.end( ) );
-			Line = boost::algorithm::trim_copy(Line);		
+			
+			CONSOLE_Print("Line = "+Line);
 			std::string :: size_type Split = Line.find( "=" );
 
 			if( Split == std::string :: npos )
 				continue;
-			m_CFG[boost::algorithm::trim_copy(Line.substr(0, Split))] = boost::algorithm::trim_copy(Line.substr(Split+1, Line.size()));
+			
+			m_CFG[trim(Line.substr(0, Split))] = trim(Line.substr(Split+1, Line.size()));
+			CONSOLE_Print(trim(Line.substr(0, Split))+trim(Line.substr(Split+1, Line.size())));
 		
 		}
 

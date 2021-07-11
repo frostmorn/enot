@@ -25,9 +25,9 @@
 #include "config.h"
 #include "language.h"
 #include "socket.h"
-#include "ghostdb.h"
-#include "ghostdbsqlite.h"
-#include "ghostdbmysql.h"
+#include "database/ghostdb.h"
+#include "database/ghostdbsqlite.h"
+#include "database/ghostdbmysql.h"
 #include "bnet.h"
 #include "map.h"
 #include "packed.h"
@@ -45,7 +45,7 @@
 #endif
 
 #define __STORMLIB_SELF__
-#include "stormlib/StormLib.h"
+#include <StormLib.h>
 
 /*
 
@@ -58,8 +58,8 @@
 #include "language.h"
 #include "socket.h"
 #include "commandpacket.h"
-#include "ghostdb.h"
-#include "ghostdbsqlite.h"
+#include "database/ghostdb.h"
+#include "database/ghostdbsqlite.h"
 #include "ghostdbmysql.h"
 #include "bncsutilinterface.h"
 #include "warden.h"
@@ -207,7 +207,7 @@ void CONSOLE_Print( std::string message )
 		}
 	}
 	
-	PrintMutex.unlock( );
+	PrintMutex.unlock();
 }
 
 void DEBUG_Print( std::string message )
@@ -800,7 +800,7 @@ bool CGHost :: Update( long usecBlock )
 		m_CurrentGame = NULL;
 	}
 	
-	m_GamesMutex.unlock( );
+	m_GamesMutex.unlock();
 
 	// try to exit nicely if requested to do so
 
@@ -871,7 +871,7 @@ bool CGHost :: Update( long usecBlock )
 			++i;
 	}
 	
-	m_CallablesMutex.unlock( );
+	m_CallablesMutex.unlock();
 
 	// create the GProxy++ reconnect listener
 
@@ -1202,7 +1202,7 @@ void CGHost :: EventBNETGameRefreshed( CBNET *bnet )
 	if( m_CurrentGame )
 		m_CurrentGame->EventGameRefreshed( bnet->GetServer( ) );
 	
-	m_GamesMutex.unlock( );
+	m_GamesMutex.unlock();
 }
 
 void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
@@ -1224,7 +1224,7 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 
 		m_CurrentGame->m_SayGamesMutex.lock();
 		// m_CurrentGame->m_DoSayGames.push_back( m_Language->UnableToCreateGameTryAnotherName( bnet->GetServer( ), m_CurrentGame->GetGameName( ) ) );
-		m_CurrentGame->m_SayGamesMutex.unlock( );
+		m_CurrentGame->m_SayGamesMutex.unlock();
 
 		// we take the easy route and simply close the lobby if a refresh fails
 		// it's possible at least one refresh succeeded and therefore the game is still joinable on at least one battle.net (plus on the local network) but we don't keep track of that
@@ -1236,7 +1236,7 @@ void CGHost :: EventBNETGameRefreshFailed( CBNET *bnet )
 		m_CurrentGame->SetRefreshError( true );
 	}
 	
-	m_GamesMutex.unlock( );
+	m_GamesMutex.unlock();
 }
 
 void CGHost :: EventBNETConnectTimedOut( CBNET *bnet )
@@ -1394,7 +1394,7 @@ void CGHost :: ExtractScripts( )
 				char *SubFileData = new char[FileLength];
 				DWORD BytesRead = 0;
 
-				if( SFileReadFile( SubFile, SubFileData, FileLength, &BytesRead ) )
+				if( SFileReadFile( SubFile, SubFileData, FileLength, &BytesRead , NULL) )
 				{
 					CONSOLE_Print( "[GHOST] extracting Scripts\\common.j from MPQ file to [" + m_MapCFGPath + "common.j]" );
 					UTIL_FileWrite( m_MapCFGPath + "common.j", (unsigned char *)SubFileData, BytesRead );
@@ -1421,7 +1421,7 @@ void CGHost :: ExtractScripts( )
 				char *SubFileData = new char[FileLength];
 				DWORD BytesRead = 0;
 
-				if( SFileReadFile( SubFile, SubFileData, FileLength, &BytesRead ) )
+				if( SFileReadFile( SubFile, SubFileData, FileLength, &BytesRead, NULL ) )
 				{
 					CONSOLE_Print( "[GHOST] extracting Scripts\\blizzard.j from MPQ file to [" + m_MapCFGPath + "blizzard.j]" );
 					UTIL_FileWrite( m_MapCFGPath + "blizzard.j", (unsigned char *)SubFileData, BytesRead );
@@ -1440,7 +1440,7 @@ void CGHost :: ExtractScripts( )
 		SFileCloseArchive( PatchMPQ );
 	}
 	else
-		CONSOLE_Print( "[GHOST] warning - unable to load MPQ file [" + PatchMPQFileName + "] - error code " + UTIL_ToString( GetLastError( ) ) );
+		CONSOLE_Print( "[GHOST] warning - unable to load MPQ file [" + PatchMPQFileName + "] - error code " + UTIL_ToString( GetLastErrorG( ) ) );
 }
 
 void CGHost :: LoadIPToCountryData( )
@@ -1678,7 +1678,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 		return;
 	}
 
-	m_GamesMutex.unlock( );
+	m_GamesMutex.unlock();
 
 	CONSOLE_Print( "[GHOST] creating game [" + gameName + "]" );
 	#ifdef GHOST_DISCORD

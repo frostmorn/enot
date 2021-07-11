@@ -25,7 +25,7 @@
 #include <string.h>
 
 #ifndef WIN32
- int GetLastError( ) { return errno; }
+ int GetLastErrorG( ) { return errno; }
 #endif
 
 //
@@ -132,7 +132,7 @@ void CSocket :: Allocate( int type )
 	if( m_Socket == INVALID_SOCKET )
 	{
 		m_HasError = true;
-		m_Error = GetLastError( );
+		m_Error = GetLastErrorG( );
 		CONSOLE_Print( "[SOCKET] error (socket) - " + GetErrorString( ) );
 		return;
 	}
@@ -262,13 +262,13 @@ void CTCPSocket :: DoRecv( fd_set *fd )
 			m_RecvBuffer += std::string( buffer, c );
 			m_LastRecv = GetTime( );
 		}
-		else if( c == SOCKET_ERROR && GetLastError( ) != EWOULDBLOCK )
+		else if( c == SOCKET_ERROR && GetLastErrorG( ) != EWOULDBLOCK )
 		{
 			// receive error
 			// DOS attack fixage
 			MILLISLEEP(50);	
 			m_HasError = true;
-			m_Error = GetLastError( );
+			m_Error = GetLastErrorG( );
 			// log ips
 			CONSOLE_Print( "[TCPSOCKET] error (recv) - " + GetErrorString( )+":"+this->GetIPString() );
 			return;
@@ -313,12 +313,12 @@ void CTCPSocket :: DoSend( fd_set *send_fd )
 			m_SendBuffer = m_SendBuffer.substr( s );
 			m_LastSend = GetTime( );
 		}
-		else if( s == SOCKET_ERROR && GetLastError( ) != EWOULDBLOCK )
+		else if( s == SOCKET_ERROR && GetLastErrorG( ) != EWOULDBLOCK )
 		{
 			// send error
 
 			m_HasError = true;
-			m_Error = GetLastError( );
+			m_Error = GetLastErrorG( );
 			CONSOLE_Print( "[TCPSOCKET] error (send) - " + GetErrorString( ) );
 			return;
 		}
@@ -388,7 +388,7 @@ void CTCPClient :: Connect( std::string localaddress, std::string address, uint1
 		if( bind( m_Socket, (struct sockaddr *)&LocalSIN, sizeof( LocalSIN ) ) == SOCKET_ERROR )
 		{
 			m_HasError = true;
-			m_Error = GetLastError( );
+			m_Error = GetLastErrorG( );
 			CONSOLE_Print( "[TCPCLIENT] error (bind) - " + GetErrorString( ) );
 			return;
 		}
@@ -418,12 +418,12 @@ void CTCPClient :: Connect( std::string localaddress, std::string address, uint1
 
 	if( connect( m_Socket, (struct sockaddr *)&m_SIN, sizeof( m_SIN ) ) == SOCKET_ERROR )
 	{
-		if( GetLastError( ) != EINPROGRESS && GetLastError( ) != EWOULDBLOCK )
+		if( GetLastErrorG( ) != EINPROGRESS && GetLastErrorG( ) != EWOULDBLOCK )
 		{
 			// connect error
 
 			m_HasError = true;
-			m_Error = GetLastError( );
+			m_Error = GetLastErrorG( );
 			CONSOLE_Print( "[TCPCLIENT] error (connect) - " + GetErrorString( ) );
 			return;
 		}
@@ -453,7 +453,7 @@ bool CTCPClient :: CheckConnect( )
 #endif
 	{
 		m_HasError = true;
-		m_Error = GetLastError( );
+		m_Error = GetLastErrorG( );
 		return false;
 	}
 
@@ -514,7 +514,7 @@ bool CTCPServer :: Listen( std::string address, uint16_t port )
 	if( bind( m_Socket, (struct sockaddr *)&m_SIN, sizeof( m_SIN ) ) == SOCKET_ERROR )
 	{
 		m_HasError = true;
-		m_Error = GetLastError( );
+		m_Error = GetLastErrorG( );
 		CONSOLE_Print( "[TCPSERVER] error (bind) - " + GetErrorString( ) );
 		return false;
 	}
@@ -524,7 +524,7 @@ bool CTCPServer :: Listen( std::string address, uint16_t port )
 	if( listen( m_Socket, 8 ) == SOCKET_ERROR )
 	{
 		m_HasError = true;
-		m_Error = GetLastError( );
+		m_Error = GetLastErrorG( );
 		CONSOLE_Print( "[TCPSERVER] error (listen) - " + GetErrorString( ) );
 		return false;
 	}
@@ -728,7 +728,7 @@ bool CUDPServer :: Bind( struct sockaddr_in sin )
 	if( bind( m_Socket, (struct sockaddr *)&m_SIN, sizeof( m_SIN ) ) == SOCKET_ERROR )
 	{
 		m_HasError = true;
-		m_Error = GetLastError( );
+		m_Error = GetLastErrorG( );
 		CONSOLE_Print( "[UDPSERVER] error (bind) - " + GetErrorString( ) );
 		return false;
 	}
@@ -782,12 +782,12 @@ void CUDPServer :: RecvFrom( fd_set *fd, struct sockaddr_in *sin, std::string *m
 
 			*message = std::string( buffer, c );
 		}
-		else if( c == SOCKET_ERROR && GetLastError( ) != EWOULDBLOCK )
+		else if( c == SOCKET_ERROR && GetLastErrorG( ) != EWOULDBLOCK )
 		{
 			// receive error
 
 			m_HasError = true;
-			m_Error = GetLastError( );
+			m_Error = GetLastErrorG( );
 			CONSOLE_Print( "[UDPSERVER] error (recvfrom) - " + GetErrorString( ) );
 		}
 	}

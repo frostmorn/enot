@@ -80,7 +80,7 @@
 
  #define closesocket close
 
- extern int GetLastError( );
+ extern int GetLastErrorG( );
 #endif
 
 #ifndef INADDR_NONE

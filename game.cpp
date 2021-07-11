@@ -23,7 +23,7 @@
 #include "config.h"
 #include "language.h"
 #include "socket.h"
-#include "ghostdb.h"
+#include "database/ghostdb.h"
 #include "bnet.h"
 #include "map.h"
 #include "packed.h"
@@ -32,10 +32,10 @@
 #include "gameprotocol.h"
 #include "game_base.h"
 #include "game.h"
-#include "stats.h"
-#include "statslia.h"
-#include "statsdota.h"
-#include "statsw3mmd.h"
+#include "stats/stats.h"
+#include "stats/statslia.h"
+#include "stats/statsdota.h"
+#include "stats/statsw3mmd.h"
 
 #include <cmath>
 #include <string.h>
@@ -135,7 +135,7 @@ CGame :: ~CGame( )
 	for( std::vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
 
-	m_GHost->m_CallablesMutex.unlock( );
+	m_GHost->m_CallablesMutex.unlock();
 
 	for( std::vector<CDBBan *> :: iterator i = m_DBBans.begin( ); i != m_DBBans.end( ); ++i )
 		delete *i;
@@ -157,7 +157,7 @@ CGame :: ~CGame( )
 		CONSOLE_Print( "[GAME: " + m_GameName + "] game is being deleted before all game data was saved, game data has been lost" );
 		m_GHost->m_CallablesMutex.lock();
 		m_GHost->m_Callables.push_back( m_CallableGameAdd );
-		m_GHost->m_CallablesMutex.unlock( );
+		m_GHost->m_CallablesMutex.unlock();
 	}
 }
 
