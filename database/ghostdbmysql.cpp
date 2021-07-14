@@ -77,6 +77,8 @@ CGHostDBMySQL :: CGHostDBMySQL( CConfig *CFG ) : CGHostDB( CFG )
 	}
 
 	m_IdleConnections.push( Connection );
+	this->m_CallablesUpdateThread = new std::thread(&CGHostDBMySQL::UpdateCallables, this);
+	
 }
 
 CGHostDBMySQL :: ~CGHostDBMySQL( )
@@ -100,7 +102,22 @@ std::string CGHostDBMySQL :: GetStatus( )
 {
 	return "DB STATUS --- Connections: " + UTIL_ToString( m_IdleConnections.size( ) ) + "/" + UTIL_ToString( m_NumConnections ) + " idle. Outstanding callables: " + UTIL_ToString( m_OutstandingCallables ) + ".";
 }
-
+void CGHostDBMySQL :: UpdateCallables(){
+	while (1){
+		m_DatabaseMutex.lock();
+		CBaseCallable *callable = NULL;
+		if (!m_Callables.empty()){
+			callable = m_Callables.front();
+			m_Callables.pop();
+			if (callable){
+				callable->operator()();
+			}
+		}
+		
+		m_DatabaseMutex.unlock();
+		MILLISLEEP(5000);
+	}
+} 
 void CGHostDBMySQL :: RecoverCallable( CBaseCallable *callable )
 {
 	m_DatabaseMutex.lock();
@@ -131,26 +148,9 @@ void CGHostDBMySQL :: RecoverCallable( CBaseCallable *callable )
 
 void CGHostDBMySQL :: CreateThread( CBaseCallable *callable )
 {
-	try
-	{
-		this->callable_threads.push_back(std::thread( std :: ref( *callable ) ));
-	}
-	
-	catch (...)
-	{
-		CONSOLE_Print( "[MYSQL] error spawning thread on attempt #1 [], pausing execution and trying again in 50ms" );
-		MILLISLEEP( 50 );
-
-		try
-		{
-			std::thread Thread( std :: ref( *callable ) );
-		}
-		catch( ... )
-		{
-			CONSOLE_Print( "[MYSQL] error spawning thread on attempt #2 [], giving up" );
-			callable->SetReady( true );
-		}
-	}
+	m_DatabaseMutex.lock();
+	this->m_Callables.push( callable );
+	m_DatabaseMutex.unlock();
 }
 
 CCallableAdminCount *CGHostDBMySQL :: ThreadedAdminCount( std::string server )

@@ -172,13 +172,14 @@ private:
 	std::string m_Database;
 	std::string m_User;
 	std::string m_Password;
-	std::vector<std::thread> callable_threads;
+	std::queue<CBaseCallable*> m_Callables;
 	uint16_t m_Port;
 	uint32_t m_BotID;
 	std::queue<void *> m_IdleConnections;
 	uint32_t m_NumConnections;
 	uint32_t m_OutstandingCallables;
 	std::mutex m_DatabaseMutex;
+	std::thread *m_CallablesUpdateThread;
 
 public:
 	CGHostDBMySQL( CConfig *CFG );
@@ -216,7 +217,7 @@ public:
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, std::map<VarP,std::string> var_strings );
 
 	// other database functions
-
+	void UpdateCallables();
 	virtual void *GetIdleConnection( );
 };
 
