@@ -4,7 +4,7 @@ C++ = g++
 CC = gcc
 DFLAGS = -DGHOST_MYSQL
 OFLAGS = -O3
-LFLAGS = -L. -Lbncsutil -LStormLib/ -Wl,-Bstatic -lbncsutil_static -lstorm -lz -Wl,-Bdynamic -lpthread -ldl -lbz2 -lmysqlclient -lgmp 
+LFLAGS =  -L. -L./bncsutil -L./StormLib -L./zlib-ng  -Wl,-Bstatic -lbncsutil_static -lz -lstorm  -Wl,-Bdynamic -lpthread -ldl -lbz2 -lmysqlclient -lgmp 
 CFLAGS = -g3 -Wall
 
 ifeq ($(SYSTEM),Darwin)
@@ -23,7 +23,7 @@ DFLAGS += -D__SOLARIS__
 LFLAGS += -lresolv -lsocket -lnsl
 endif
 
-CFLAGS += $(OFLAGS) $(DFLAGS) -I. -I./bncsutil/src/bncsutil -I./StormLib/src
+CFLAGS += $(OFLAGS) $(DFLAGS) -I. -I./bncsutil/src/bncsutil -I./StormLib/src -I./zlib-ng
 
 ifeq ($(SYSTEM),Darwin)
 CFLAGS += -I./mysql/include/
