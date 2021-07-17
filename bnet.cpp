@@ -38,9 +38,11 @@
 #include "replay.h"
 #include "gameprotocol.h"
 #include "game_base.h"
-
+#ifdef GCC_8
+#include <experimental/filesystem>
+#else
 #include <filesystem>
-
+#endif
 
 //
 // CBNET
@@ -1757,11 +1759,18 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 
 				try
 				{
-					std::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
+					#ifdef GCC_8
+						std::expirimental::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
+					#else
+						std::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
+					#endif
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
-
-					if( ! std::filesystem::is_directory(MapCFGPath))
+					#ifdef GCC_8
+						if( ! std::expirimental::filesystem::is_directory(MapCFGPath))
+					#else
+						if( ! std::filesystem::is_directory(MapCFGPath))
+					#endif
 					{
 						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing map configs - map config std::filesystem::pathdoesn't exist" );
 						QueueChatCommand( m_GHost->m_Language->ErrorListingMapConfigs( ), User, Whisper );
