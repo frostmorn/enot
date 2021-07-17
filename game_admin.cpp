@@ -35,8 +35,11 @@
 #include "game_admin.h"
 
 #include <string.h>
-
+#ifdef GCC_8
+#include <experimental/filesystem>
+#else
 #include <filesystem>
+#endif
 
 
 
@@ -910,29 +913,50 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 
 				try
 				{
-					std::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
+					#ifdef GCC_8
+						std::experimental::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
+					#else
+						std::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
+					#endif
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
-
-					if( !std::filesystem::exists( MapCFGPath ) )
+					#ifdef GCC_8
+						if( ! std::experimental::filesystem::is_directory(MapCFGPath))
+					#else
+						if( ! std::filesystem::is_directory(MapCFGPath))
+					#endif
 					{
 						CONSOLE_Print( "[ADMINGAME] error listing map configs - map config path doesn't exist" );
 						SendChat( player, m_GHost->m_Language->ErrorListingMapConfigs( ) );
 					}
 					else
 					{
-						std::filesystem::directory_iterator  EndIterator;
-						std::filesystem::path LastMatch;
+						#ifdef GCC_8
+							std::experimental::filesystem::directory_iterator  EndIterator;
+							std::experimental::filesystem::path LastMatch;
+						#else
+							std::filesystem::directory_iterator  EndIterator;
+							std::filesystem::path LastMatch;
+						#endif
 						uint32_t Matches = 0;
 
-						for( std::filesystem::directory_iterator  i( MapCFGPath ); i != EndIterator; ++i )
+						#ifdef GCC_8
+							for( std::experimental::filesystem::directory_iterator  i( MapCFGPath ); i != EndIterator; ++i )
+						#else
+							for( std::filesystem::directory_iterator  i( MapCFGPath ); i != EndIterator; ++i )
+						#endif
 						{
 							std::string FileName = i->path( ).filename( ).string( );
 							std::string Stem = i->path( ).stem( ).string( );
 							transform( FileName.begin( ), FileName.end( ), FileName.begin( ), (int(*)(int))tolower );
 							transform( Stem.begin( ), Stem.end( ), Stem.begin( ), (int(*)(int))tolower );
 
-							if( !std::filesystem::is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
+								
+							#ifdef GCC_8
+								if( !std::experimental::filesystem::is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
+							#else
+								if( !std::filesystem::is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
+							#endif
 							{
 								LastMatch = i->path( );
 								++Matches;
@@ -1014,36 +1038,51 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 		else if( Command == "map" )
 		{
 			if( Payload.empty( ) )
-				SendChat( player, m_GHost->m_Language->CurrentlyLoadedMapCFGIs( m_GHost->m_Map->GetCFGFile( ) ) );
+				SendChat(player, m_GHost->m_Language->CurrentlyLoadedMapCFGIs( m_GHost->m_Map->GetCFGFile( ) ) );
 			else
 			{
 				std::string FoundMaps;
 
 				try
 				{
-					std::filesystem::path MapPath( m_GHost->m_MapPath );
+					#ifdef GCC_8
+						std::experimental::filesystem::path MapPath( m_GHost->m_MapPath );
+					#else
+						std::filesystem::path MapPath( m_GHost->m_MapPath );
+					#endif
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
-
-					if( !std::filesystem::exists( MapPath ) )
+					#ifdef GCC_8
+						if( !std::experimental::filesystem::exists( MapPath ) )
+					#else
+						if( !std::filesystem::exists( MapPath ) )
+					#endif
 					{
 						CONSOLE_Print( "[ADMINGAME] error listing maps - map path doesn't exist" );
-						SendChat( player, m_GHost->m_Language->ErrorListingMaps( ) );
+						SendChat(player, m_GHost->m_Language->ErrorListingMaps( ));
 					}
 					else
 					{
-						std::filesystem::directory_iterator  EndIterator;
-						std::filesystem::path LastMatch;
 						uint32_t Matches = 0;
-
-						for( std::filesystem::directory_iterator  i( MapPath ); i != EndIterator; ++i )
+						#ifdef GCC_8
+							std::experimental::filesystem::directory_iterator  EndIterator;
+							std::experimental::filesystem::path LastMatch;
+							for( std::experimental::filesystem::directory_iterator  i( MapPath ); i != EndIterator; ++i )
+						#else
+							std::filesystem::directory_iterator  EndIterator;
+							std::filesystem::path LastMatch;
+							for( std::filesystem::directory_iterator  i( MapPath ); i != EndIterator; ++i )
+						#endif			
 						{
 							std::string FileName = i->path( ).filename( ).string( );
 							std::string Stem = i->path( ).stem( ).string( );
 							transform( FileName.begin( ), FileName.end( ), FileName.begin( ), (int(*)(int))tolower );
 							transform( Stem.begin( ), Stem.end( ), Stem.begin( ), (int(*)(int))tolower );
-
-							if( !std::filesystem::is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
+							#ifdef GCC_8
+								if( !std::experimental::filesystem::is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
+							#else
+								if( !std::filesystem::is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
+							#endif
 							{
 								LastMatch = i->path( );
 								++Matches;
@@ -1064,11 +1103,11 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 						}
 
 						if( Matches == 0 )
-							SendChat( player, m_GHost->m_Language->NoMapsFound( ) );
+							SendChat(player, m_GHost->m_Language->NoMapsFound( ) );
 						else if( Matches == 1 )
 						{
 							std::string File = LastMatch.filename( ).string( );
-							SendChat( player, m_GHost->m_Language->LoadingConfigFile( File ) );
+							SendChat(player, m_GHost->m_Language->LoadingConfigFile( File ));
 
 							// hackhack: create a config file in memory with the required information to load the map
 
@@ -1078,17 +1117,16 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 							m_GHost->m_Map->Load( &MapCFG, File );
 						}
 						else
-							SendChat( player, m_GHost->m_Language->FoundMaps( FoundMaps ) );
+							SendChat(player, m_GHost->m_Language->FoundMaps( FoundMaps ));
 					}
 				}
 				catch( const std::exception &ex )
 				{
 					CONSOLE_Print( std::string( "[ADMINGAME] error listing maps - caught exception [" ) + ex.what( ) + "]" );
-					SendChat( player, m_GHost->m_Language->ErrorListingMaps( ) );
+					SendChat(player, m_GHost->m_Language->ErrorListingMaps( ));
 				}
 			}
 		}
-
 		//
 		// !PRIV (host private game)
 		//
