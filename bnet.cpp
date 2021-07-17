@@ -78,7 +78,7 @@ CBNET :: CBNET( CGHost *nGHost,
 		uint32_t nHostCounterID,
 		uint32_t nLastTimeGameCreate )
 {
-	// todotodo: append std::filesystem::pathseperator to Warcraft3Path if needed
+	// todotodo: append path seperator to Warcraft3Path if needed
 
 	m_GHost = nGHost;
 	m_Socket = new CTCPClient( );
@@ -902,7 +902,7 @@ void CBNET :: ProcessPackets( )
 					}
 					else
 					{
-						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] logon failed - bncsutil key hash failed (check your Warcraft 3 std::filesystem::pathand cd keys), disconnecting" );
+						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] logon failed - bncsutil key hash failed (check your Warcraft 3 path and cd keys), disconnecting" );
 						m_Socket->Disconnect( );
 						delete Packet;
 						return;
@@ -1760,35 +1760,48 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 				try
 				{
 					#ifdef GCC_8
-						std::expirimental::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
+						std::experimental::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
 					#else
 						std::filesystem::path MapCFGPath( m_GHost->m_MapCFGPath );
 					#endif
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
 					#ifdef GCC_8
-						if( ! std::expirimental::filesystem::is_directory(MapCFGPath))
+						if( ! std::experimental::filesystem::is_directory(MapCFGPath))
 					#else
 						if( ! std::filesystem::is_directory(MapCFGPath))
 					#endif
 					{
-						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing map configs - map config std::filesystem::pathdoesn't exist" );
+						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing map configs - map config path doesn't exist" );
 						QueueChatCommand( m_GHost->m_Language->ErrorListingMapConfigs( ), User, Whisper );
 					}
 					else
 					{
-						std::filesystem::directory_iterator  EndIterator;
-						std::filesystem::path LastMatch;
+						#ifdef GCC_8
+							std::experimental::filesystem::directory_iterator  EndIterator;
+							std::experimental::filesystem::path LastMatch;
+						#else
+							std::filesystem::directory_iterator  EndIterator;
+							std::filesystem::path LastMatch;
+						#endif
+						
+						
 						uint32_t Matches = 0;
-
-						for( std::filesystem::directory_iterator  i( MapCFGPath ); i != EndIterator; ++i )
+						#ifdef GCC_8
+							for( std::experimental::filesystem::directory_iterator  i( MapCFGPath ); i != EndIterator; ++i )
+						#else
+							for( std::filesystem::directory_iterator  i( MapCFGPath ); i != EndIterator; ++i )
+						#endif
 						{
 							std::string FileName = i->path( ).filename( ).string( );
 							std::string Stem = i->path( ).stem( ).string( );
 							transform( FileName.begin( ), FileName.end( ), FileName.begin( ), (int(*)(int))tolower );
 							transform( Stem.begin( ), Stem.end( ), Stem.begin( ), (int(*)(int))tolower );
-
-							if( !std::filesystem::is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
+							#ifdef GCC_8
+								if( !std::experimental::filesystem::is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
+							#else
+								if( !std::filesystem::is_directory( i->status( ) ) && i->path( ).extension( ) == ".cfg" && FileName.find( Pattern ) != std::string :: npos )
+							#endif
 							{
 								LastMatch = i->path( );
 								++Matches;
@@ -1877,29 +1890,44 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 
 				try
 				{
-					std::filesystem::path MapPath( m_GHost->m_MapPath );
+					#ifdef GCC_8
+						std::experimental::filesystem::path MapPath( m_GHost->m_MapPath );
+					#else
+						std::filesystem::path MapPath( m_GHost->m_MapPath );
+					#endif
 					std::string Pattern = Payload;
 					transform( Pattern.begin( ), Pattern.end( ), Pattern.begin( ), (int(*)(int))tolower );
-
-					if( !std::filesystem::exists( MapPath ) )
+					#ifdef GCC_8
+						if( !std::experimental::filesystem::exists( MapPath ) )
+					#else
+						if( !std::filesystem::exists( MapPath ) )
+					#endif
 					{
-						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing maps - map std::filesystem::pathdoesn't exist" );
+						CONSOLE_Print( "[BNET: " + m_ServerAlias + "] error listing maps - map path doesn't exist" );
 						QueueChatCommand( m_GHost->m_Language->ErrorListingMaps( ), User, Whisper );
 					}
 					else
 					{
-						std::filesystem::directory_iterator  EndIterator;
-						std::filesystem::path LastMatch;
 						uint32_t Matches = 0;
-
-						for( std::filesystem::directory_iterator  i( MapPath ); i != EndIterator; ++i )
+						#ifdef GCC_8
+							std::experimental::filesystem::directory_iterator  EndIterator;
+							std::experimental::filesystem::path LastMatch;
+							for( std::experimental::filesystem::directory_iterator  i( MapPath ); i != EndIterator; ++i )
+						#else
+							std::filesystem::directory_iterator  EndIterator;
+							std::filesystem::path LastMatch;
+							for( std::filesystem::directory_iterator  i( MapPath ); i != EndIterator; ++i )
+						#endif			
 						{
 							std::string FileName = i->path( ).filename( ).string( );
 							std::string Stem = i->path( ).stem( ).string( );
 							transform( FileName.begin( ), FileName.end( ), FileName.begin( ), (int(*)(int))tolower );
 							transform( Stem.begin( ), Stem.end( ), Stem.begin( ), (int(*)(int))tolower );
-
-							if( !std::filesystem::is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
+							#ifdef GCC_8
+								if( !std::experimental::filesystem::is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
+							#else
+								if( !std::filesystem::is_directory( i->status( ) ) && FileName.find( Pattern ) != std::string :: npos )
+							#endif
 							{
 								LastMatch = i->path( );
 								++Matches;
