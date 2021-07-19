@@ -88,7 +88,6 @@ void CConfig :: Read( std::string file )
 			Line.erase( remove( Line.begin( ), Line.end( ), '\r' ), Line.end( ) );
 			Line.erase( remove( Line.begin( ), Line.end( ), '\n' ), Line.end( ) );
 			
-			CONSOLE_Print("Line = "+Line);
 			std::string :: size_type Split = Line.find( "=" );
 
 			if( Split == std::string :: npos )
