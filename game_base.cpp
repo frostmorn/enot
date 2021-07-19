@@ -589,7 +589,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	}
 
 	// host Rubattle
-	uint8_t RubattleIndex = 0
 	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && Rubattle_connected_count && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
 		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
 			if ((*i)->GetLoggedIn()){
