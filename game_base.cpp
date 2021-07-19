@@ -45,7 +45,7 @@
 //
 
 
-CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, std::string nGameName, std::string nOwnerName, std::string nCreatorName, std::string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ),m_LastICCupRehostTime(0),m_LastRubattleRehostTime(0), m_LastICCupRehostIndex(0), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ),m_EvenPlayersStartup(nMap->GetMapEvenPlayersStartup()), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 ){
+CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, std::string nGameName, std::string nOwnerName, std::string nCreatorName, std::string nCreatorServer ) : m_GHost( nGHost ), m_SaveGame( nSaveGame ), m_Replay( NULL ), m_Exiting( false ), m_Saving( false ), m_HostPort( nHostPort ), m_GameState( nGameState ), m_VirtualHostPID( 255 ), m_FakePlayerPID( 255 ), m_GProxyEmptyActions( 0 ), m_GameName( nGameName ), m_LastGameName( nGameName ), m_VirtualHostName( m_GHost->m_VirtualHostName ), m_OwnerName( nOwnerName ), m_CreatorName( nCreatorName ), m_CreatorServer( nCreatorServer ), m_HCLCommandString( nMap->GetMapDefaultHCL( ) ), m_RandomSeed( GetTicks( ) ), m_HostCounter( m_GHost->m_HostCounter++ ), m_EntryKey( rand( ) ), m_Latency( m_GHost->m_Latency ), m_SyncLimit( m_GHost->m_SyncLimit ), m_SyncCounter( 0 ), m_GameTicks( 0 ), m_CreationTime( GetTime( ) ), m_LastPingTime( GetTime( ) ), m_LastRefreshTime( GetTime( ) ), m_LastDownloadTicks( GetTime( ) ), m_DownloadCounter( 0 ), m_LastDownloadCounterResetTicks( GetTime( ) ), m_LastAnnounceTime( 0 ), m_AnnounceInterval( 0 ), m_LastAutoStartTime( GetTime( ) ), m_AutoStartPlayers( 0 ), m_LastCountDownTicks( 0 ), m_CountDownCounter( 0 ), m_StartedLoadingTicks( 0 ), m_StartPlayers( 0 ), m_LastLagScreenResetTime( 0 ), m_LastActionSentTicks( 0 ), m_LastActionLateBy( 0 ), m_StartedLaggingTime( 0 ), m_LastLagScreenTime( 0 ), m_LastReservedSeen( GetTime( ) ), m_StartedKickVoteTime( 0 ), m_GameOverTime( 0 ), m_LastPlayerLeaveTicks( 0 ), m_MinimumScore( 0. ), m_MaximumScore( 0. ), m_SlotInfoChanged( false ), m_Locked( false ), m_RefreshMessages( m_GHost->m_RefreshMessages ), m_RefreshError( false ), m_RefreshRehosted( false ), m_MuteAll( false ), m_MuteLobby( false ), m_CountDownStarted( false ), m_GameLoading( false ), m_GameLoaded( false ), m_LoadInGame( nMap->GetMapLoadInGame( ) ),m_EvenPlayersStartup(nMap->GetMapEvenPlayersStartup()), m_Lagging( false ), m_AutoSave( m_GHost->m_AutoSave ), m_MatchMaking( false ), m_LocalAdminMessages( m_GHost->m_LocalAdminMessages ), m_DoDelete( 0 ), m_LastReconnectHandleTime( 0 ){
 	m_LastConnectedUserTime = 0;
 	m_RubattleHosted = 0;
 	m_Socket = new CTCPServer( );
@@ -572,58 +572,66 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		
 		m_GHost->m_GamesMutex.unlock();
 	}
-		// host Rubattle
-	uint8_t rubattle_hosted_count = 0;
-	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && m_GHost->m_RubattleBnetCount &&  m_GameState==GAME_PUBLIC &&!m_GameLoading &&  GetSlotsOpen() > 0)
+
+	// Calculate count of connected to BNET ICCup and Rubattle accounts	
+	uint8_t Rubattle_connected_count = 0;
+	uint8_t ICCup_connected_count = 0;
+	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
 	{
-		uint32_t current_rubattle_index = 0;
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
-			current_rubattle_index++;
+		if ((*i)->GetLoggedIn()){
 			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
-				if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) )
-				{
-					std::string game_name = m_GameName + " "+UTIL_ToHexString(m_HostCounter*current_rubattle_index);
-					CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
-					(*i)->UnqueueGameRefreshes( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
-					(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
-					m_RubattleHosted = 1;
-					break;					
-				}		
+				Rubattle_connected_count ++;	
+			}
+			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
+				ICCup_connected_count ++;
 			}
 		}
 	}
-	// rehost ICCup
-	if (!m_RefreshError && !m_GameLoaded && m_GHost->m_ICCupBnetCount && m_GameState==GAME_PUBLIC&& !m_GameLoading &&  GetSlotsOpen() > 0  &&
-		  ((GetTime() > m_LastICCupRehostTime + (ICCUP_REHOST_TIME/m_GHost->m_ICCupBnetCount))))
-	{
-		uint32_t current_iccup_index = 0;
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-		{
 
-			if ( (*i)->GetServerAlias().find("ICCup") != std::string::npos && (GetTime() - (*i)->GetLastGameCreateTime() > ICCUP_REHOST_TIME)){
-				current_iccup_index++;
-				std::string iccup_game_name = m_GameName+ " "+ UTIL_ToHexString(m_HostCounter*current_iccup_index)+random_string(1);
-				if (current_iccup_index == m_LastICCupRehostIndex+1){
-					CONSOLE_Print("Trying to rehost iccup game from account "+(*i)->GetUserName());
-					(*i)->UnqueueGameRefreshes( );
-					(*i)->QueueGameUncreate( );
-					(*i)->QueueEnterChat( );
-					(*i)->QueueGameCreate( m_GameState, iccup_game_name, std::string( ), m_Map, NULL, m_HostCounter );
-					m_LastICCupRehostTime = GetTime( );
-					m_LastICCupRehostIndex = current_iccup_index == m_GHost->m_ICCupBnetCount-1 ? 0 : current_iccup_index;
-					break;
+	// host Rubattle
+	uint8_t RubattleIndex = 0
+	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && Rubattle_connected_count && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
+		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
+			if ((*i)->GetLoggedIn()){
+				if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
+					RubattleIndex ++;
+					if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) ){
+						CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
+						std::string game_name = m_GameName + " "+UTIL_ToHexString(GetTime());
+						(*i)->UnqueueGameRefreshes( );
+						(*i)->QueueGameUncreate( );
+						(*i)->QueueEnterChat( );
+						(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+						m_RubattleHosted = 1;
+						break;					
+					}
 				}
-				
 			}
 		}
-		// m_RefreshError = false;
-		// m_RefreshRehosted = true;
-
-
 	}
+
+	if (!m_RefreshError && !m_GameLoaded && ICCup_connected_count && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
+		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
+			if ((*i)->GetLoggedIn()){
+				if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
+					if (GetTime() - (*i)->GetLastGameCreateTime() < ICCUP_REHOST_TIME/ICCup_connected_count ||  (((*i)->GetLastGameCreateTime() != 0) )){
+						break;
+					}
+					else
+					{
+						CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
+						std::string game_name = m_GameName + " "+UTIL_ToHexString(GetTime());
+						(*i)->UnqueueGameRefreshes( );
+						(*i)->QueueGameUncreate( );
+						(*i)->QueueEnterChat( );
+						(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+						break;					
+					}
+				}
+			}
+		}
+	}
+
 	//	refresh every 3 seconds
 
 	// send more map data

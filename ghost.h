@@ -154,8 +154,6 @@ public:
 	bool m_TCPNoDelay;						// config value: use Nagle's algorithm or not
 	uint32_t m_MatchMakingMethod;			// config value: the matchmaking method
 	uint32_t m_MapGameType;					// config value: the MapGameType overwrite (aka: refresh hack)
-	uint32_t m_ICCupBnetCount;				// count of iccup BNET's
-	uint32_t m_RubattleBnetCount;			// count of rubattle BNET's
 	std::vector<GProxyReconnector *> m_PendingReconnects;
 	std::mutex m_ReconnectMutex;
 
