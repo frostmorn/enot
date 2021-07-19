@@ -617,12 +617,14 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					}
 					else
 					{
-						CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
-						std::string game_name = m_GameName + " "+UTIL_ToHexString(GetTime());
-						(*i)->UnqueueGameRefreshes( );
-						(*i)->QueueGameUncreate( );
-						(*i)->QueueEnterChat( );
-						(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+						if (GetTime() - (*i)->GetLastGameCreateTime() >= ICCUP_REHOST_TIME){
+							CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
+							std::string game_name = m_GameName + " "+UTIL_ToHexString(GetTime());
+							(*i)->UnqueueGameRefreshes( );
+							(*i)->QueueGameUncreate( );
+							(*i)->QueueEnterChat( );
+							(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+						}
 						break;					
 					}
 				}
