@@ -593,7 +593,6 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
 			if ((*i)->GetLoggedIn()){
 				if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
-					RubattleIndex ++;
 					if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) ){
 						CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
 						std::string game_name = m_GameName + " "+UTIL_ToHexString(GetTime());
