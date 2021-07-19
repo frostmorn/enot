@@ -612,7 +612,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
 			if ((*i)->GetLoggedIn()){
 				if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-					if (GetTime() - (*i)->GetLastGameCreateTime() < ICCUP_REHOST_TIME/ICCup_connected_count ||  (((*i)->GetLastGameCreateTime() != 0) )){
+					if (GetTime() - (*i)->GetLastGameCreateTime() < ICCUP_REHOST_TIME/ICCup_connected_count )){
 						break;
 					}
 					else
