@@ -624,8 +624,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 							(*i)->QueueGameUncreate( );
 							(*i)->QueueEnterChat( );
 							(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
-						}
-						break;					
+							break;	
+						}	
 					}
 				}
 			}
