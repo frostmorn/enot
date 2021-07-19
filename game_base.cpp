@@ -553,7 +553,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_GHost->m_GamesMutex.lock();
 
 		m_LastGameName = m_GameName;
-		m_GameName = GameName+" "+random_string(1);
+		m_GameName = GameName;
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 
