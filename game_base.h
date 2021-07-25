@@ -80,7 +80,7 @@ protected:
 	std::string m_AnnounceMessage;						// a message to be sent every m_AnnounceInterval seconds
 	std::string m_StatString;							// the stat std::string when the game started (used when saving replays)
 	std::string m_KickVotePlayer;						// the player to be kicked with the currently running kick vote
-	std::string m_HCLCommandString;						// the "HostBot Command Library" command std::string, used to pass a limited amount of data to specially designed maps
+	std::string m_HCLCommandString;						// the "HostBot Command Library" command string, used to pass a limited amount of data to specially designed maps
 	uint32_t m_RandomSeed;							// the random seed sent to the Warcraft III clients
 	uint32_t m_HostCounter;							// a unique game number
 	uint32_t m_EntryKey;							// random entry key for LAN, used to prove that a player is actually joining from LAN

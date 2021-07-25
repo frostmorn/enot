@@ -3464,10 +3464,10 @@ void CBaseGame :: EventGameStarted( )
 	CONSOLE_Print("Judges in a game = "+ UTIL_ToString(GetNumJudgePlayers()));
 	CONSOLE_Print( "[GAME: " + m_GameName + "] started loading with " + UTIL_ToString( GetNumHumanPlayers( ) ) + " players" );
 
-	// encode the HCL command std::string in the slot handicaps
+	// encode the HCL command string in the slot handicaps
 	// here's how it works:
-	//  the user inputs a command std::string to be sent to the map
-	//  it is almost impossible to send a message from the bot to the map so we encode the command std::string in the slot handicaps
+	//  the user inputs a command string to be sent to the map
+	//  it is almost impossible to send a message from the bot to the map so we encode the command string in the slot handicaps
 	//  this works because there are only 6 valid handicaps but Warcraft III allows the bot to set up to 256 handicaps
 	//  we encode the original (unmodified) handicaps in the new handicaps and use the remaining space to store a short message
 	//  only occupied slots deliver their handicaps to the map and we can send one character (from a list) per handicap
@@ -3512,13 +3512,13 @@ void CBaseGame :: EventGameStarted( )
 				}
 
 				SendAllSlotInfo( );
-				CONSOLE_Print( "[GAME: " + m_GameName + "] successfully encoded HCL command std::string [" + m_HCLCommandString + "]" );
+				CONSOLE_Print( "[GAME: " + m_GameName + "] successfully encoded HCL command string [" + m_HCLCommandString + "]" );
 			}
 			else
-				CONSOLE_Print( "[GAME: " + m_GameName + "] encoding HCL command std::string [" + m_HCLCommandString + "] failed because it contains invalid characters" );
+				CONSOLE_Print( "[GAME: " + m_GameName + "] encoding HCL command string [" + m_HCLCommandString + "] failed because it contains invalid characters" );
 		}
 		else
-			CONSOLE_Print( "[GAME: " + m_GameName + "] encoding HCL command std::string [" + m_HCLCommandString + "] failed because there aren't enough occupied slots" );
+			CONSOLE_Print( "[GAME: " + m_GameName + "] encoding HCL command string [" + m_HCLCommandString + "] failed because there aren't enough occupied slots" );
 	}
 
 	// send a final slot info update if necessary
@@ -4667,7 +4667,7 @@ void CBaseGame :: StartCountDown( bool force )
 		}
 		else
 		{
-			// check if the HCL command std::string is short enough
+			// check if the HCL command string is short enough
 
 			if( m_HCLCommandString.size( ) > GetSlotsOccupied( ) )
 			{
