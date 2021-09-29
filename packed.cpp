@@ -179,9 +179,9 @@ void CPacked :: Decompress( bool allBlocks )
 	}
 
 	if( allBlocks )
-		CONSOLE_Print( "[PACKED] reading " + UTIL_ToString( m_NumBlocks ) + " blocks" );
+		CONSOLE_Print( "[PACKED] reading " + std::to_string( m_NumBlocks ) + " blocks" );
 	else
-		CONSOLE_Print( "[PACKED] reading 1/" + UTIL_ToString( m_NumBlocks ) + " blocks" );
+		CONSOLE_Print( "[PACKED] reading 1/" + std::to_string( m_NumBlocks ) + " blocks" );
 
 	// read blocks
 
@@ -226,7 +226,7 @@ void CPacked :: Decompress( bool allBlocks )
 
 		if( Result != Z_OK )
 		{
-			CONSOLE_Print( "[PACKED] tzuncompress error " + UTIL_ToString( Result ) );
+			CONSOLE_Print( "[PACKED] tzuncompress error " + std::to_string( Result ) );
 			delete [] DecompressedData;
 			delete [] CompressedData;
 			m_Valid = false;
@@ -235,7 +235,7 @@ void CPacked :: Decompress( bool allBlocks )
 
 		if( BlockDecompressedLong != (uLongf)BlockDecompressed )
 		{
-			CONSOLE_Print( "[PACKED] block decompressed size mismatch, actual = " + UTIL_ToString( BlockDecompressedLong ) + ", expected = " + UTIL_ToString( BlockDecompressed ) );
+			CONSOLE_Print( "[PACKED] block decompressed size mismatch, actual = " + std::to_string( BlockDecompressedLong ) + ", expected = " + std::to_string( BlockDecompressed ) );
 			delete [] DecompressedData;
 			delete [] CompressedData;
 			m_Valid = false;
@@ -252,7 +252,7 @@ void CPacked :: Decompress( bool allBlocks )
 			break;
 	}
 
-	CONSOLE_Print( "[PACKED] decompressed " + UTIL_ToString( m_Decompressed.size( ) ) + " bytes" );
+	CONSOLE_Print( "[PACKED] decompressed " + std::to_string( m_Decompressed.size( ) ) + " bytes" );
 
 	if( allBlocks || m_NumBlocks == 1 )
 	{
@@ -265,7 +265,7 @@ void CPacked :: Decompress( bool allBlocks )
 
 		// the last block is padded with zeros, discard them
 
-		CONSOLE_Print( "[PACKED] discarding " + UTIL_ToString( m_Decompressed.size( ) - m_DecompressedSize ) + " bytes" );
+		CONSOLE_Print( "[PACKED] discarding " + std::to_string( m_Decompressed.size( ) - m_DecompressedSize ) + " bytes" );
 		m_Decompressed.erase( m_DecompressedSize );
 	}
 }
@@ -295,7 +295,7 @@ void CPacked :: Compress( bool TFT )
 
 		if( Result != Z_OK )
 		{
-			CONSOLE_Print( "[PACKED] compress error " + UTIL_ToString( Result ) );
+			CONSOLE_Print( "[PACKED] compress error " + std::to_string( Result ) );
 			delete [] CompressedData;
 			m_Valid = false;
 			return;

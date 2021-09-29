@@ -276,7 +276,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			else if( Count == 1 )
 				QueueChatCommand( m_GHost->m_Language->ThereIsAdmin( m_Server ), i->first, !i->first.empty( ) );
 			else
-				QueueChatCommand( m_GHost->m_Language->ThereAreAdmins( m_Server, UTIL_ToString( Count ) ), i->first, !i->first.empty( ) );
+				QueueChatCommand( m_GHost->m_Language->ThereAreAdmins( m_Server, std::to_string( Count ) ), i->first, !i->first.empty( ) );
 
 			m_GHost->m_DB->RecoverCallable( i->second );
 			delete i->second;
@@ -337,7 +337,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			else if( Count == 1 )
 				QueueChatCommand( m_GHost->m_Language->ThereIsBannedUser( m_Server ), i->first, !i->first.empty( ) );
 			else
-				QueueChatCommand( m_GHost->m_Language->ThereAreBannedUsers( m_Server, UTIL_ToString( Count ) ), i->first, !i->first.empty( ) );
+				QueueChatCommand( m_GHost->m_Language->ThereAreBannedUsers( m_Server, std::to_string( Count ) ), i->first, !i->first.empty( ) );
 
 			m_GHost->m_DB->RecoverCallable( i->second );
 			delete i->second;
@@ -394,7 +394,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			CDBGamePlayerSummary *GamePlayerSummary = i->second->GetResult( );
 
 			if( GamePlayerSummary )
-				QueueChatCommand( m_GHost->m_Language->HasPlayedGamesWithThisBot( i->second->GetName( ), GamePlayerSummary->GetFirstGameDateTime( ), GamePlayerSummary->GetLastGameDateTime( ), UTIL_ToString( GamePlayerSummary->GetTotalGames( ) ), UTIL_ToString( (float)GamePlayerSummary->GetAvgLoadingTime( ) / 1000, 2 ), UTIL_ToString( GamePlayerSummary->GetAvgLeftPercent( ) ) ), i->first, !i->first.empty( ) );
+				QueueChatCommand( m_GHost->m_Language->HasPlayedGamesWithThisBot( i->second->GetName( ), GamePlayerSummary->GetFirstGameDateTime( ), GamePlayerSummary->GetLastGameDateTime( ), std::to_string( GamePlayerSummary->GetTotalGames( ) ), std::to_string( (float)GamePlayerSummary->GetAvgLoadingTime( ) / 1000), std::to_string( GamePlayerSummary->GetAvgLeftPercent( ) ) ), i->first, !i->first.empty( ) );
 			else
 				QueueChatCommand( m_GHost->m_Language->HasntPlayedGamesWithThisBot( i->second->GetName( ) ), i->first, !i->first.empty( ) );
 
@@ -415,27 +415,27 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			if( DotAPlayerSummary )
 			{
 				std::string Summary = m_GHost->m_Language->HasPlayedDotAGamesWithThisBot(	i->second->GetName( ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalGames( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalWins( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalLosses( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalDeaths( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalCreepKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalCreepDenies( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalAssists( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalNeutralKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalTowerKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalRaxKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalCourierKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgDeaths( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgCreepKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgCreepDenies( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgAssists( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgNeutralKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgTowerKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgRaxKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgCourierKills( ), 2 ) );
+					std::to_string( DotAPlayerSummary->GetTotalGames( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalWins( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalLosses( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalDeaths( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalCreepKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalCreepDenies( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalAssists( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalNeutralKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalTowerKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalRaxKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalCourierKills( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgKills( )),
+					std::to_string( DotAPlayerSummary->GetAvgDeaths( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgCreepKills( )),
+					std::to_string( DotAPlayerSummary->GetAvgCreepDenies( )),
+					std::to_string( DotAPlayerSummary->GetAvgAssists( )),
+					std::to_string( DotAPlayerSummary->GetAvgNeutralKills( )),
+					std::to_string( DotAPlayerSummary->GetAvgTowerKills( )),
+					std::to_string( DotAPlayerSummary->GetAvgRaxKills( )),
+					std::to_string( DotAPlayerSummary->GetAvgCourierKills( )) );
 
 				QueueChatCommand( Summary, i->first, !i->first.empty( ) );
 			}
@@ -458,17 +458,17 @@ bool CBNET :: Update( void *fd, void *send_fd )
 			if( LiAPlayerSummary )
 			{
 				std::string Summary = m_GHost->m_Language->HasPlayedLiAGamesWithThisBot(	i->second->GetName( ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalGames( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalWins( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalLosses( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalDeaths( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalPTS( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalCreepKills( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalBossKills( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetAvgDeaths( ), 2 ),
-					UTIL_ToString( LiAPlayerSummary->GetAvgCreepKills( ), 2 ),
-					UTIL_ToString( LiAPlayerSummary->GetAvgBossKills( ), 2 ),
-					UTIL_ToString( LiAPlayerSummary->GetAvgPTS( ), 2 ));
+					std::to_string( LiAPlayerSummary->GetTotalGames( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalWins( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalLosses( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalDeaths( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalPTS( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalCreepKills( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalBossKills( ) ),
+					std::to_string( LiAPlayerSummary->GetAvgDeaths( )),
+					std::to_string( LiAPlayerSummary->GetAvgCreepKills( )),
+					std::to_string( LiAPlayerSummary->GetAvgBossKills( ) ),
+					std::to_string( LiAPlayerSummary->GetAvgPTS( )));
 
 				QueueChatCommand( Summary, i->first, !i->first.empty( ) );
 			}
@@ -490,7 +490,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 
 	if( m_CallableAdminList && m_CallableAdminList->GetReady( ) )
 	{
-		// CONSOLE_Print( "[BNET: " + m_ServerAlias + "] refreshed admin list (" + UTIL_ToString( m_Admins.size( ) ) + " -> " + UTIL_ToString( m_CallableAdminList->GetResult( ).size( ) ) + " admins)" );
+		// CONSOLE_Print( "[BNET: " + m_ServerAlias + "] refreshed admin list (" + std::to_string( m_Admins.size( ) ) + " -> " + std::to_string( m_CallableAdminList->GetResult( ).size( ) ) + " admins)" );
 		m_Admins = m_CallableAdminList->GetResult( );
 		m_GHost->m_DB->RecoverCallable( m_CallableAdminList );
 		delete m_CallableAdminList;
@@ -505,7 +505,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 
 	if( m_CallableBanList && m_CallableBanList->GetReady( ) )
 	{
-		// CONSOLE_Print( "[BNET: " + m_ServerAlias + "] refreshed ban list (" + UTIL_ToString( m_Bans.size( ) ) + " -> " + UTIL_ToString( m_CallableBanList->GetResult( ).size( ) ) + " bans)" );
+		// CONSOLE_Print( "[BNET: " + m_ServerAlias + "] refreshed ban list (" + std::to_string( m_Bans.size( ) ) + " -> " + std::to_string( m_CallableBanList->GetResult( ).size( ) ) + " bans)" );
 		m_BansMutex.lock();
 		
 		for( std::vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
@@ -616,7 +616,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 		if( !m_OutPackets.empty( ) && GetTicks( ) - m_LastOutPacketTicks >= WaitTicks )
 		{
 			if( m_OutPackets.size( ) > 7 )
-				CONSOLE_Print( "[BNET: " + m_ServerAlias + "] packet queue warning - there are " + UTIL_ToString( m_OutPackets.size( ) ) + " packets waiting to be sent" );
+				CONSOLE_Print( "[BNET: " + m_ServerAlias + "] packet queue warning - there are " + std::to_string( m_OutPackets.size( ) ) + " packets waiting to be sent" );
 
 			m_Socket->PutBytes( m_OutPackets.front( ) );
 			m_LastOutPacketSize = m_OutPackets.front( ).size( );
@@ -872,13 +872,13 @@ void CBNET :: ProcessPackets( )
 
 						if( m_EXEVersion.size( ) == 4 )
 						{
-							CONSOLE_Print( "[BNET: " + m_ServerAlias + "] using custom exe version bnet_custom_exeversion = " + UTIL_ToString( m_EXEVersion[0] ) + " " + UTIL_ToString( m_EXEVersion[1] ) + " " + UTIL_ToString( m_EXEVersion[2] ) + " " + UTIL_ToString( m_EXEVersion[3] ) );
+							CONSOLE_Print( "[BNET: " + m_ServerAlias + "] using custom exe version bnet_custom_exeversion = " + std::to_string( m_EXEVersion[0] ) + " " + std::to_string( m_EXEVersion[1] ) + " " + std::to_string( m_EXEVersion[2] ) + " " + std::to_string( m_EXEVersion[3] ) );
 							m_BNCSUtil->SetEXEVersion( m_EXEVersion );
 						}
 
 						if( m_EXEVersionHash.size( ) == 4 )
 						{
-							CONSOLE_Print( "[BNET: " + m_ServerAlias + "] using custom exe version hash bnet_custom_exeversionhash = " + UTIL_ToString( m_EXEVersionHash[0] ) + " " + UTIL_ToString( m_EXEVersionHash[1] ) + " " + UTIL_ToString( m_EXEVersionHash[2] ) + " " + UTIL_ToString( m_EXEVersionHash[3] ) );
+							CONSOLE_Print( "[BNET: " + m_ServerAlias + "] using custom exe version hash bnet_custom_exeversionhash = " + std::to_string( m_EXEVersionHash[0] ) + " " + std::to_string( m_EXEVersionHash[1] ) + " " + std::to_string( m_EXEVersionHash[2] ) + " " + std::to_string( m_EXEVersionHash[3] ) );
 							m_BNCSUtil->SetEXEVersionHash( m_EXEVersionHash );
 						}
 
@@ -1708,9 +1708,9 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 			m_GHost->m_GamesMutex.lock();
 			
 			if( m_GHost->m_CurrentGame )
-				QueueChatCommand( m_GHost->m_Language->GameIsInTheLobby( m_GHost->m_CurrentGame->GetDescription( ), UTIL_ToString( m_GHost->m_Games.size( ) ), UTIL_ToString( m_GHost->m_MaxGames ) ), User, Whisper );
+				QueueChatCommand( m_GHost->m_Language->GameIsInTheLobby( m_GHost->m_CurrentGame->GetDescription( ), std::to_string( m_GHost->m_Games.size( ) ), std::to_string( m_GHost->m_MaxGames ) ), User, Whisper );
 			else
-				QueueChatCommand( m_GHost->m_Language->ThereIsNoGameInTheLobby( UTIL_ToString( m_GHost->m_Games.size( ) ), UTIL_ToString( m_GHost->m_MaxGames ) ), User, Whisper );
+				QueueChatCommand( m_GHost->m_Language->ThereIsNoGameInTheLobby( std::to_string( m_GHost->m_Games.size( ) ), std::to_string( m_GHost->m_MaxGames ) ), User, Whisper );
 			
 			m_GHost->m_GamesMutex.unlock();
 		}
@@ -2164,7 +2164,7 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 		else if( Command == "wardenstatus" )
 		{
 			if( m_BNLSClient )
-				QueueChatCommand( "WARDEN STATUS --- " + UTIL_ToString( m_BNLSClient->GetTotalWardenIn( ) ) + " requests received, " + UTIL_ToString( m_BNLSClient->GetTotalWardenOut( ) ) + " responses sent.", User, Whisper );
+				QueueChatCommand( "WARDEN STATUS --- " + std::to_string( m_BNLSClient->GetTotalWardenIn( ) ) + " requests received, " + std::to_string( m_BNLSClient->GetTotalWardenOut( ) ) + " responses sent.", User, Whisper );
 			else
 				QueueChatCommand( "WARDEN STATUS --- Not connected to BNLS server.", User, Whisper );
 		}
@@ -2343,7 +2343,7 @@ void CBNET :: QueueChatCommand( std::string chatCommand )
 		m_PacketsMutex.lock();
 		
 		if( m_OutPackets.size( ) > 10 )
-			CONSOLE_Print( "[BNET: " + m_ServerAlias + "] attempted to queue chat command [" + chatCommand + "] but there are too many (" + UTIL_ToString( m_OutPackets.size( ) ) + ") packets queued, discarding" );
+			CONSOLE_Print( "[BNET: " + m_ServerAlias + "] attempted to queue chat command [" + chatCommand + "] but there are too many (" + std::to_string( m_OutPackets.size( ) ) + ") packets queued, discarding" );
 		else
 		{
 			CONSOLE_Print( "[QUEUED: " + m_ServerAlias + "] " + chatCommand );
@@ -2493,7 +2493,7 @@ void CBNET :: UnqueuePackets( unsigned char type )
 	m_PacketsMutex.unlock();
 
 	if( Unqueued > 0 )
-		CONSOLE_Print( "[BNET: " + m_ServerAlias + "] unqueued " + UTIL_ToString( Unqueued ) + " packets of type " + UTIL_ToString( type ) );
+		CONSOLE_Print( "[BNET: " + m_ServerAlias + "] unqueued " + std::to_string( Unqueued ) + " packets of type " + std::to_string( type ) );
 }
 
 void CBNET :: UnqueueChatCommand( std::string chatCommand )
@@ -2526,7 +2526,7 @@ void CBNET :: UnqueueChatCommand( std::string chatCommand )
 	m_PacketsMutex.unlock();
 
 	if( Unqueued > 0 )
-		CONSOLE_Print( "[BNET: " + m_ServerAlias + "] unqueued " + UTIL_ToString( Unqueued ) + " chat command packets" );
+		CONSOLE_Print( "[BNET: " + m_ServerAlias + "] unqueued " + std::to_string( Unqueued ) + " chat command packets" );
 }
 
 void CBNET :: UnqueueGameRefreshes( )

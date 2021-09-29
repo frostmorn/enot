@@ -631,21 +631,21 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 							// let's not confuse the user by displaying erroneous map options so zero them out now
 
 							MapOptions = RawMapFlags & ( MAPOPT_MELEE | MAPOPT_FIXEDPLAYERSETTINGS | MAPOPT_CUSTOMFORCES );
-							CONSOLE_Print( "[MAP] calculated map_options = " + UTIL_ToString( MapOptions ) );
+							CONSOLE_Print( "[MAP] calculated map_options = " + std::to_string( MapOptions ) );
 							MapWidth = UTIL_CreateByteArray( (uint16_t)RawMapWidth, false );
 							CONSOLE_Print( "[MAP] calculated map_width = " + UTIL_ByteArrayToDecString( MapWidth ) );
 							MapHeight = UTIL_CreateByteArray( (uint16_t)RawMapHeight, false );
 							CONSOLE_Print( "[MAP] calculated map_height = " + UTIL_ByteArrayToDecString( MapHeight ) );
 							MapNumPlayers = RawMapNumPlayers - ClosedSlots;
-							CONSOLE_Print( "[MAP] calculated map_numplayers = " + UTIL_ToString( MapNumPlayers ) );
+							CONSOLE_Print( "[MAP] calculated map_numplayers = " + std::to_string( MapNumPlayers ) );
 							MapNumTeams = RawMapNumTeams;
-							CONSOLE_Print( "[MAP] calculated map_numteams = " + UTIL_ToString( MapNumTeams ) );
+							CONSOLE_Print( "[MAP] calculated map_numteams = " + std::to_string( MapNumTeams ) );
 
 							uint32_t SlotNum = 1;
 
 							for( std::vector<CGameSlot> :: iterator i = Slots.begin( ); i != Slots.end( ); ++i )
 							{
-								CONSOLE_Print( "[MAP] calculated map_slot" + UTIL_ToString( SlotNum ) + " = " + UTIL_ByteArrayToDecString( (*i).GetByteArray( ) ) );
+								CONSOLE_Print( "[MAP] calculated map_slot" + std::to_string( SlotNum ) + " = " + UTIL_ByteArrayToDecString( (*i).GetByteArray( ) ) );
 								++SlotNum;
 							}
 
@@ -791,8 +791,8 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 	for (auto i = 0; i < 12; i++){
 		std::string CurrentMode = "";
 		std::string CurrentModeDescription = "";
-		CurrentMode = CFG->GetString("supported_mode"+UTIL_ToString(i)+"_hcl", std::string());
-		CurrentModeDescription = CFG->GetString("supported_mode"+UTIL_ToString(i)+"_description", "Description not provided");
+		CurrentMode = CFG->GetString("supported_mode"+std::to_string(i)+"_hcl", std::string());
+		CurrentModeDescription = CFG->GetString("supported_mode"+std::to_string(i)+"_description", "Description not provided");
 		if (CurrentMode != ""){
 			m_MapSupportedModes.insert(m_MapSupportedModes.end(), CurrentMode);
 			m_MapSupportedModesDescription.insert(m_MapSupportedModesDescription.end(), CurrentModeDescription);
@@ -832,7 +832,7 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 	{
 	for( uint32_t Slot = 1; Slot <= 12; ++Slot )
 		{
-			std::string SlotString = CFG->GetString( "map_slot" + UTIL_ToString( Slot ), std::string( ) );
+			std::string SlotString = CFG->GetString( "map_slot" + std::to_string( Slot ), std::string( ) );
 
 			if( SlotString.empty( ) )
 				break;
@@ -848,7 +848,7 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 
 		for( uint32_t Slot = 1; Slot <= 12; ++Slot )
 		{
-			std::string SlotString = CFG->GetString( "map_slot" + UTIL_ToString( Slot ), std::string( ) );
+			std::string SlotString = CFG->GetString( "map_slot" + std::to_string( Slot ), std::string( ) );
 
 			if( SlotString.empty( ) )
 				break;
@@ -874,7 +874,7 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 
 	if( m_MapObservers == MAPOBS_ALLOWED || m_MapObservers == MAPOBS_REFEREES )
 	{
-		CONSOLE_Print( "[MAP] adding " + UTIL_ToString( 12 - m_Slots.size( ) ) + " observer slots" );
+		CONSOLE_Print( "[MAP] adding " + std::to_string( 12 - m_Slots.size( ) ) + " observer slots" );
 
 		while( m_Slots.size( ) < 12 )
 			m_Slots.push_back( CGameSlot( 0, 255, SLOTSTATUS_OPEN, 0, 12, 12, SLOTRACE_RANDOM ) );

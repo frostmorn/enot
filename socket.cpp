@@ -108,7 +108,7 @@ std::string CSocket :: GetErrorString( )
 	case EREMOTE: return "EREMOTE";
 	}
 
-	return "UNKNOWN ERROR (" + UTIL_ToString( m_Error ) + ")";
+	return "UNKNOWN ERROR (" + std::to_string( m_Error ) + ")";
 }
 
 void CSocket :: SetFD( fd_set *fd, fd_set *send_fd, int *nfds )
@@ -641,7 +641,7 @@ bool CUDPSocket :: Broadcast( uint16_t port, BYTEARRAY message )
 
 	if( sendto( m_Socket, MessageString.c_str( ), MessageString.size( ), 0, (struct sockaddr *)&sin, sizeof( sin ) ) == -1 )
 	{
-		CONSOLE_Print( "[UDPSOCKET] failed to broadcast packet (port " + UTIL_ToString( port ) + ", size " + UTIL_ToString( MessageString.size( ) ) + " bytes)" );
+		CONSOLE_Print( "[UDPSOCKET] failed to broadcast packet (port " + std::to_string( port ) + ", size " + std::to_string( MessageString.size( ) ) + " bytes)" );
 		return false;
 	}
 

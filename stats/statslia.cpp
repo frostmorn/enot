@@ -127,7 +127,7 @@ bool CStatsLiA :: ProcessAction( CIncomingAction *Action )
 						else if (DataString.find("DEBUG") != std::string::npos)
 						{
 							
-							CONSOLE_Print( "[MAPDEBUG:"+m_Game->GetGameName()+"/CREATION TIMESTAMP:" + UTIL_ToString(m_Game->GetCreationTime())+"] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
+							CONSOLE_Print( "[MAPDEBUG:"+m_Game->GetGameName()+"/CREATION TIMESTAMP:" + std::to_string(m_Game->GetCreationTime())+"] " + DataString + ", " + KeyString + ", " + std::to_string( ValueInt ) );
 						}
 
 						i += 12 + Data.size( ) + Key.size( );
@@ -206,7 +206,7 @@ void CStatsLiA :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 		}
 
 		if( DB->Commit( ) )
-			CONSOLE_Print( "[STATSLIA: " + m_Game->GetGameName( ) + "] saving " + UTIL_ToString( Players ) + " players" );
+			CONSOLE_Print( "[STATSLIA: " + m_Game->GetGameName( ) + "] saving " + std::to_string( Players ) + " players" );
 		else
 			CONSOLE_Print( "[STATSLIA: " + m_Game->GetGameName( ) + "] unable to commit database transaction, data not saved" );
 	}

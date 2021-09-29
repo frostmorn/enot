@@ -1128,7 +1128,7 @@ std::string CIncomingGameHost :: GetIPString( )
 	{
 		for( unsigned int i = 0; i < 4; ++i )
 		{
-			Result += UTIL_ToString( (unsigned int)m_IP[i] );
+			Result += std::to_string( (unsigned int)m_IP[i] );
 
 			if( i < 3 )
 				Result += ".";

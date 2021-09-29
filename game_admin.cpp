@@ -101,7 +101,7 @@ bool CAdminGame :: Update( void *fd, void *send_fd )
 				else if( Count == 1 )
 					SendChat( Player, m_GHost->m_Language->ThereIsAdmin( i->second->GetServer( ) ) );
 				else
-					SendChat( Player, m_GHost->m_Language->ThereAreAdmins( i->second->GetServer( ), UTIL_ToString( Count ) ) );
+					SendChat( Player, m_GHost->m_Language->ThereAreAdmins( i->second->GetServer( ), std::to_string( Count ) ) );
 			}
 
 			m_GHost->m_DB->RecoverCallable( i->second );
@@ -189,7 +189,7 @@ bool CAdminGame :: Update( void *fd, void *send_fd )
 				else if( Count == 1 )
 					SendChat( Player, m_GHost->m_Language->ThereIsBannedUser( i->second->GetServer( ) ) );
 				else
-					SendChat( Player, m_GHost->m_Language->ThereAreBannedUsers( i->second->GetServer( ), UTIL_ToString( Count ) ) );
+					SendChat( Player, m_GHost->m_Language->ThereAreBannedUsers( i->second->GetServer( ), std::to_string( Count ) ) );
 			}
 
 			m_GHost->m_DB->RecoverCallable( i->second );
@@ -887,9 +887,9 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 		else if( Command == "getgames" )
 		{
 			if( m_GHost->m_CurrentGame )
-				SendChat( player, m_GHost->m_Language->GameIsInTheLobby( m_GHost->m_CurrentGame->GetDescription( ), UTIL_ToString( m_GHost->m_Games.size( ) ), UTIL_ToString( m_GHost->m_MaxGames ) ) );
+				SendChat( player, m_GHost->m_Language->GameIsInTheLobby( m_GHost->m_CurrentGame->GetDescription( ), std::to_string( m_GHost->m_Games.size( ) ), std::to_string( m_GHost->m_MaxGames ) ) );
 			else
-				SendChat( player, m_GHost->m_Language->ThereIsNoGameInTheLobby( UTIL_ToString( m_GHost->m_Games.size( ) ), UTIL_ToString( m_GHost->m_MaxGames ) ) );
+				SendChat( player, m_GHost->m_Language->ThereIsNoGameInTheLobby( std::to_string( m_GHost->m_Games.size( ) ), std::to_string( m_GHost->m_MaxGames ) ) );
 		}
 
 		//
@@ -1235,7 +1235,7 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 					if( GameNumber - 1 < m_GHost->m_Games.size( ) )
 						m_GHost->m_Games[GameNumber - 1]->SendAllChat( "ADMIN: " + Message );
 					else
-						SendChat( player, m_GHost->m_Language->GameNumberDoesntExist( UTIL_ToString( GameNumber ) ) );
+						SendChat( player, m_GHost->m_Language->GameNumberDoesntExist( std::to_string( GameNumber ) ) );
 				}
 			}
 		}
@@ -1320,7 +1320,7 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 			uint32_t LoginAttempts = player->GetLoginAttempts( ) + 1;
 			player->SetLoginAttempts( LoginAttempts );
 			CONSOLE_Print( "[ADMINGAME] user [" + User + "] login attempt failed" );
-			SendChat( player, m_GHost->m_Language->AdminInvalidPassword( UTIL_ToString( LoginAttempts ) ) );
+			SendChat( player, m_GHost->m_Language->AdminInvalidPassword( std::to_string( LoginAttempts ) ) );
 
 			if( LoginAttempts >= 1 )
 			{

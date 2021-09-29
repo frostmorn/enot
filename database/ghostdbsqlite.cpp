@@ -944,12 +944,12 @@ uint32_t CGHostDBSQLite :: GameAdd( std::string server, std::string map, std::st
 		if( RC == SQLITE_DONE )
 			RowID = m_DB->LastRowID( );
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding game [" + server + " : " + map + " : " + gamename + " : " + ownername + " : " + UTIL_ToString( duration ) + " : " + UTIL_ToString( gamestate ) + " : " + creatorname + " : " + creatorserver + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error adding game [" + server + " : " + map + " : " + gamename + " : " + ownername + " : " + std::to_string( duration ) + " : " + std::to_string( gamestate ) + " : " + creatorname + " : " + creatorserver + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding game [" + server + " : " + map + " : " + gamename + " : " + ownername + " : " + UTIL_ToString( duration ) + " : " + UTIL_ToString( gamestate ) + " : " + creatorname + " : " + creatorserver + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error adding game [" + server + " : " + map + " : " + gamename + " : " + ownername + " : " + std::to_string( duration ) + " : " + std::to_string( gamestate ) + " : " + creatorname + " : " + creatorserver + "] - " + m_DB->GetError( ) );
 
 	return RowID;
 }
@@ -980,12 +980,12 @@ uint32_t CGHostDBSQLite :: GamePlayerAdd( uint32_t gameid, std::string name, std
 		if( RC == SQLITE_DONE )
 			RowID = m_DB->LastRowID( );
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding gameplayer [" + UTIL_ToString( gameid ) + " : " + name + " : " + ip + " : " + UTIL_ToString( spoofed ) + " : " + spoofedrealm + " : " + UTIL_ToString( reserved ) + " : " + UTIL_ToString( loadingtime ) + " : " + UTIL_ToString( left ) + " : " + leftreason + " : " + UTIL_ToString( team ) + " : " + UTIL_ToString( colour ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error adding gameplayer [" + std::to_string( gameid ) + " : " + name + " : " + ip + " : " + std::to_string( spoofed ) + " : " + spoofedrealm + " : " + std::to_string( reserved ) + " : " + std::to_string( loadingtime ) + " : " + std::to_string( left ) + " : " + leftreason + " : " + std::to_string( team ) + " : " + std::to_string( colour ) + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding gameplayer [" + UTIL_ToString( gameid ) + " : " + name + " : " + ip + " : " + UTIL_ToString( spoofed ) + " : " + spoofedrealm + " : " + UTIL_ToString( reserved ) + " : " + UTIL_ToString( loadingtime ) + " : " + UTIL_ToString( left ) + " : " + leftreason + " : " + UTIL_ToString( team ) + " : " + UTIL_ToString( colour ) + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error adding gameplayer [" + std::to_string( gameid ) + " : " + name + " : " + ip + " : " + std::to_string( spoofed ) + " : " + spoofedrealm + " : " + std::to_string( reserved ) + " : " + std::to_string( loadingtime ) + " : " + std::to_string( left ) + " : " + leftreason + " : " + std::to_string( team ) + " : " + std::to_string( colour ) + "] - " + m_DB->GetError( ) );
 
 	return RowID;
 }
@@ -1089,12 +1089,12 @@ uint32_t CGHostDBSQLite :: DotAGameAdd( uint32_t gameid, uint32_t winner, uint32
 		if( RC == SQLITE_DONE )
 			RowID = m_DB->LastRowID( );
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding dotagame [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( winner ) + " : " + UTIL_ToString( min ) + " : " + UTIL_ToString( sec ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error adding dotagame [" + std::to_string( gameid ) + " : " + std::to_string( winner ) + " : " + std::to_string( min ) + " : " + std::to_string( sec ) + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding dotagame [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( winner ) + " : " + UTIL_ToString( min ) + " : " + UTIL_ToString( sec ) + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error adding dotagame [" + std::to_string( gameid ) + " : " + std::to_string( winner ) + " : " + std::to_string( min ) + " : " + std::to_string( sec ) + "] - " + m_DB->GetError( ) );
 
 	return RowID;
 }
@@ -1133,12 +1133,12 @@ uint32_t CGHostDBSQLite :: DotAPlayerAdd( uint32_t gameid, uint32_t colour, uint
 		if( RC == SQLITE_DONE )
 			RowID = m_DB->LastRowID( );
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding dotaplayer [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( colour ) + " : " + UTIL_ToString( kills ) + " : " + UTIL_ToString( deaths ) + " : " + UTIL_ToString( creepkills ) + " : " + UTIL_ToString( creepdenies ) + " : " + UTIL_ToString( assists ) + " : " + UTIL_ToString( gold ) + " : " + UTIL_ToString( neutralkills ) + " : " + item1 + " : " + item2 + " : " + item3 + " : " + item4 + " : " + item5 + " : " + item6 + " : " + hero + " : " + UTIL_ToString( newcolour ) + " : " + UTIL_ToString( towerkills ) + " : " + UTIL_ToString( raxkills ) + " : " + UTIL_ToString( courierkills ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error adding dotaplayer [" + std::to_string( gameid ) + " : " + std::to_string( colour ) + " : " + std::to_string( kills ) + " : " + std::to_string( deaths ) + " : " + std::to_string( creepkills ) + " : " + std::to_string( creepdenies ) + " : " + std::to_string( assists ) + " : " + std::to_string( gold ) + " : " + std::to_string( neutralkills ) + " : " + item1 + " : " + item2 + " : " + item3 + " : " + item4 + " : " + item5 + " : " + item6 + " : " + hero + " : " + std::to_string( newcolour ) + " : " + std::to_string( towerkills ) + " : " + std::to_string( raxkills ) + " : " + std::to_string( courierkills ) + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding dotaplayer [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( colour ) + " : " + UTIL_ToString( kills ) + " : " + UTIL_ToString( deaths ) + " : " + UTIL_ToString( creepkills ) + " : " + UTIL_ToString( creepdenies ) + " : " + UTIL_ToString( assists ) + " : " + UTIL_ToString( gold ) + " : " + UTIL_ToString( neutralkills ) + " : " + item1 + " : " + item2 + " : " + item3 + " : " + item4 + " : " + item5 + " : " + item6 + " : " + hero + " : " + UTIL_ToString( newcolour ) + " : " + UTIL_ToString( towerkills ) + " : " + UTIL_ToString( raxkills ) + " : " + UTIL_ToString( courierkills ) + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error adding dotaplayer [" + std::to_string( gameid ) + " : " + std::to_string( colour ) + " : " + std::to_string( kills ) + " : " + std::to_string( deaths ) + " : " + std::to_string( creepkills ) + " : " + std::to_string( creepdenies ) + " : " + std::to_string( assists ) + " : " + std::to_string( gold ) + " : " + std::to_string( neutralkills ) + " : " + item1 + " : " + item2 + " : " + item3 + " : " + item4 + " : " + item5 + " : " + item6 + " : " + hero + " : " + std::to_string( newcolour ) + " : " + std::to_string( towerkills ) + " : " + std::to_string( raxkills ) + " : " + std::to_string( courierkills ) + "] - " + m_DB->GetError( ) );
 
 	return RowID;
 }
@@ -1189,7 +1189,7 @@ uint32_t CGHostDBSQLite :: LiAPlayerCount( std::string name )
 	}
 	else
 		CONSOLE_Print( "[SQLITE3] prepare error counting liaplayers [" + name + "] - " + m_DB->GetError( ) );
-	CONSOLE_Print("Player " + name + " played " + UTIL_ToString(Count) + " LiA games");
+	CONSOLE_Print("Player " + name + " played " + std::to_string(Count) + " LiA games");
 	return Count;
 }
 
@@ -1395,12 +1395,12 @@ uint32_t CGHostDBSQLite :: LiAGameAdd( uint32_t gameid, uint32_t gameresult, uin
 		if( RC == SQLITE_DONE )
 			RowID = m_DB->LastRowID( );
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding liagame [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( gameresult ) + " : " + UTIL_ToString( min ) + " : " + UTIL_ToString( sec ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error adding liagame [" + std::to_string( gameid ) + " : " + std::to_string( gameresult ) + " : " + std::to_string( min ) + " : " + std::to_string( sec ) + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding liagame [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( gameresult ) + " : " + UTIL_ToString( min ) + " : " + UTIL_ToString( sec ) + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error adding liagame [" + std::to_string( gameid ) + " : " + std::to_string( gameresult ) + " : " + std::to_string( min ) + " : " + std::to_string( sec ) + "] - " + m_DB->GetError( ) );
 
 	return RowID;
 }
@@ -1435,17 +1435,17 @@ uint32_t CGHostDBSQLite :: LiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int
 		if( RC == SQLITE_DONE )
 			RowID = m_DB->LastRowID( );
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding liaplayer [" + UTIL_ToString( nGameID ) + " : " +
-			 UTIL_ToString( nColour ) + " : " + UTIL_ToString( nPTS ) + " : " + UTIL_ToString( nDeaths ) +
-			  " : " + UTIL_ToString( nCreepKills ) + " : " + UTIL_ToString( nBossKills ) + " : "
+			CONSOLE_Print( "[SQLITE3] error adding liaplayer [" + std::to_string( nGameID ) + " : " +
+			 std::to_string( nColour ) + " : " + std::to_string( nPTS ) + " : " + std::to_string( nDeaths ) +
+			  " : " + std::to_string( nCreepKills ) + " : " + std::to_string( nBossKills ) + " : "
 			   + nItem1 + " : " + nItem2 + " : " + nItem3 + " : " + nItem4 + " : " + nItem5 + " : " + nItem6 + " : " + nHero + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding liaplayer  [" + UTIL_ToString( nGameID ) + " : " +
-			 UTIL_ToString( nColour ) + " : " + UTIL_ToString( nPTS ) + " : " + UTIL_ToString( nDeaths ) +
-			  " : " + UTIL_ToString( nCreepKills ) + " : " + UTIL_ToString( nBossKills ) + " : "
+		CONSOLE_Print( "[SQLITE3] prepare error adding liaplayer  [" + std::to_string( nGameID ) + " : " +
+			 std::to_string( nColour ) + " : " + std::to_string( nPTS ) + " : " + std::to_string( nDeaths ) +
+			  " : " + std::to_string( nCreepKills ) + " : " + std::to_string( nBossKills ) + " : "
 			   + nItem1 + " : " + nItem2 + " : " + nItem3 + " : " + nItem4 + " : " + nItem5 + " : " + nItem6 + 
 			   " : " + nHero + "] - " + m_DB->GetError( ) );
 
@@ -1476,15 +1476,15 @@ std::string CGHostDBSQLite :: FromCheck( uint32_t ip )
 			if( Row->size( ) == 1 )
 				From = (*Row)[0];
 			else
-				CONSOLE_Print( "[SQLITE3] error checking iptocountry [" + UTIL_ToString( ip ) + "] - row doesn't have 1 column" );
+				CONSOLE_Print( "[SQLITE3] error checking iptocountry [" + std::to_string( ip ) + "] - row doesn't have 1 column" );
 		}
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error checking iptocountry [" + UTIL_ToString( ip ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error checking iptocountry [" + std::to_string( ip ) + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error checking iptocountry [" + UTIL_ToString( ip ) + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error checking iptocountry [" + std::to_string( ip ) + "] - " + m_DB->GetError( ) );
 
 	return From;
 }
@@ -1511,12 +1511,12 @@ bool CGHostDBSQLite :: FromAdd( uint32_t ip1, uint32_t ip2, std::string country 
 		if( RC == SQLITE_DONE )
 			Success = true;
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding iptocountry [" + UTIL_ToString( ip1 ) + " : " + UTIL_ToString( ip2 ) + " : " + country + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error adding iptocountry [" + std::to_string( ip1 ) + " : " + std::to_string( ip2 ) + " : " + country + "] - " + m_DB->GetError( ) );
 
 		m_DB->Reset( FromAddStmt );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding iptocountry [" + UTIL_ToString( ip1 ) + " : " + UTIL_ToString( ip2 ) + " : " + country + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error adding iptocountry [" + std::to_string( ip1 ) + " : " + std::to_string( ip2 ) + " : " + country + "] - " + m_DB->GetError( ) );
 
 	return Success;
 }
@@ -1542,12 +1542,12 @@ bool CGHostDBSQLite :: DownloadAdd( std::string map, uint32_t mapsize, std::stri
 		if( RC == SQLITE_DONE )
 			Success = true;
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding download [" + map + " : " + UTIL_ToString( mapsize ) + " : " + name + " : " + ip + " : " + UTIL_ToString( spoofed ) + " : " + spoofedrealm + " : " + UTIL_ToString( downloadtime ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error adding download [" + map + " : " + std::to_string( mapsize ) + " : " + name + " : " + ip + " : " + std::to_string( spoofed ) + " : " + spoofedrealm + " : " + std::to_string( downloadtime ) + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding download [" + map + " : " + UTIL_ToString( mapsize ) + " : " + name + " : " + ip + " : " + UTIL_ToString( spoofed ) + " : " + spoofedrealm + " : " + UTIL_ToString( downloadtime ) + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error adding download [" + map + " : " + std::to_string( mapsize ) + " : " + name + " : " + ip + " : " + std::to_string( spoofed ) + " : " + spoofedrealm + " : " + std::to_string( downloadtime ) + "] - " + m_DB->GetError( ) );
 
 	return Success;
 }
@@ -1573,12 +1573,12 @@ uint32_t CGHostDBSQLite :: W3MMDPlayerAdd( std::string category, uint32_t gameid
 		if( RC == SQLITE_DONE )
 			RowID = m_DB->LastRowID( );
 		else if( RC == SQLITE_ERROR )
-			CONSOLE_Print( "[SQLITE3] error adding w3mmdplayer [" + category + " : " + UTIL_ToString( gameid ) + " : " + UTIL_ToString( pid ) + " : " + name + " : " + flag + " : " + UTIL_ToString( leaver ) + " : " + UTIL_ToString( practicing ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] error adding w3mmdplayer [" + category + " : " + std::to_string( gameid ) + " : " + std::to_string( pid ) + " : " + name + " : " + flag + " : " + std::to_string( leaver ) + " : " + std::to_string( practicing ) + "] - " + m_DB->GetError( ) );
 
 		m_DB->Finalize( Statement );
 	}
 	else
-		CONSOLE_Print( "[SQLITE3] prepare error adding w3mmdplayer [" + category + " : " + UTIL_ToString( gameid ) + " : " + UTIL_ToString( pid ) + " : " + name + " : " + flag + " : " + UTIL_ToString( leaver ) + " : " + UTIL_ToString( practicing ) + "] - " + m_DB->GetError( ) );
+		CONSOLE_Print( "[SQLITE3] prepare error adding w3mmdplayer [" + category + " : " + std::to_string( gameid ) + " : " + std::to_string( pid ) + " : " + name + " : " + flag + " : " + std::to_string( leaver ) + " : " + std::to_string( practicing ) + "] - " + m_DB->GetError( ) );
 
 	return RowID;
 }
@@ -1608,7 +1608,7 @@ bool CGHostDBSQLite :: W3MMDVarAdd( uint32_t gameid, std::map<VarP,int32_t> var_
 			if( RC == SQLITE_ERROR )
 			{
 				Success = false;
-				CONSOLE_Print( "[SQLITE3] error adding w3mmdvar-int [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( i->first.first ) + " : " + i->first.second + " : " + UTIL_ToString( i->second ) + "] - " + m_DB->GetError( ) );
+				CONSOLE_Print( "[SQLITE3] error adding w3mmdvar-int [" + std::to_string( gameid ) + " : " + std::to_string( i->first.first ) + " : " + i->first.second + " : " + std::to_string( i->second ) + "] - " + m_DB->GetError( ) );
 				break;
 			}
 
@@ -1617,7 +1617,7 @@ bool CGHostDBSQLite :: W3MMDVarAdd( uint32_t gameid, std::map<VarP,int32_t> var_
 		else
 		{
 			Success = false;
-			CONSOLE_Print( "[SQLITE3] prepare error adding w3mmdvar-int [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( i->first.first ) + " : " + i->first.second + " : " + UTIL_ToString( i->second ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] prepare error adding w3mmdvar-int [" + std::to_string( gameid ) + " : " + std::to_string( i->first.first ) + " : " + i->first.second + " : " + std::to_string( i->second ) + "] - " + m_DB->GetError( ) );
 			break;
 		}
 	}
@@ -1653,7 +1653,7 @@ bool CGHostDBSQLite :: W3MMDVarAdd( uint32_t gameid, std::map<VarP,double> var_r
 			if( RC == SQLITE_ERROR )
 			{
 				Success = false;
-				CONSOLE_Print( "[SQLITE3] error adding w3mmdvar-real [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( i->first.first ) + " : " + i->first.second + " : " + UTIL_ToString( i->second, 10 ) + "] - " + m_DB->GetError( ) );
+				CONSOLE_Print( "[SQLITE3] error adding w3mmdvar-real [" + std::to_string( gameid ) + " : " + std::to_string( i->first.first ) + " : " + i->first.second + " : " + std::to_string( i->second ) + "] - " + m_DB->GetError( ) );
 				break;
 			}
 
@@ -1662,7 +1662,7 @@ bool CGHostDBSQLite :: W3MMDVarAdd( uint32_t gameid, std::map<VarP,double> var_r
 		else
 		{
 			Success = false;
-			CONSOLE_Print( "[SQLITE3] prepare error adding w3mmdvar-real [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( i->first.first ) + " : " + i->first.second + " : " + UTIL_ToString( i->second, 10 ) + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] prepare error adding w3mmdvar-real [" + std::to_string( gameid ) + " : " + std::to_string( i->first.first ) + " : " + i->first.second + " : " + std::to_string( i->second ) + "] - " + m_DB->GetError( ) );
 			break;
 		}
 	}
@@ -1698,7 +1698,7 @@ bool CGHostDBSQLite :: W3MMDVarAdd( uint32_t gameid, std::map<VarP,std::string> 
 			if( RC == SQLITE_ERROR )
 			{
 				Success = false;
-				CONSOLE_Print( "[SQLITE3] error adding w3mmdvar-std::string [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( i->first.first ) + " : " + i->first.second + " : " + i->second + "] - " + m_DB->GetError( ) );
+				CONSOLE_Print( "[SQLITE3] error adding w3mmdvar-std::string [" + std::to_string( gameid ) + " : " + std::to_string( i->first.first ) + " : " + i->first.second + " : " + i->second + "] - " + m_DB->GetError( ) );
 				break;
 			}
 
@@ -1707,7 +1707,7 @@ bool CGHostDBSQLite :: W3MMDVarAdd( uint32_t gameid, std::map<VarP,std::string> 
 		else
 		{
 			Success = false;
-			CONSOLE_Print( "[SQLITE3] prepare error adding w3mmdvar-std::string [" + UTIL_ToString( gameid ) + " : " + UTIL_ToString( i->first.first ) + " : " + i->first.second + " : " + i->second + "] - " + m_DB->GetError( ) );
+			CONSOLE_Print( "[SQLITE3] prepare error adding w3mmdvar-std::string [" + std::to_string( gameid ) + " : " + std::to_string( i->first.first ) + " : " + i->first.second + " : " + i->second + "] - " + m_DB->GetError( ) );
 			break;
 		}
 	}

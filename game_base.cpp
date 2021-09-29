@@ -131,7 +131,7 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 
 			in.close( );
 
-			CONSOLE_Print( "[GAME: " + m_GameName + "] loaded " + UTIL_ToString( m_IPBlackList.size( ) ) + " lines from IP blacklist file" );
+			CONSOLE_Print( "[GAME: " + m_GameName + "] loaded " + std::to_string( m_IPBlackList.size( ) ) + " lines from IP blacklist file" );
 		}
 	}
 
@@ -143,10 +143,10 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 		CONSOLE_Print( "[GAME: " + m_GameName + "] attempting to bind to all available addresses" );
 
 	if( m_Socket->Listen( m_GHost->m_BindAddress, m_HostPort ) )
-		CONSOLE_Print( "[GAME: " + m_GameName + "] listening on port " + UTIL_ToString( m_HostPort ) );
+		CONSOLE_Print( "[GAME: " + m_GameName + "] listening on port " + std::to_string( m_HostPort ) );
 	else
 	{
-		CONSOLE_Print( "[GAME: " + m_GameName + "] error listening on port " + UTIL_ToString( m_HostPort ) );
+		CONSOLE_Print( "[GAME: " + m_GameName + "] error listening on port " + std::to_string( m_HostPort ) );
 		m_Exiting = true;
 	}
 }
@@ -251,8 +251,8 @@ void CBaseGame :: loop( )
 		char Time[17];
 		memset( Time, 0, sizeof( char ) * 17 );
 		strftime( Time, sizeof( char ) * 17, "%Y-%m-%d %H-%M", localtime( &Now ) );
-		std::string MinString = UTIL_ToString( ( m_GameTicks / 1000 ) / 60 );
-		std::string SecString = UTIL_ToString( ( m_GameTicks / 1000 ) % 60 );
+		std::string MinString = std::to_string( ( m_GameTicks / 1000 ) / 60 );
+		std::string SecString = std::to_string( ( m_GameTicks / 1000 ) % 60 );
 
 		if( MinString.size( ) == 1 )
 			MinString.insert( 0, "0" );
@@ -359,12 +359,12 @@ uint32_t CBaseGame ::GetNumJudgePlayers(){
 
 std::string CBaseGame :: GetDescription( )
 {
-	std::string Description = m_GameName + " : " + m_OwnerName + " : " + UTIL_ToString( GetNumHumanPlayers( ) ) + "/" + UTIL_ToString( m_GameLoading || m_GameLoaded ? m_StartPlayers : m_Slots.size( ) );
+	std::string Description = m_GameName + " : " + m_OwnerName + " : " + std::to_string( GetNumHumanPlayers( ) ) + "/" + std::to_string( m_GameLoading || m_GameLoaded ? m_StartPlayers : m_Slots.size( ) );
 
 	if( m_GameLoading || m_GameLoaded )
-		Description += " : " + UTIL_ToString( ( m_GameTicks / 1000 ) / 60 ) + "m";
+		Description += " : " + std::to_string( ( m_GameTicks / 1000 ) / 60 ) + "m";
 	else
-		Description += " : " + UTIL_ToString( ( GetTime( ) - m_CreationTime ) / 60 ) + "m";
+		Description += " : " + std::to_string( ( GetTime( ) - m_CreationTime ) / 60 ) + "m";
 
 	return Description;
 }
@@ -778,7 +778,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			// this sometimes resulted in a countdown of e.g. "6 5 3 2 1" during my testing which looks pretty dumb
 			// doing it this way ensures it's always "5 4 3 2 1" but each interval might not be *exactly* the same length
 
-			SendAllChat( UTIL_ToString( m_CountDownCounter ) + ". . ." );
+			SendAllChat( std::to_string( m_CountDownCounter ) + ". . ." );
 			--m_CountDownCounter;
 		}
 		else if( !m_GameLoading && !m_GameLoaded )
@@ -979,7 +979,7 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 				WaitTime = ( m_GProxyEmptyActions + 1 ) * 60;
 
 			if( GetTime( ) - m_StartedLaggingTime >= WaitTime )
-				StopLaggers( m_GHost->m_Language->WasAutomaticallyDroppedAfterSeconds( UTIL_ToString( WaitTime ) ) );
+				StopLaggers( m_GHost->m_Language->WasAutomaticallyDroppedAfterSeconds( std::to_string( WaitTime ) ) );
 
 			// we cannot allow the lag screen to stay up for more than ~65 seconds because Warcraft III disconnects if it doesn't receive an action packet at least this often
 			// one (easy) solution is to simply drop all the laggers if they lag for more than 60 seconds
@@ -1501,7 +1501,7 @@ void CBaseGame :: SendAllActions( )
 		// print a message because even though this will take more resources it should provide some information to the administrator for future reference
 		// other solutions - dynamically modify the latency, request higher priority, terminate other games, ???
 		//To causes a performance problem, when the console has to say this 1000 times. Should improve ghost hosting on servers
-		//CONSOLE_Print( "[GAME: " + m_GameName + "] warning - the latency is " + UTIL_ToString( m_Latency ) + "ms but the last update was late by " + UTIL_ToString( m_LastActionLateBy ) + "ms" );
+		//CONSOLE_Print( "[GAME: " + m_GameName + "] warning - the latency is " + std::to_string( m_Latency ) + "ms but the last update was late by " + std::to_string( m_LastActionLateBy ) + "ms" );
 		m_LastActionLateBy = m_Latency;
 	}
 
@@ -1515,7 +1515,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		
 		total_players_count = total_players_count +  game->GetNumHumanPlayers();
 	}
-	auto message = "Online: " + UTIL_ToString(total_players_count+this->GetNumHumanPlayers())+" players";
+	auto message = "Online: " + std::to_string(total_players_count+this->GetNumHumanPlayers())+" players";
 	SendChat( player, message );
 	CONSOLE_Print(message);
 	// read from motd.txt if available (thanks to zeeg for this addition)
@@ -1579,14 +1579,14 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 	uint32_t mins = time_elapsed /60 % 60;
 	uint32_t secs = time_elapsed % 60;
 	
-	SendChat(player, "Игра создана "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) +"с назад");
+	SendChat(player, "Игра создана "+std::to_string(hours)+"ч " +std::to_string(mins) +"м "+std::to_string(secs) +"с назад");
 	if (m_LastConnectedUserTime){
 		uint32_t time_connected = GetTime()- m_LastConnectedUserTime;
 
 		uint32_t hours = time_connected / 3600;
 		uint32_t mins = time_connected /60 % 60;
 		uint32_t secs = time_connected % 60;
-		SendChat(player, "Последний игрок зашел в лобби "+UTIL_ToString(hours)+"ч " +UTIL_ToString(mins) +"м "+UTIL_ToString(secs) +"с назад");
+		SendChat(player, "Последний игрок зашел в лобби "+std::to_string(hours)+"ч " +std::to_string(mins) +"м "+std::to_string(secs) +"с назад");
 	}
 
 }
@@ -1632,7 +1632,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 		
 		total_players_count = total_players_count +  game->GetNumHumanPlayers();
 	}
-	auto message = "Online: " + UTIL_ToString(total_players_count+this->GetNumHumanPlayers()-1)+" players";
+	auto message = "Online: " + std::to_string(total_players_count+this->GetNumHumanPlayers()-1)+" players";
 	CONSOLE_Print(message);
 	// remove any queued spoofcheck messages for this player
 
@@ -1672,7 +1672,7 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 	if( m_GameLoaded && player->GetLeftCode( ) == PLAYERLEAVE_DISCONNECT && m_AutoSave )
 	{
 		std::string SaveGameName = UTIL_FileSafeName( "GHost++ AutoSave " + m_GameName + " (" + player->GetName( ) + ").w3z" );
-		CONSOLE_Print( "[GAME: " + m_GameName + "] auto saving [" + SaveGameName + "] before player drop, shortened send interval = " + UTIL_ToString( GetTicks( ) - m_LastActionSentTicks ) );
+		CONSOLE_Print( "[GAME: " + m_GameName + "] auto saving [" + SaveGameName + "] before player drop, shortened send interval = " + std::to_string( GetTicks( ) - m_LastActionSentTicks ) );
 		BYTEARRAY CRC;
 		BYTEARRAY Action;
 		Action.push_back( 6 );
@@ -1766,7 +1766,7 @@ void CBaseGame :: EventPlayerDisconnectTimedOut( CGamePlayer *player )
 			if( TimeRemaining > ( (uint32_t)m_GProxyEmptyActions + 1 ) * 60 )
 				TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60;
 
-			SendAllChat( player->GetPID( ), m_GHost->m_Language->WaitForReconnectSecondsRemain( UTIL_ToString( TimeRemaining ) ) );
+			SendAllChat( player->GetPID( ), m_GHost->m_Language->WaitForReconnectSecondsRemain( std::to_string( TimeRemaining ) ) );
 			player->SetLastGProxyWaitNoticeSentTime( GetTime( ) );
 		}
 
@@ -1820,7 +1820,7 @@ void CBaseGame :: EventPlayerDisconnectSocketError( CGamePlayer *player )
 			if( TimeRemaining > ( (uint32_t)m_GProxyEmptyActions + 1 ) * 60 )
 				TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60;
 
-			SendAllChat( player->GetPID( ), m_GHost->m_Language->WaitForReconnectSecondsRemain( UTIL_ToString( TimeRemaining ) ) );
+			SendAllChat( player->GetPID( ), m_GHost->m_Language->WaitForReconnectSecondsRemain( std::to_string( TimeRemaining ) ) );
 			player->SetLastGProxyWaitNoticeSentTime( GetTime( ) );
 		}
 
@@ -1854,7 +1854,7 @@ void CBaseGame :: EventPlayerDisconnectConnectionClosed( CGamePlayer *player )
 			if( TimeRemaining > ( (uint32_t)m_GProxyEmptyActions + 1 ) * 60 )
 				TimeRemaining = ( m_GProxyEmptyActions + 1 ) * 60;
 
-			SendAllChat( player->GetPID( ), m_GHost->m_Language->WaitForReconnectSecondsRemain( UTIL_ToString( TimeRemaining ) ) );
+			SendAllChat( player->GetPID( ), m_GHost->m_Language->WaitForReconnectSecondsRemain( std::to_string( TimeRemaining ) ) );
 			player->SetLastGProxyWaitNoticeSentTime( GetTime( ) );
 		}
 
@@ -1874,7 +1874,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// check if the new player's name is empty or too long
 	if( joinPlayer->GetName( ).empty( ) || joinPlayer->GetName( ).size( ) > 15 )
 	{
-		CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game with an invalid name of length " + UTIL_ToString( joinPlayer->GetName( ).size( ) ) );
+		CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game with an invalid name of length " + std::to_string( joinPlayer->GetName( ).size( ) ) );
 		potential->Send( m_Protocol->SEND_W3GS_REJECTJOIN( REJECTJOIN_FULL ) );
 		potential->SetDeleteMe( true );
 		return;
@@ -2180,7 +2180,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	// this problem is solved by setting the socket to NULL before deletion and handling the NULL case in the destructor
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
 	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
-	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm );
+	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+std::to_string(m_Players.size())+" players from Realm: "+realm );
 	auto country = m_GHost->m_DBLocal->FromCheck(UTIL_ByteArrayToUInt32(potential->GetExternalIP(), true));
 	country = country == "??"?"N\\A":country;
 	CGamePlayer *Player = new CGamePlayer( potential, m_SaveGame ? EnforcePID : GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), Reserved, country );
@@ -2384,7 +2384,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	if( score > -99999.0 && ( score < m_MinimumScore || score > m_MaximumScore ) )
 	{
-		CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has a rating [" + UTIL_ToString( score, 2 ) + "] outside the limits [" + UTIL_ToString( m_MinimumScore, 2 ) + "] to [" + UTIL_ToString( m_MaximumScore, 2 ) + "]" );
+		CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has a rating [" + std::to_string( score ) + "] outside the limits [" + std::to_string( m_MinimumScore ) + "] to [" + std::to_string( m_MaximumScore) + "]" );
 		potential->Send( m_Protocol->SEND_W3GS_REJECTJOIN( REJECTJOIN_FULL ) );
 		potential->SetDeleteMe( true );
 		return;
@@ -2471,9 +2471,9 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 			if( score < -99999.0 || abs( score - AverageScore ) > abs( FurthestPlayer->GetScore( ) - AverageScore ) )
 			{
 				if( score < -99999.0 )
-					CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has the furthest rating [N/A] from the average [" + UTIL_ToString( AverageScore, 2 ) + "]" );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has the furthest rating [N/A] from the average [" + std::to_string( AverageScore  ) + "]" );
 				else
-					CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has the furthest rating [" + UTIL_ToString( score, 2 ) + "] from the average [" + UTIL_ToString( AverageScore, 2 ) + "]" );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has the furthest rating [" + std::to_string( score ) + "] from the average [" + std::to_string( AverageScore  ) + "]" );
 
 				potential->Send( m_Protocol->SEND_W3GS_REJECTJOIN( REJECTJOIN_FULL ) );
 				potential->SetDeleteMe( true );
@@ -2486,9 +2486,9 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 			FurthestPlayer->SetDeleteMe( true );
 
 			if( FurthestPlayer->GetScore( ) < -99999.0 )
-				FurthestPlayer->SetLeftReason( m_GHost->m_Language->WasKickedForHavingFurthestScore( "N/A", UTIL_ToString( AverageScore, 2 ) ) );
+				FurthestPlayer->SetLeftReason( m_GHost->m_Language->WasKickedForHavingFurthestScore( "N/A", std::to_string( AverageScore  ) ) );
 			else
-				FurthestPlayer->SetLeftReason( m_GHost->m_Language->WasKickedForHavingFurthestScore( UTIL_ToString( FurthestPlayer->GetScore( ), 2 ), UTIL_ToString( AverageScore, 2 ) ) );
+				FurthestPlayer->SetLeftReason( m_GHost->m_Language->WasKickedForHavingFurthestScore( std::to_string( FurthestPlayer->GetScore( ) ), std::to_string( AverageScore  ) ) );
 
 			FurthestPlayer->SetLeftCode( PLAYERLEAVE_LOBBY );
 
@@ -2499,9 +2499,9 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 			FurthestPlayer->SetLeftMessageSent( true );
 
 			if( FurthestPlayer->GetScore( ) < -99999.0 )
-				SendAllChat( m_GHost->m_Language->PlayerWasKickedForFurthestScore( FurthestPlayer->GetName( ), "N/A", UTIL_ToString( AverageScore, 2 ) ) );
+				SendAllChat( m_GHost->m_Language->PlayerWasKickedForFurthestScore( FurthestPlayer->GetName( ), "N/A", std::to_string( AverageScore  ) ) );
 			else
-				SendAllChat( m_GHost->m_Language->PlayerWasKickedForFurthestScore( FurthestPlayer->GetName( ), UTIL_ToString( FurthestPlayer->GetScore( ), 2 ), UTIL_ToString( AverageScore, 2 ) ) );
+				SendAllChat( m_GHost->m_Language->PlayerWasKickedForFurthestScore( FurthestPlayer->GetName( ), std::to_string( FurthestPlayer->GetScore( ) ), std::to_string( AverageScore  ) ) );
 		}
 		else if( m_GHost->m_MatchMakingMethod == 2 )
 		{
@@ -2533,7 +2533,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 				if( score < -99999.0 )
 					CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has the lowest rating [N/A]" );
 				else
-					CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has the lowest rating [" + UTIL_ToString( score, 2 ) + "]" );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has the lowest rating [" + std::to_string( score ) + "]" );
 
 				potential->Send( m_Protocol->SEND_W3GS_REJECTJOIN( REJECTJOIN_FULL ) );
 				potential->SetDeleteMe( true );
@@ -2548,7 +2548,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 			if( LowestPlayer->GetScore( ) < -99999.0 )
 				LowestPlayer->SetLeftReason( m_GHost->m_Language->WasKickedForHavingLowestScore( "N/A" ) );
 			else
-				LowestPlayer->SetLeftReason( m_GHost->m_Language->WasKickedForHavingLowestScore( UTIL_ToString( LowestPlayer->GetScore( ), 2 ) ) );
+				LowestPlayer->SetLeftReason( m_GHost->m_Language->WasKickedForHavingLowestScore( std::to_string( LowestPlayer->GetScore( )) ) );
 
 			LowestPlayer->SetLeftCode( PLAYERLEAVE_LOBBY );
 
@@ -2561,7 +2561,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 			if( LowestPlayer->GetScore( ) < -99999.0 )
 				SendAllChat( m_GHost->m_Language->PlayerWasKickedForLowestScore( LowestPlayer->GetName( ), "N/A" ) );
 			else
-				SendAllChat( m_GHost->m_Language->PlayerWasKickedForLowestScore( LowestPlayer->GetName( ), UTIL_ToString( LowestPlayer->GetScore( ), 2 ) ) );
+				SendAllChat( m_GHost->m_Language->PlayerWasKickedForLowestScore( LowestPlayer->GetName( ), std::to_string( LowestPlayer->GetScore( )) ) );
 		}
 	}
 
@@ -2617,7 +2617,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	// we also have to be careful to not modify the m_Potentials vector since we're currently looping through it
 	m_LastConnectedUserTime = GetTime();
 	auto realm = JoinedRealm.empty()? "Narnia":(JoinedRealm.find("127.0.0") != std::string::npos)?"ICCup":JoinedRealm;
-	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+UTIL_ToString(m_Players.size())+" players from Realm: "+realm);
+	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] joined the game with "+std::to_string(m_Players.size())+" players from Realm: "+realm);
 	auto country = m_GHost->m_DBLocal->FromCheck(UTIL_ByteArrayToUInt32(potential->GetExternalIP(), true));
 	country = country == "??"?"N\\A":country;
 	CGamePlayer *Player = new CGamePlayer( potential, GetNewPID( ), JoinedRealm, joinPlayer->GetName( ), joinPlayer->GetInternalIP( ), false, country );
@@ -2711,7 +2711,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	if( score < -99999.0 )
 		SendAllChat( m_GHost->m_Language->PlayerHasScore( joinPlayer->GetName( ), "N/A" ) );
 	else
-		SendAllChat( m_GHost->m_Language->PlayerHasScore( joinPlayer->GetName( ), UTIL_ToString( score, 2 ) ) );
+		SendAllChat( m_GHost->m_Language->PlayerHasScore( joinPlayer->GetName( ), std::to_string( score ) ) );
 
 	uint32_t PlayersScored = 0;
 	uint32_t PlayersNotScored = 0;
@@ -2743,7 +2743,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	}
 
 	double Spread = MaxScore - MinScore;
-	SendAllChat( m_GHost->m_Language->RatedPlayersSpread( UTIL_ToString( PlayersScored ), UTIL_ToString( PlayersScored + PlayersNotScored ), UTIL_ToString( (uint32_t)Spread ) ) );
+	SendAllChat( m_GHost->m_Language->RatedPlayersSpread( std::to_string( PlayersScored ), std::to_string( PlayersScored + PlayersNotScored ), std::to_string( (uint32_t)Spread ) ) );
 
 	// check for multiple IP usage
 
@@ -2809,7 +2809,7 @@ void CBaseGame :: EventPlayerLeft( CGamePlayer *player, uint32_t reason )
 
 void CBaseGame :: EventPlayerLoaded( CGamePlayer *player )
 {
-	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + player->GetName( ) + "] finished loading in " + UTIL_ToString( (float)( player->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000, 2 ) + " seconds" );
+	CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + player->GetName( ) + "] finished loading in " + std::to_string( (float)( player->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000 ) + " seconds" );
 
 	if( m_LoadInGame )
 	{
@@ -2975,7 +2975,7 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 					}
 				}
 
-				SendAllChat( m_GHost->m_Language->PlayersInGameState( UTIL_ToString( StateNumber ), Players ) );
+				SendAllChat( m_GHost->m_Language->PlayersInGameState( std::to_string( StateNumber ), Players ) );
 				++StateNumber;
 			}
 
@@ -3053,8 +3053,8 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 
 			// calculate timestamp
 
-			std::string MinString = UTIL_ToString( ( m_GameTicks / 1000 ) / 60 );
-			std::string SecString = UTIL_ToString( ( m_GameTicks / 1000 ) % 60 );
+			std::string MinString = std::to_string( ( m_GameTicks / 1000 ) / 60 );
+			std::string SecString = std::to_string( ( m_GameTicks / 1000 ) % 60 );
 
 			if( MinString.size( ) == 1 )
 				MinString.insert( 0, "0" );
@@ -3070,7 +3070,7 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 				{
 					// this is an ingame [All] message, print it to the console
 
-					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [All] [ LC Ping:"+UTIL_ToString (player->GetPing(1))+" ] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [All] [ LC Ping:"+std::to_string (player->GetPing(1))+" ] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
 
 					// don't relay ingame messages targeted for all players if we're currently muting all
 					// note that commands will still be processed even when muting all because we only stop relaying the messages, the rest of the function is unaffected
@@ -3083,12 +3083,12 @@ void CBaseGame :: EventPlayerChatToHost( CGamePlayer *player, CIncomingChatPlaye
 				{
 					// this is an ingame [Obs/Ref] message, print it to the console
 
-					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [Obs/Ref] [ LC Ping:"+UTIL_ToString (player->GetPing(1))+" ] [" +  player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [Obs/Ref] [ LC Ping:"+std::to_string (player->GetPing(1))+" ] [" +  player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
 				
 				}
 				else
 				{
-					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [GameChat] [ LC Ping:"+UTIL_ToString (player->GetPing(1))+" ] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] (" + MinString + ":" + SecString + ") [GameChat] [ LC Ping:"+std::to_string (player->GetPing(1))+" ] [" + player->GetName( ) + "]: " + chatPlayer->GetMessage( ) );
 				}
 				
 
@@ -3390,8 +3390,8 @@ void CBaseGame :: EventPlayerMapSize( CGamePlayer *player, CIncomingMapSize *map
 
 			float Seconds = (float)( GetTicks( ) - player->GetStartedDownloadingTicks( ) ) / 1000;
 			float Rate = (float)MapSize / 1024 / Seconds;
-			CONSOLE_Print( "[GAME: " + m_GameName + "] map download finished for player [" + player->GetName( ) + "] in " + UTIL_ToString( Seconds, 1 ) + " seconds" );
-			SendAllChat( m_GHost->m_Language->PlayerDownloadedTheMap( player->GetName( ), UTIL_ToString( Seconds, 1 ), UTIL_ToString( Rate, 1 ) ) );
+			CONSOLE_Print( "[GAME: " + m_GameName + "] map download finished for player [" + player->GetName( ) + "] in " + std::to_string( Seconds ) + " seconds" );
+			SendAllChat( m_GHost->m_Language->PlayerDownloadedTheMap( player->GetName( ), std::to_string( Seconds ), std::to_string( Rate ) ) );
 			player->SetDownloadFinished( true );
 			player->SetFinishedDownloadingTime( GetTime( ) );
 
@@ -3435,9 +3435,9 @@ void CBaseGame :: EventPlayerPongToHost( CGamePlayer *player, uint32_t pong )
 	{
 		// send a chat message because we don't normally do so when a player leaves the lobby
 
-		SendAllChat( m_GHost->m_Language->AutokickingPlayerForExcessivePing( player->GetName( ), UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) ) );
+		SendAllChat( m_GHost->m_Language->AutokickingPlayerForExcessivePing( player->GetName( ), std::to_string( player->GetPing( m_GHost->m_LCPings ) ) ) );
 		player->SetDeleteMe( true );
-		player->SetLeftReason( "was autokicked for excessive ping of " + UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) );
+		player->SetLeftReason( "was autokicked for excessive ping of " + std::to_string( player->GetPing( m_GHost->m_LCPings ) ) );
 		player->SetLeftCode( PLAYERLEAVE_LOBBY );
 		OpenSlot( GetSIDFromPID( player->GetPID( ) ), false );
 	}
@@ -3461,8 +3461,8 @@ void CBaseGame :: EventGameStarted( )
 	for(auto mBnet : m_GHost->m_BNETs){
 		mBnet->QueueEnterChat();
 	}
-	CONSOLE_Print("Judges in a game = "+ UTIL_ToString(GetNumJudgePlayers()));
-	CONSOLE_Print( "[GAME: " + m_GameName + "] started loading with " + UTIL_ToString( GetNumHumanPlayers( ) ) + " players" );
+	CONSOLE_Print("Judges in a game = "+ std::to_string(GetNumJudgePlayers()));
+	CONSOLE_Print( "[GAME: " + m_GameName + "] started loading with " + std::to_string( GetNumHumanPlayers( ) ) + " players" );
 
 	// encode the HCL command string in the slot handicaps
 	// here's how it works:
@@ -3664,7 +3664,7 @@ void CBaseGame :: EventGameStarted( )
 
 void CBaseGame :: EventGameLoaded( )
 {
-	CONSOLE_Print( "[GAME: " + m_GameName + "] finished loading with " + UTIL_ToString( GetNumHumanPlayers( ) ) + " players" );
+	CONSOLE_Print( "[GAME: " + m_GameName + "] finished loading with " + std::to_string( GetNumHumanPlayers( ) ) + " players" );
 
 	// send shortest, longest, and personal load times to each player
 
@@ -3682,12 +3682,12 @@ void CBaseGame :: EventGameLoaded( )
 
 	if( Shortest && Longest )
 	{
-		SendAllChat( m_GHost->m_Language->ShortestLoadByPlayer( Shortest->GetName( ), UTIL_ToString( (float)( Shortest->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000, 2 ) ) );
-		SendAllChat( m_GHost->m_Language->LongestLoadByPlayer( Longest->GetName( ), UTIL_ToString( (float)( Longest->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000, 2 ) ) );
+		SendAllChat( m_GHost->m_Language->ShortestLoadByPlayer( Shortest->GetName( ), std::to_string( (float)( Shortest->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000) ) );
+		SendAllChat( m_GHost->m_Language->LongestLoadByPlayer( Longest->GetName( ), std::to_string( (float)( Longest->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000 ) ) );
 	}
 
 	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		SendChat( *i, m_GHost->m_Language->YourLoadingTimeWas( UTIL_ToString( (float)( (*i)->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000, 2 ) ) );
+		SendChat( *i, m_GHost->m_Language->YourLoadingTimeWas( std::to_string( (float)( (*i)->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000 ) ) );
 
 	// read from gameloaded.txt if available
 
@@ -4479,7 +4479,7 @@ void CBaseGame :: BalanceSlots( )
 		// the cost is too high, don't run the algorithm
 		// a possible alternative: stop after enough iterations and/or time has passed
 
-		CONSOLE_Print( "[GAME: " + m_GameName + "] shuffling slots instead of balancing - the algorithm is too slow (with a cost of " + UTIL_ToString( AlgorithmCost ) + ") for this team configuration" );
+		CONSOLE_Print( "[GAME: " + m_GameName + "] shuffling slots instead of balancing - the algorithm is too slow (with a cost of " + std::to_string( AlgorithmCost ) + ") for this team configuration" );
 		SendAllChat( m_GHost->m_Language->ShufflingPlayers( ) );
 		ShuffleSlots( );
 		return;
@@ -4528,7 +4528,7 @@ void CBaseGame :: BalanceSlots( )
 		}
 	}
 
-	CONSOLE_Print( "[GAME: " + m_GameName + "] balancing slots completed in " + UTIL_ToString( EndTicks - StartTicks ) + "ms (with a cost of " + UTIL_ToString( AlgorithmCost ) + ")" );
+	CONSOLE_Print( "[GAME: " + m_GameName + "] balancing slots completed in " + std::to_string( EndTicks - StartTicks ) + "ms (with a cost of " + std::to_string( AlgorithmCost ) + ")" );
 	SendAllChat( m_GHost->m_Language->BalancingSlotsCompleted( ) );
 	SendAllSlotInfo( );
 
@@ -4554,7 +4554,7 @@ void CBaseGame :: BalanceSlots( )
 		}
 
 		if( TeamHasPlayers )
-			SendAllChat( m_GHost->m_Language->TeamCombinedScore( UTIL_ToString( i + 1 ), UTIL_ToString( TeamScore, 2 ) ) );
+			SendAllChat( m_GHost->m_Language->TeamCombinedScore( std::to_string( i + 1 ), std::to_string( TeamScore ) ) );
 	}
 }
 
@@ -4644,13 +4644,13 @@ void CBaseGame :: SaveGameData( )
 void CBaseGame::StartVoteMode(){
 	m_VoteModeStarted = 1;
 	auto SupportedModesCount = m_Map->GetMapSupportedModes().size();
-	SendAllChat("There are "+UTIL_ToString(SupportedModesCount)+" supported modes");
+	SendAllChat("There are "+std::to_string(SupportedModesCount)+" supported modes");
 	auto i = 1;
 	for (auto mode:m_Map->GetMapSupportedModes()){
-		SendAllChat(UTIL_ToString(i) + ". " + mode);
+		SendAllChat(std::to_string(i) + ". " + mode);
 		i++;
 	} 
-	SendAllChat("Please select map mode to vote [1-" + UTIL_ToString(SupportedModesCount)+"]");
+	SendAllChat("Please select map mode to vote [1-" + std::to_string(SupportedModesCount)+"]");
 	
     
 }
@@ -4763,7 +4763,7 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 		// check if enough players are present
 		if( GetNumHumanPlayers( ) < m_AutoStartPlayers + GetNumJudgePlayers())
 		{
-//			SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( UTIL_ToString( m_AutoStartPlayers ), UTIL_ToString( m_AutoStartPlayers - GetNumHumanPlayers( ) ) ) );
+//			SendAllChat( m_GHost->m_Language->WaitingForPlayersBeforeAutoStart( std::to_string( m_AutoStartPlayers ), std::to_string( m_AutoStartPlayers - GetNumHumanPlayers( ) ) ) );
 			return;
 		}
 		if ( m_EvenPlayersStartup ){

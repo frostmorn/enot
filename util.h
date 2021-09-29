@@ -45,14 +45,6 @@ BYTEARRAY UTIL_ExtractHexNumbers( std::string s );
 
 // conversions
 
-std::string UTIL_ToString( unsigned long i );
-std::string UTIL_ToString( unsigned short i );
-std::string UTIL_ToString( unsigned int i );
-std::string UTIL_ToString( long i );
-std::string UTIL_ToString( short i );
-std::string UTIL_ToString( int i );
-std::string UTIL_ToString( float f, int digits );
-std::string UTIL_ToString( double d, int digits );
 std::string UTIL_ToHexString( uint32_t i );
 uint16_t UTIL_ToUInt16( std::string &s );
 uint32_t UTIL_ToUInt32( std::string &s );

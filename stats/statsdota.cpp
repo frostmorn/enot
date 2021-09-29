@@ -90,7 +90,7 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 						std::string KeyString = std::string( Key.begin( ), Key.end( ) );
 						uint32_t ValueInt = UTIL_ByteArrayToUInt32( Value, false );
 
-						// CONSOLE_Print( "[STATS] " + DataString + ", " + KeyString + ", " + UTIL_ToString( ValueInt ) );
+						// CONSOLE_Print( "[STATS] " + DataString + ", " + KeyString + ", " + std::to_string( ValueInt ) );
 
 						if( DataString == "Data" )
 						{
@@ -246,13 +246,13 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 							{
 								// the frozen throne got hurt
 
-								CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Frozen Throne is now at " + UTIL_ToString( ValueInt ) + "% HP" );
+								CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the Frozen Throne is now at " + std::to_string( ValueInt ) + "% HP" );
 							}
 							else if( KeyString.size( ) >= 4 && KeyString.substr( 0, 4 ) == "Tree" )
 							{
 								// the world tree got hurt
 
-								CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the World Tree is now at " + UTIL_ToString( ValueInt ) + "% HP" );
+								CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] the World Tree is now at " + std::to_string( ValueInt ) + "% HP" );
 							}
 							else if( KeyString.size( ) >= 2 && KeyString.substr( 0, 2 ) == "CK" )
 							{
@@ -275,7 +275,7 @@ bool CStatsDOTA :: ProcessAction( CIncomingAction *Action )
 								else if( m_Winner == 2 )
 									CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] detected winner: Scourge" );
 								else
-									CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] detected winner: " + UTIL_ToString( ValueInt ) );
+									CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] detected winner: " + std::to_string( ValueInt ) );
 							}
 							else if( KeyString == "m" )
 								m_Min = ValueInt;
@@ -425,7 +425,7 @@ void CStatsDOTA :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 		}
 
 		if( DB->Commit( ) )
-			CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] saving " + UTIL_ToString( Players ) + " players" );
+			CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] saving " + std::to_string( Players ) + " players" );
 		else
 			CONSOLE_Print( "[STATSDOTA: " + m_Game->GetGameName( ) + "] unable to commit database transaction, data not saved" );
 	}

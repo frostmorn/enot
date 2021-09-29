@@ -139,7 +139,7 @@ uint32_t GetTicks( )
 }
 void SignalCatcher2( int s )
 {
-	CONSOLE_Print( "[!!!] caught signal " + UTIL_ToString( s ) + ", exiting NOW" );
+	CONSOLE_Print( "[!!!] caught signal " + std::to_string( s ) + ", exiting NOW" );
 
 	if( gGHost )
 	{
@@ -157,7 +157,7 @@ void SignalCatcher( int s )
 	// signal( SIGABRT, SignalCatcher2 );
 	signal( SIGINT, SignalCatcher2 );
 
-	CONSOLE_Print( "[!!!] caught signal " + UTIL_ToString( s ) + ", exiting nicely" );
+	CONSOLE_Print( "[!!!] caught signal " + std::to_string( s ) + ", exiting nicely" );
 
 	if( gGHost )
 		gGHost->m_ExitingNice = true;
@@ -306,7 +306,7 @@ int main( int argc, char **argv )
 			break;
 		}
 		else if( i < 5 )
-			CONSOLE_Print( "[GHOST] error setting Windows timer resolution to " + UTIL_ToString( i ) + " milliseconds, trying a higher resolution" );
+			CONSOLE_Print( "[GHOST] error setting Windows timer resolution to " + std::to_string( i ) + " milliseconds, trying a higher resolution" );
 		else
 		{
 			CONSOLE_Print( "[GHOST] error setting Windows timer resolution" );
@@ -314,7 +314,7 @@ int main( int argc, char **argv )
 		}
 	}
 
-	CONSOLE_Print( "[GHOST] using Windows timer with resolution " + UTIL_ToString( TimerResolution ) + " milliseconds" );
+	CONSOLE_Print( "[GHOST] using Windows timer with resolution " + std::to_string( TimerResolution ) + " milliseconds" );
 #elif __APPLE__
 	// not sure how to get the resolution
 #else
@@ -325,7 +325,7 @@ int main( int argc, char **argv )
 	if( clock_getres( CLOCK_MONOTONIC, &Resolution ) == -1 )
 		CONSOLE_Print( "[GHOST] error getting monotonic timer resolution" );
 	else
-		CONSOLE_Print( "[GHOST] using monotonic timer with resolution " + UTIL_ToString( (double)( Resolution.tv_nsec / 1000 ), 2 ) + " microseconds" );
+		CONSOLE_Print( "[GHOST] using monotonic timer with resolution " + std::to_string( (double)( Resolution.tv_nsec / 1000 ) ) + " microseconds" );
 #endif
 
 #ifdef WIN32
@@ -436,14 +436,14 @@ CGHost :: CGHost( CConfig *CFG )
 	SOCKET sd = WSASocket( AF_INET, SOCK_DGRAM, 0, 0, 0, 0 );
 
 	if( sd == SOCKET_ERROR )
-		CONSOLE_Print( "[GHOST] error finding local IP addresses - failed to create socket (error code " + UTIL_ToString( WSAGetLastError( ) ) + ")" );
+		CONSOLE_Print( "[GHOST] error finding local IP addresses - failed to create socket (error code " + std::to_string( WSAGetLastError( ) ) + ")" );
 	else
 	{
 		INTERFACE_INFO InterfaceList[20];
 		unsigned long nBytesReturned;
 
 		if( WSAIoctl( sd, SIO_GET_INTERFACE_LIST, 0, 0, &InterfaceList, sizeof(InterfaceList), &nBytesReturned, 0, 0 ) == SOCKET_ERROR )
-			CONSOLE_Print( "[GHOST] error finding local IP addresses - WSAIoctl failed (error code " + UTIL_ToString( WSAGetLastError( ) ) + ")" );
+			CONSOLE_Print( "[GHOST] error finding local IP addresses - WSAIoctl failed (error code " + std::to_string( WSAGetLastError( ) ) + ")" );
 		else
 		{
 			int nNumInterfaces = nBytesReturned / sizeof(INTERFACE_INFO);
@@ -452,7 +452,7 @@ CGHost :: CGHost( CConfig *CFG )
 			{
 				sockaddr_in *pAddress;
 				pAddress = (sockaddr_in *)&(InterfaceList[i].iiAddress);
-				CONSOLE_Print( "[GHOST] local IP address #" + UTIL_ToString( i + 1 ) + " is [" + std::string( inet_ntoa( pAddress->sin_addr ) ) + "]" );
+				CONSOLE_Print( "[GHOST] local IP address #" + std::to_string( i + 1 ) + " is [" + std::string( inet_ntoa( pAddress->sin_addr ) ) + "]" );
 				m_LocalAddresses.push_back( UTIL_CreateByteArray( (uint32_t)pAddress->sin_addr.s_addr, false ) );
 			}
 		}
@@ -479,7 +479,7 @@ CGHost :: CGHost( CConfig *CFG )
 			{
 				struct in_addr Address;
 				memcpy( &Address, HostEnt->h_addr_list[i], sizeof(struct in_addr) );
-				CONSOLE_Print( "[GHOST] local IP address #" + UTIL_ToString( i + 1 ) + " is [" + std::string( inet_ntoa( Address ) ) + "]" );
+				CONSOLE_Print( "[GHOST] local IP address #" + std::to_string( i + 1 ) + " is [" + std::string( inet_ntoa( Address ) ) + "]" );
 				m_LocalAddresses.push_back( UTIL_CreateByteArray( (uint32_t)Address.s_addr, false ) );
 			}
 		}
@@ -533,7 +533,7 @@ CGHost :: CGHost( CConfig *CFG )
 		if( i == 1 )
 			Prefix = "bnet_";
 		else
-			Prefix = "bnet" + UTIL_ToString( i ) + "_";
+			Prefix = "bnet" + std::to_string( i ) + "_";
 
 		std::string Server = CFG->GetString( Prefix + "server", std::string( ) );
 		std::string ServerAlias = CFG->GetString( Prefix + "serveralias", std::string( ) );
@@ -606,12 +606,12 @@ CGHost :: CGHost( CConfig *CFG )
 			continue;
 		}
 
-		CONSOLE_Print( "[GHOST] found battle.net connection #" + UTIL_ToString( i ) + " for server [" + Server + "]" );
+		CONSOLE_Print( "[GHOST] found battle.net connection #" + std::to_string( i ) + " for server [" + Server + "]" );
 
 		if( Locale == "system" )
 		{
 #ifdef WIN32
-			CONSOLE_Print( "[GHOST] using system locale of " + UTIL_ToString( LocaleID ) );
+			CONSOLE_Print( "[GHOST] using system locale of " + std::to_string( LocaleID ) );
 #else
 			CONSOLE_Print( "[GHOST] unable to get system locale, using default locale of 1033" );
 #endif
@@ -735,7 +735,7 @@ CGHost :: ~CGHost( )
 	// but if you try to recreate the CGHost object within a single session you will probably leak resources!
 
 	if( !m_Callables.empty( ) )
-		CONSOLE_Print( "[GHOST] warning - " + UTIL_ToString( m_Callables.size( ) ) + " orphaned callables were leaked (this is not an error)" );
+		CONSOLE_Print( "[GHOST] warning - " + std::to_string( m_Callables.size( ) ) + " orphaned callables were leaked (this is not an error)" );
 
 	delete m_Language;
 	delete m_Map;
@@ -829,7 +829,7 @@ bool CGHost :: Update( long usecBlock )
 			if( !m_AllGamesFinished )
 			{
 				CONSOLE_Print( "[GHOST] all games finished, waiting 60 seconds for threads to finish" );
-				CONSOLE_Print( "[GHOST] there are " + UTIL_ToString( m_Callables.size( ) ) + " threads in progress" );
+				CONSOLE_Print( "[GHOST] there are " + std::to_string( m_Callables.size( ) ) + " threads in progress" );
 				m_AllGamesFinished = true;
 				m_AllGamesFinishedTime = GetTime( );
 			}
@@ -843,7 +843,7 @@ bool CGHost :: Update( long usecBlock )
 				else if( GetTime( ) - m_AllGamesFinishedTime >= 60 )
 				{
 					CONSOLE_Print( "[GHOST] waited 60 seconds for threads to finish, exiting anyway" );
-					CONSOLE_Print( "[GHOST] there are " + UTIL_ToString( m_Callables.size( ) ) + " threads still in progress which will be terminated" );
+					CONSOLE_Print( "[GHOST] there are " + std::to_string( m_Callables.size( ) ) + " threads still in progress which will be terminated" );
 					m_Exiting = true;
 				}
 			}
@@ -876,10 +876,10 @@ bool CGHost :: Update( long usecBlock )
 			m_ReconnectSocket = new CTCPServer( );
 
 			if( m_ReconnectSocket->Listen( m_BindAddress, m_ReconnectPort ) )
-				CONSOLE_Print( "[GHOST] listening for GProxy++ reconnects on port " + UTIL_ToString( m_ReconnectPort ) );
+				CONSOLE_Print( "[GHOST] listening for GProxy++ reconnects on port " + std::to_string( m_ReconnectPort ) );
 			else
 			{
-				CONSOLE_Print( "[GHOST] error listening for GProxy++ reconnects on port " + UTIL_ToString( m_ReconnectPort ) );
+				CONSOLE_Print( "[GHOST] error listening for GProxy++ reconnects on port " + std::to_string( m_ReconnectPort ) );
 				delete m_ReconnectSocket;
 				m_ReconnectSocket = NULL;
 				m_Reconnect = false;
@@ -1434,7 +1434,7 @@ void CGHost :: ExtractScripts( )
 		SFileCloseArchive( PatchMPQ );
 	}
 	else
-		CONSOLE_Print( "[GHOST] warning - unable to load MPQ file [" + PatchMPQFileName + "] - error code " + UTIL_ToString( GetLastErrorG( ) ) );
+		CONSOLE_Print( "[GHOST] warning - unable to load MPQ file [" + PatchMPQFileName + "] - error code " + std::to_string( GetLastErrorG( ) ) );
 }
 
 void CGHost :: LoadIPToCountryData( )
@@ -1490,7 +1490,7 @@ void CGHost :: LoadIPToCountryData( )
 				if( NewPercent != Percent && NewPercent % 10 == 0 )
 				{
 					Percent = NewPercent;
-					CONSOLE_Print( "[GHOST] iptocountry data: " + UTIL_ToString( Percent ) + "% loaded" );
+					CONSOLE_Print( "[GHOST] iptocountry data: " + std::to_string( Percent ) + "% loaded" );
 				}
 			}
 
@@ -1663,11 +1663,11 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 		for( std::vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
 		{
 			if( (*i)->GetServer( ) == creatorServer )
-				(*i)->QueueChatCommand( m_Language->UnableToCreateGameMaxGamesReached( gameName, UTIL_ToString( m_MaxGames ) ), creatorName, whisper );
+				(*i)->QueueChatCommand( m_Language->UnableToCreateGameMaxGamesReached( gameName, std::to_string( m_MaxGames ) ), creatorName, whisper );
 		}
 
 		if( m_AdminGame )
-			m_AdminGame->SendAllChat( m_Language->UnableToCreateGameMaxGamesReached( gameName, UTIL_ToString( m_MaxGames ) ) );
+			m_AdminGame->SendAllChat( m_Language->UnableToCreateGameMaxGamesReached( gameName, std::to_string( m_MaxGames ) ) );
 
 		return;
 	}

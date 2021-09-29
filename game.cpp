@@ -216,13 +216,13 @@ bool CGame :: Update( void *fd, void *send_fd )
 			if( GamePlayerSummary )
 			{
 				if( i->first.empty( ) )
-					SendAllChat( m_GHost->m_Language->HasPlayedGamesWithThisBot( i->second->GetName( ), GamePlayerSummary->GetFirstGameDateTime( ), GamePlayerSummary->GetLastGameDateTime( ), UTIL_ToString( GamePlayerSummary->GetTotalGames( ) ), UTIL_ToString( (float)GamePlayerSummary->GetAvgLoadingTime( ) / 1000, 2 ), UTIL_ToString( GamePlayerSummary->GetAvgLeftPercent( ) ) ) );
+					SendAllChat( m_GHost->m_Language->HasPlayedGamesWithThisBot( i->second->GetName( ), GamePlayerSummary->GetFirstGameDateTime( ), GamePlayerSummary->GetLastGameDateTime( ), std::to_string( GamePlayerSummary->GetTotalGames( ) ), std::to_string( (float)GamePlayerSummary->GetAvgLoadingTime( ) / 1000), std::to_string( GamePlayerSummary->GetAvgLeftPercent( ) ) ) );
 				else
 				{
 					CGamePlayer *Player = GetPlayerFromName( i->first, true );
 
 					if( Player )
-						SendChat( Player, m_GHost->m_Language->HasPlayedGamesWithThisBot( i->second->GetName( ), GamePlayerSummary->GetFirstGameDateTime( ), GamePlayerSummary->GetLastGameDateTime( ), UTIL_ToString( GamePlayerSummary->GetTotalGames( ) ), UTIL_ToString( (float)GamePlayerSummary->GetAvgLoadingTime( ) / 1000, 2 ), UTIL_ToString( GamePlayerSummary->GetAvgLeftPercent( ) ) ) );
+						SendChat( Player, m_GHost->m_Language->HasPlayedGamesWithThisBot( i->second->GetName( ), GamePlayerSummary->GetFirstGameDateTime( ), GamePlayerSummary->GetLastGameDateTime( ), std::to_string( GamePlayerSummary->GetTotalGames( ) ), std::to_string( (float)GamePlayerSummary->GetAvgLoadingTime( ) / 1000), std::to_string( GamePlayerSummary->GetAvgLeftPercent( ) ) ) );
 				}
 			}
 			else
@@ -255,27 +255,27 @@ bool CGame :: Update( void *fd, void *send_fd )
 			if( DotAPlayerSummary )
 			{
 				std::string Summary = m_GHost->m_Language->HasPlayedDotAGamesWithThisBot(	i->second->GetName( ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalGames( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalWins( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalLosses( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalDeaths( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalCreepKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalCreepDenies( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalAssists( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalNeutralKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalTowerKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalRaxKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetTotalCourierKills( ) ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgDeaths( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgCreepKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgCreepDenies( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgAssists( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgNeutralKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgTowerKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgRaxKills( ), 2 ),
-					UTIL_ToString( DotAPlayerSummary->GetAvgCourierKills( ), 2 ) );
+					std::to_string( DotAPlayerSummary->GetTotalGames( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalWins( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalLosses( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalDeaths( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalCreepKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalCreepDenies( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalAssists( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalNeutralKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalTowerKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalRaxKills( ) ),
+					std::to_string( DotAPlayerSummary->GetTotalCourierKills( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgKills( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgDeaths( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgCreepKills( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgCreepDenies( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgAssists( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgNeutralKills( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgTowerKills( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgRaxKills( ) ),
+					std::to_string( DotAPlayerSummary->GetAvgCourierKills( ) ) );
 
 				if( i->first.empty( ) )
 					SendAllChat( Summary );
@@ -316,17 +316,17 @@ bool CGame :: Update( void *fd, void *send_fd )
 			if( LiAPlayerSummary )
 			{
 				std::string Summary = m_GHost->m_Language->HasPlayedLiAGamesWithThisBot(	i->second->GetName( ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalGames( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalWins( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalLosses( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalDeaths( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalPTS( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalCreepKills( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetTotalBossKills( ) ),
-					UTIL_ToString( LiAPlayerSummary->GetAvgDeaths( ), 2 ),
-					UTIL_ToString( LiAPlayerSummary->GetAvgCreepKills( ), 2 ),
-					UTIL_ToString( LiAPlayerSummary->GetAvgBossKills( ), 2 ),
-					UTIL_ToString( LiAPlayerSummary->GetAvgPTS( ), 2 ));
+					std::to_string( LiAPlayerSummary->GetTotalGames( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalWins( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalLosses( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalDeaths( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalPTS( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalCreepKills( ) ),
+					std::to_string( LiAPlayerSummary->GetTotalBossKills( ) ),
+					std::to_string( LiAPlayerSummary->GetAvgDeaths( )),
+					std::to_string( LiAPlayerSummary->GetAvgCreepKills( )),
+					std::to_string( LiAPlayerSummary->GetAvgBossKills( )),
+					std::to_string( LiAPlayerSummary->GetAvgPTS( )));
 
 				if( i->first.empty( ) )
 					SendAllChat( Summary );
@@ -627,7 +627,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 
 					if( AutoStartPlayers != 0 )
 					{
-						SendAllChat( m_GHost->m_Language->AutoStartEnabled( UTIL_ToString( AutoStartPlayers ) ) );
+						SendAllChat( m_GHost->m_Language->AutoStartEnabled( std::to_string( AutoStartPlayers ) ) );
 						m_AutoStartPlayers = AutoStartPlayers;
 					}
 				}
@@ -677,13 +677,13 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 							}
 						}
 
-						SendAllChat( m_GHost->m_Language->CheckedPlayer( LastMatch->GetName( ), LastMatch->GetNumPings( ) > 0 ? UTIL_ToString( LastMatch->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", LastMatch->GetCountry() , LastMatchAdminCheck || LastMatchRootAdminCheck ? "Yes" : "No", IsOwner( LastMatch->GetName( ) ) ? "Yes" : "No", LastMatch->GetSpoofed( ) ? "Yes" : "No", LastMatch->GetSpoofedRealm( ).empty( ) ? "N/A" : LastMatch->GetSpoofedRealm( ), LastMatch->GetReserved( ) ? "Yes" : "No" ) );
+						SendAllChat( m_GHost->m_Language->CheckedPlayer( LastMatch->GetName( ), LastMatch->GetNumPings( ) > 0 ? std::to_string( LastMatch->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", LastMatch->GetCountry() , LastMatchAdminCheck || LastMatchRootAdminCheck ? "Yes" : "No", IsOwner( LastMatch->GetName( ) ) ? "Yes" : "No", LastMatch->GetSpoofed( ) ? "Yes" : "No", LastMatch->GetSpoofedRealm( ).empty( ) ? "N/A" : LastMatch->GetSpoofedRealm( ), LastMatch->GetReserved( ) ? "Yes" : "No" ) );
 					}
 					else
 						SendAllChat( m_GHost->m_Language->UnableToCheckPlayerFoundMoreThanOneMatch( Payload ) );
 				}
 				else
-					SendAllChat( m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", player->GetCountry(), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
+					SendAllChat( m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? std::to_string( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", player->GetCountry(), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
 			}
 
 			//
@@ -1189,7 +1189,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 			else if( Command == "latency"  || Command == "l" )
 			{
 				if( Payload.empty( ) )
-					SendAllChat( m_GHost->m_Language->LatencyIs( UTIL_ToString( m_Latency ) ) );
+					SendAllChat( m_GHost->m_Language->LatencyIs( std::to_string( m_Latency ) ) );
 				else
 				{
 					m_Latency = UTIL_ToUInt32( Payload );
@@ -1205,7 +1205,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 						SendAllChat( m_GHost->m_Language->SettingLatencyToMaximum( "100" ) );
 					}
 					else
-						SendAllChat( m_GHost->m_Language->SettingLatencyTo( UTIL_ToString( m_Latency ) ) );
+						SendAllChat( m_GHost->m_Language->SettingLatencyTo( std::to_string( m_Latency ) ) );
 				}
 			}
 
@@ -1351,10 +1351,10 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 
 					if( Player->GetNumPings( ) > 0 )
 					{
-						Pings += UTIL_ToString( Player->GetPing( m_GHost->m_LCPings ) );
+						Pings += std::to_string( Player->GetPing( m_GHost->m_LCPings ) );
 
 						Pings += "ms Average => ";
-						Pings += UTIL_ToString( Player->GetAveragePing( m_GHost->m_LCPings ) );
+						Pings += std::to_string( Player->GetAveragePing( m_GHost->m_LCPings ) );
 						Pings += "ms ";
 					}
 					else
@@ -1616,7 +1616,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 			else if( Command == "synclimit" )
 			{
 				if( Payload.empty( ) )
-					SendAllChat( m_GHost->m_Language->SyncLimitIs( UTIL_ToString( m_SyncLimit ) ) );
+					SendAllChat( m_GHost->m_Language->SyncLimitIs( std::to_string( m_SyncLimit ) ) );
 				else
 				{
 					m_SyncLimit = UTIL_ToUInt32( Payload );
@@ -1632,7 +1632,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 						SendAllChat( m_GHost->m_Language->SettingSyncLimitToMaximum( "10000" ) );
 					}
 					else
-						SendAllChat( m_GHost->m_Language->SettingSyncLimitTo( UTIL_ToString( m_SyncLimit ) ) );
+						SendAllChat( m_GHost->m_Language->SettingSyncLimitTo( std::to_string( m_SyncLimit ) ) );
 				}
 			}
 
@@ -1752,7 +1752,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 	//
 
 	if( Command == "checkme" )
-		SendChat( player, m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", player->GetCountry(), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
+		SendChat( player, m_GHost->m_Language->CheckedPlayer( User, player->GetNumPings( ) > 0 ? std::to_string( player->GetPing( m_GHost->m_LCPings ) ) + "ms" : "N/A", player->GetCountry(), AdminCheck || RootAdminCheck ? "Yes" : "No", IsOwner( User ) ? "Yes" : "No", player->GetSpoofed( ) ? "Yes" : "No", player->GetSpoofedRealm( ).empty( ) ? "N/A" : player->GetSpoofedRealm( ), player->GetReserved( ) ? "Yes" : "No" ) );
 
 		
 	//
@@ -1832,10 +1832,10 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 		std::string Pings;
 		if( player->GetNumPings( ) > 0 )
 		{
-			Pings += UTIL_ToString( player->GetPing( m_GHost->m_LCPings ) );
+			Pings += std::to_string( player->GetPing( m_GHost->m_LCPings ) );
 
 			Pings += "ms Average => ";
-			Pings += UTIL_ToString( player->GetAveragePing( m_GHost->m_LCPings ) );
+			Pings += std::to_string( player->GetAveragePing( m_GHost->m_LCPings ) );
 			Pings += "ms ";
 		}
 		else
@@ -1950,7 +1950,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
             { //need >minplayers or admin to START a votestart
                 if (GetNumHumanPlayers() < m_GHost->m_VoteStartMinPlayers && !votestartAuth)
                 { //need at least eight players to votestart
-			SendChat( player, "Для голосования нужно → [" + UTIL_ToString(m_GHost->m_VoteStartMinPlayers) + "] или более игроков!" );
+			SendChat( player, "Для голосования нужно → [" + std::to_string(m_GHost->m_VoteStartMinPlayers) + "] или более игроков!" );
 			return HideCommand;
                 }
  
@@ -1987,7 +1987,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
             if( Votes < VotesNeeded )
             {
             //    std::string uname = m_NoName ? GetNoName( player->GetPID() ) : User;
-                SendAllChat("[ " + player->GetName( ) + " ]  Проголосовал " + UTIL_ToString( Votes )+"/"+ UTIL_ToString(VotesNeeded)+ " необходимо для начала, регистрировать голос " + std::string( 1, m_GHost->m_CommandTrigger )+"го или " + std::string( 1, m_GHost->m_CommandTrigger )+ "go.");
+                SendAllChat("[ " + player->GetName( ) + " ]  Проголосовал " + std::to_string( Votes )+"/"+ std::to_string(VotesNeeded)+ " необходимо для начала, регистрировать голос " + std::string( 1, m_GHost->m_CommandTrigger )+"го или " + std::string( 1, m_GHost->m_CommandTrigger )+ "go.");
             }
             else
             {
@@ -2042,7 +2042,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 
 					player->SetKickVote( true );
 					CONSOLE_Print( "[GAME: " + m_GameName + "] votekick against player [" + m_KickVotePlayer + "] started by player [" + User + "]" );
-					SendAllChat( m_GHost->m_Language->StartedVoteKick( LastMatch->GetName( ), User, UTIL_ToString( (uint32_t)ceil( ( GetNumHumanPlayers( ) - 1 ) * (float)m_GHost->m_VoteKickPercentage / 100 ) - 1 ) ) );
+					SendAllChat( m_GHost->m_Language->StartedVoteKick( LastMatch->GetName( ), User, std::to_string( (uint32_t)ceil( ( GetNumHumanPlayers( ) - 1 ) * (float)m_GHost->m_VoteKickPercentage / 100 ) - 1 ) ) );
 					SendAllChat( m_GHost->m_Language->TypeYesToVote( std::string( 1, m_GHost->m_CommandTrigger ) ) );
 				}
 			}
@@ -2084,7 +2084,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 				if( !m_GameLoading && !m_GameLoaded )
 					OpenSlot( GetSIDFromPID( Victim->GetPID( ) ), false );
 
-				CONSOLE_Print( "[GAME: " + m_GameName + "] votekick against player [" + m_KickVotePlayer + "] passed with " + UTIL_ToString( Votes ) + "/" + UTIL_ToString( GetNumHumanPlayers( ) ) + " votes" );
+				CONSOLE_Print( "[GAME: " + m_GameName + "] votekick against player [" + m_KickVotePlayer + "] passed with " + std::to_string( Votes ) + "/" + std::to_string( GetNumHumanPlayers( ) ) + " votes" );
 				SendAllChat( m_GHost->m_Language->VoteKickPassed( m_KickVotePlayer ) );
 			}
 			else
@@ -2094,7 +2094,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 			m_StartedKickVoteTime = 0;
 		}
 		else
-			SendAllChat( m_GHost->m_Language->VoteKickAcceptedNeedMoreVotes( m_KickVotePlayer, User, UTIL_ToString( VotesNeeded - Votes ) ) );
+			SendAllChat( m_GHost->m_Language->VoteKickAcceptedNeedMoreVotes( m_KickVotePlayer, User, std::to_string( VotesNeeded - Votes ) ) );
 	}
 
 	return HideCommand;

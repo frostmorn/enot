@@ -95,10 +95,10 @@ std::string UTIL_ByteArrayToDecString( BYTEARRAY b )
 	if( b.empty( ) )
 		return std::string( );
 
-	std::string result = UTIL_ToString( b[0] );
+	std::string result = std::to_string( b[0] );
 
 	for( BYTEARRAY :: iterator i = b.begin( ) + 1; i != b.end( ); ++i )
-		result += " " + UTIL_ToString( *i );
+		result += " " + std::to_string( *i );
 
 	return result;
 }
@@ -254,78 +254,6 @@ BYTEARRAY UTIL_ExtractHexNumbers( std::string s )
 	return result;
 }
 
-std::string UTIL_ToString( unsigned long i )
-{
-	std::string result;
-	std::stringstream SS;
-	SS << i;
-	SS >> result;
-	return result;
-}
-
-std::string UTIL_ToString( unsigned short i )
-{
-	std::string result;
-	std::stringstream SS;
-	SS << i;
-	SS >> result;
-	return result;
-}
-
-std::string UTIL_ToString( unsigned int i )
-{
-	std::string result;
-	std::stringstream SS;
-	SS << i;
-	SS >> result;
-	return result;
-}
-
-std::string UTIL_ToString( long i )
-{
-	std::string result;
-	std::stringstream SS;
-	SS << i;
-	SS >> result;
-	return result;
-}
-
-std::string UTIL_ToString( short i )
-{
-	std::string result;
-	std::stringstream SS;
-	SS << i;
-	SS >> result;
-	return result;
-}
-
-std::string UTIL_ToString( int i )
-{
-	std::string result;
-	std::stringstream SS;
-	SS << i;
-	SS >> result;
-	return result;
-}
-
-std::string UTIL_ToString( float f, int digits )
-{
-	std::string result;
-	std::stringstream SS;
-	SS << std :: fixed << std :: setprecision( digits ) << f;
-	SS >> result;
-	return result;
-}
-
-std::string UTIL_ToString( double d, int digits )
-{
-	std::string result;
-	std::stringstream SS;
-	SS << std :: fixed << std :: setprecision( digits ) << d;
-	SS >> result;
-	return result;
-}
-
 std::string UTIL_ToHexString( uint32_t i )
 {
 	std::string result;
@@ -384,8 +312,8 @@ double UTIL_ToDouble( std::string &s )
 
 std::string UTIL_MSToString( uint32_t ms )
 {
-	std::string MinString = UTIL_ToString( ( ms / 1000 ) / 60 );
-	std::string SecString = UTIL_ToString( ( ms / 1000 ) % 60 );
+	std::string MinString = std::to_string( ( ms / 1000 ) / 60 );
+	std::string SecString = std::to_string( ( ms / 1000 ) % 60 );
 
 	if( MinString.size( ) == 1 )
 		MinString.insert( 0, "0" );

@@ -570,7 +570,7 @@ void CReplay :: ParseReplay( bool parseBlocks )
 	}
 
 	if( m_ReplayLength != ActualReplayLength )
-		CONSOLE_Print( "[REPLAY] warning - replay length mismatch (" + UTIL_ToString( m_ReplayLength ) + "ms/" + UTIL_ToString( ActualReplayLength ) + "ms)" );
+		CONSOLE_Print( "[REPLAY] warning - replay length mismatch (" + std::to_string( m_ReplayLength ) + "ms/" + std::to_string( ActualReplayLength ) + "ms)" );
 
 	m_Valid = true;
 }

@@ -76,7 +76,7 @@ bool CStatsW3MMD :: ProcessAction( CIncomingAction *Action )
 						std::string KeyString = std::string( Key.begin( ), Key.end( ) );
 						uint32_t ValueInt = UTIL_ByteArrayToUInt32( Value, false );
 
-						// CONSOLE_Print( "[STATSW3MMD] DEBUG: mkey [" + MissionKeyString + "], key [" + KeyString + "], value [" + UTIL_ToString( ValueInt ) + "]" );
+						// CONSOLE_Print( "[STATSW3MMD] DEBUG: mkey [" + MissionKeyString + "], key [" + KeyString + "], value [" + std::to_string( ValueInt ) + "]" );
 
 						if( MissionKeyString.size( ) > 4 && MissionKeyString.substr( 0, 4 ) == "val:" )
 						{
@@ -268,7 +268,7 @@ bool CStatsW3MMD :: ProcessAction( CIncomingAction *Action )
 											std::string Format = DefEvent[DefEvent.size( ) - 1];
 
 											if( Tokens.size( ) - 2 != DefEvent.size( ) - 1 )
-												CONSOLE_Print( "[STATSW3MMD: " + m_Game->GetGameName( ) + "] Event [" + KeyString + "] found with " + UTIL_ToString( Tokens.size( ) - 2 ) + " arguments but expected " + UTIL_ToString( DefEvent.size( ) - 1 ) + " arguments, ignoring" );
+												CONSOLE_Print( "[STATSW3MMD: " + m_Game->GetGameName( ) + "] Event [" + KeyString + "] found with " + std::to_string( Tokens.size( ) - 2 ) + " arguments but expected " + std::to_string( DefEvent.size( ) - 1 ) + " arguments, ignoring" );
 											else
 											{
 												// replace the markers in the format std::string with the arguments
@@ -284,12 +284,12 @@ bool CStatsW3MMD :: ProcessAction( CIncomingAction *Action )
 														uint32_t PID = UTIL_ToUInt32( Tokens[i + 2] );
 
 														if( m_PIDToName.find( PID ) == m_PIDToName.end( ) )
-															UTIL_Replace( Format, "{" + UTIL_ToString( i ) + "}", "PID:" + Tokens[i + 2] );
+															UTIL_Replace( Format, "{" + std::to_string( i ) + "}", "PID:" + Tokens[i + 2] );
 														else
-															UTIL_Replace( Format, "{" + UTIL_ToString( i ) + "}", m_PIDToName[PID] );
+															UTIL_Replace( Format, "{" + std::to_string( i ) + "}", m_PIDToName[PID] );
 													}
 													else
-														UTIL_Replace( Format, "{" + UTIL_ToString( i ) + "}", Tokens[i + 2] );
+														UTIL_Replace( Format, "{" + std::to_string( i ) + "}", Tokens[i + 2] );
 												}
 
 												CONSOLE_Print( "[STATSW3MMD: " + m_Game->GetGameName( ) + "] " + Format );
@@ -345,7 +345,7 @@ bool CStatsW3MMD :: ProcessAction( CIncomingAction *Action )
 
 void CStatsW3MMD :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 {
-	CONSOLE_Print( "[STATSW3MMD: " + m_Game->GetGameName( ) + "] received " + UTIL_ToString( m_NextValueID ) + "/" + UTIL_ToString( m_NextCheckID ) + " value/check messages" );
+	CONSOLE_Print( "[STATSW3MMD: " + m_Game->GetGameName( ) + "] received " + std::to_string( m_NextValueID ) + "/" + std::to_string( m_NextCheckID ) + " value/check messages" );
 
 	if( DB->Begin( ) )
 	{
@@ -378,7 +378,7 @@ void CStatsW3MMD :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 				Flags += "practicing";
 			}
 
-			CONSOLE_Print( "[STATSW3MMD: " + m_Game->GetGameName( ) + "] recorded flags [" + Flags + "] for player [" + i->second + "] with PID [" + UTIL_ToString( i->first ) + "]" );
+			CONSOLE_Print( "[STATSW3MMD: " + m_Game->GetGameName( ) + "] recorded flags [" + Flags + "] for player [" + i->second + "] with PID [" + std::to_string( i->first ) + "]" );
 			GHost->m_Callables.push_back( DB->ThreadedW3MMDPlayerAdd( m_Category, GameID, i->first, i->second, m_Flags[i->first], Leaver, Practicing ) );
 		}
 
