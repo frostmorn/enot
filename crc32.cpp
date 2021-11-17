@@ -8,7 +8,7 @@ void CCRC32 :: Initialize( )
 		ulTable[iCodes] = Reflect( iCodes, 8 ) << 24;
 
 		for( int iPos = 0; iPos < 8; iPos++ )
-			ulTable[iCodes] = ( ulTable[iCodes] << 1 ) ^ ( ulTable[iCodes] & (1 << 31) ? CRC32_POLYNOMIAL : 0 );
+			ulTable[iCodes] = ( ulTable[iCodes] << 1 ) ^ ( ulTable[iCodes] & (1U << 31) ? CRC32_POLYNOMIAL : 0 );
 
 		ulTable[iCodes] = Reflect( ulTable[iCodes], 32 );
 	}
