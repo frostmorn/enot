@@ -94,7 +94,6 @@ void CConfig :: Read( std::string file )
 				continue;
 			
 			m_CFG[trim(Line.substr(0, Split))] = trim(Line.substr(Split+1, Line.size()));
-			CONSOLE_Print(trim(Line.substr(0, Split))+trim(Line.substr(Split+1, Line.size())));
 		
 		}
 
