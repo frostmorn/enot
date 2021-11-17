@@ -852,10 +852,10 @@ bool CGHost :: Update( long usecBlock )
 
 	// update callables
 	m_CallablesMutex.lock();
-
+	
 	for( std::vector<CBaseCallable *> :: iterator i = m_Callables.begin( ); i != m_Callables.end( ); )
 	{
-		if( (*i)->GetReady( ) )
+		if( *i && (*i)->GetReady( ) )
 		{
 			m_DB->RecoverCallable( *i );
 			delete *i;
@@ -864,6 +864,7 @@ bool CGHost :: Update( long usecBlock )
 		else
 			++i;
 	}
+
 	
 	m_CallablesMutex.unlock();
 
