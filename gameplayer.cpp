@@ -189,7 +189,11 @@ BYTEARRAY nInternalIP, bool nReserved ) : CPotentialPlayer( nProtocol, nGame, nS
 m_PID( nPID ), m_Name( nName ), m_InternalIP( nInternalIP ), m_JoinedRealm( nJoinedRealm ), m_TotalPacketsSent( 0 ),
  m_TotalPacketsReceived( 0 ), m_LeftCode( PLAYERLEAVE_LOBBY ), m_LoginAttempts( 0 ), m_SyncCounter( 0 ), m_JoinTime( GetTime( ) ),
 m_LastMapPartSent( 0 ), m_LastMapPartAcked( 0 ), m_StartedDownloadingTicks( 0 ), m_FinishedLoadingTicks( 0 ), m_StartedLaggingTicks( 0 ), 
-m_StatsSentTime( 0 ), m_StatsDotASentTime( 0 ),m_StatsLiASentTime(0), m_LastGProxyWaitNoticeSentTime( 0 ), m_Score( -100000.0 ),
+m_StatsSentTime( 0 ), m_StatsDotASentTime( 0 ),
+#ifdef STATS_LIA_GHOST
+m_StatsLiASentTime(0),
+#endif
+ m_LastGProxyWaitNoticeSentTime( 0 ), m_Score( -100000.0 ),
 m_LoggedIn( false ), m_Spoofed( false ), m_Reserved( nReserved ), m_WhoisShouldBeSent( false ), m_WhoisSent( false ), m_DownloadAllowed( false ),
  m_DownloadStarted( false ), m_DownloadFinished( false ), m_FinishedLoading( false ), m_Lagging( false ),
 m_DropVote( false ), m_KickVote( false ), m_Muted( false ), m_LeftMessageSent( false ), m_GProxy( false ), m_GProxyDisconnectNoticeSent( false ),

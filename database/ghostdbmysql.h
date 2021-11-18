@@ -215,7 +215,11 @@ public:
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, std::map<VarP,int32_t> var_ints );
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, std::map<VarP,double> var_reals );
 	virtual CCallableW3MMDVarAdd *ThreadedW3MMDVarAdd( uint32_t gameid, std::map<VarP,std::string> var_strings );
-
+#ifdef STATS_LIA_GHOST
+	virtual CCallableLiAGameAdd *ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec ){}
+	virtual CCallableLiAPlayerAdd * ThreadedLiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, std::string nItem1, std::string nItem2, std::string nItem3, std::string nItem4, std::string nItem5, std::string nItem6, std::string nHero ){}
+	virtual CCallableLiAPlayerSummaryCheck *ThreadedLiAPlayerSummaryCheck( std::string name ){}
+#endif
 	// other database functions
 	void UpdateCallables();
 	virtual void *GetIdleConnection( );

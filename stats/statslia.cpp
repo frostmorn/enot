@@ -17,7 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-
+#ifdef STATS_LIA_GHOST
 #include "ghost.h"
 #include "util.h"
 #include "database/ghostdb.h"
@@ -193,17 +193,17 @@ void CStatsLiA :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 
 	// 	// save the liaplayers
 
-		for( unsigned int i = 0; i < 8; ++i )
-		{
-			if( m_Players[i] )
-			{
-				GHost->m_Callables.push_back( DB->ThreadedLiAPlayerAdd( GameID, m_Players[i]->GetColour(), m_Players[i]->GetPTS(),
-				m_Players[i]->GetDeaths(), m_Players[i]->GetCreepKills(), m_Players[i]->GetBossKills(), 
-				m_Players[i]->GetItem(0),m_Players[i]->GetItem(1),m_Players[i]->GetItem(2),m_Players[i]->GetItem(3),m_Players[i]->GetItem(4),m_Players[i]->GetItem(5),
-				m_Players[i]->GetHero()));
-				++Players;
-			}
-		}
+		// for( unsigned int i = 0; i < 8; ++i )
+		// {
+		// 	if( m_Players[i] )
+		// 	{
+		// 		// GHost->m_Callables.push_back( DB->ThreadedLiAPlayerAdd( GameID, m_Players[i]->GetColour(), m_Players[i]->GetPTS(),
+		// 		// m_Players[i]->GetDeaths(), m_Players[i]->GetCreepKills(), m_Players[i]->GetBossKills(), 
+		// 		// m_Players[i]->GetItem(0),m_Players[i]->GetItem(1),m_Players[i]->GetItem(2),m_Players[i]->GetItem(3),m_Players[i]->GetItem(4),m_Players[i]->GetItem(5),
+		// 		// m_Players[i]->GetHero()));
+		// 		++Players;
+		// 	}
+		// }
 
 		if( DB->Commit( ) )
 			CONSOLE_Print( "[STATSLIA: " + m_Game->GetGameName( ) + "] saving " + std::to_string( Players ) + " players" );
@@ -213,3 +213,4 @@ void CStatsLiA :: Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID )
 	else
 		CONSOLE_Print( "[STATSLIA: " + m_Game->GetGameName( ) + "] unable to begin database transaction, data not saved" );
 }
+#endif

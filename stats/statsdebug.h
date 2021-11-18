@@ -17,40 +17,18 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-#ifdef STATS_LIA_GHOST
-#ifndef STATSLIA_H
-#define STATSLIA_H
 
-#define LIA_GAME_RESULT_LOSE            0
-#define LIA_GAME_RESULT_WIN             1
+#ifndef STATSDEBUG_H
+#define STATSDEBUG_H
 
-// NOT_IMPLEMENTED. Need for -b mode
-#define LIA_GAME_RESULT_COMMAND_1_WIN   2
-#define LIA_GAME_RESULT_COMMAND_2_WIN   3
 
-//
-// CStatsDOTA
-//
 
-// class CDBLiAPlayer;
-
-class CStatsLiA : public CStats
+class CStatsDEBUG : public CStats
 {
-private:
-	CDBLiAPlayer *m_Players[8];
-    
-	// uint32_t m_Winner;
-    uint32_t m_GameResult = 0;
-	uint32_t m_Min = 0;
-	uint32_t m_Sec = 0;
-
 public:
-	CStatsLiA( CBaseGame *nGame );
-	virtual ~CStatsLiA( );
-
+	CStatsDEBUG( CBaseGame *nGame );
+	virtual ~CStatsDEBUG( );
 	virtual bool ProcessAction( CIncomingAction *Action );
-	virtual void Save( CGHost *GHost, CGHostDB *DB, uint32_t GameID );
 };
 
-#endif
 #endif

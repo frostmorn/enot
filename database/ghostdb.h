@@ -42,9 +42,11 @@ class CCallableGamePlayerSummaryCheck;
 class CCallableDotAGameAdd;
 class CCallableDotAPlayerAdd;
 class CCallableDotAPlayerSummaryCheck;
+#ifdef STATS_LIA_GHOST
 class CCallableLiAGameAdd;
 class CCallableLiAPlayerAdd;
 class CCallableLiAPlayerSummaryCheck;
+#endif
 class CCallableDownloadAdd;
 class CCallableScoreCheck;
 class CCallableW3MMDPlayerAdd;
@@ -54,7 +56,9 @@ class CDBGame;
 class CDBGamePlayer;
 class CDBGamePlayerSummary;
 class CDBDotAPlayerSummary;
+#ifdef STATS_LIA_GHOST
 class CDBLiAPlayerSummary;
+#endif
 
 
 typedef std::pair<uint32_t,std::string> VarP;
@@ -98,7 +102,9 @@ public:
 	virtual uint32_t DotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, std::string item1, std::string item2, std::string item3, std::string item4, std::string item5, std::string item6, std::string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills );
 	virtual uint32_t DotAPlayerCount( std::string name );
 	virtual CDBDotAPlayerSummary *DotAPlayerSummaryCheck( std::string name );
+#ifdef STATS_LIA_GHOST
 	virtual CDBLiAPlayerSummary *LiAPlayerSummaryCheck( std::string name );
+#endif
 	virtual std::string FromCheck( uint32_t ip );
 	virtual bool FromAdd( uint32_t ip1, uint32_t ip2, std::string country );
 	virtual bool DownloadAdd( std::string map, uint32_t mapsize, std::string name, std::string ip, uint32_t spoofed, std::string spoofedrealm, uint32_t downloadtime );
@@ -127,9 +133,11 @@ public:
 	virtual CCallableDotAGameAdd *ThreadedDotAGameAdd( uint32_t gameid, uint32_t winner, uint32_t min, uint32_t sec );
 	virtual CCallableDotAPlayerAdd *ThreadedDotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, std::string item1, std::string item2, std::string item3, std::string item4, std::string item5, std::string item6, std::string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills );
 	virtual CCallableDotAPlayerSummaryCheck *ThreadedDotAPlayerSummaryCheck( std::string name );
+#ifdef STATS_LIA_GHOST
 	virtual CCallableLiAGameAdd *ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec );
 	virtual CCallableLiAPlayerAdd *ThreadedLiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int32_t nPTS, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nBossKills, std::string nItem1, std::string nItem2, std::string nItem3, std::string nItem4, std::string nItem5, std::string nItem6, std::string nHero );
 	virtual CCallableLiAPlayerSummaryCheck *ThreadedLiAPlayerSummaryCheck( std::string name );
+#endif
 	virtual CCallableDownloadAdd *ThreadedDownloadAdd( std::string map, uint32_t mapsize, std::string name, std::string ip, uint32_t spoofed, std::string spoofedrealm, uint32_t downloadtime );
 	virtual CCallableScoreCheck *ThreadedScoreCheck( std::string category, std::string name, std::string server );
 	virtual CCallableW3MMDPlayerAdd *ThreadedW3MMDPlayerAdd( std::string category, uint32_t gameid, uint32_t pid, std::string name, std::string flag, uint32_t leaver, uint32_t practicing );
@@ -485,7 +493,7 @@ public:
 	virtual CDBDotAPlayerSummary *GetResult( )				{ return m_Result; }
 	virtual void SetResult( CDBDotAPlayerSummary *nResult )	{ m_Result = nResult; }
 };
-
+#ifdef STATS_LIA_GHOST
 class CCallableLiAGameAdd : virtual public CBaseCallable
 {
 protected:
@@ -545,7 +553,7 @@ public:
 	virtual CDBLiAPlayerSummary *GetResult( )				{ return m_Result; }
 	virtual void SetResult( CDBLiAPlayerSummary *nResult )	{ m_Result = nResult; }
 };
-
+#endif
 class CCallableDownloadAdd : virtual public CBaseCallable
 {
 protected:
@@ -913,7 +921,7 @@ public:
 //
 // CDBLiAGame
 //
-
+#ifdef STATS_LIA_GHOST
 class CDBLiAGame
 {
 private:
@@ -1011,6 +1019,6 @@ public:
 	float GetAvgBossKills( )			{ return m_TotalGames > 0 ? (float)m_TotalBossKills / m_TotalGames : 0; }
 	float GetAvgPTS( )					{ return m_TotalGames > 0 ? (float)m_TotalPTS / m_TotalGames : 0; }
 };
-
+#endif
 
 #endif

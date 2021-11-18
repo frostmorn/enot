@@ -218,10 +218,10 @@ CBNET :: ~CBNET( )
 
 	for( std::vector<PairedDPSCheck> :: iterator i = m_PairedDPSChecks.begin( ); i != m_PairedDPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
-
+#ifdef STATS_LIA_GHOST
 	for( std::vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
-
+#endif
 	if( m_CallableAdminList )
 		m_GHost->m_Callables.push_back( m_CallableAdminList );
 
@@ -449,6 +449,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 		else
 			++i;
 	}
+	#ifdef STATS_LIA_GHOST
 	for( std::vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); )
 	{
 		if( i->second->GetReady( ) )
@@ -482,6 +483,7 @@ bool CBNET :: Update( void *fd, void *send_fd )
 		else
 			++i;
 	}
+	#endif
 
 	// refresh the admin list every 5 minutes
 
@@ -2237,7 +2239,7 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 		// !STATSLIA
 		// !SL
 		//
-
+#ifdef STATS_LIA_GHOST
 		else if( Command == "statslia" || Command == "sl" )
 		{
 			std::string StatsUser = User;
@@ -2250,6 +2252,7 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 			if( !StatsUser.empty( ) && StatsUser.size( ) < 16 && StatsUser[0] != '/' )
 				m_PairedLPSChecks.push_back( PairedLPSCheck( Whisper ? User : std::string( ), m_GHost->m_DB->ThreadedLiAPlayerSummaryCheck( StatsUser ) ) );
 		}
+#endif
 		//
 		// !VERSION
 		//

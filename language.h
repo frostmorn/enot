@@ -254,8 +254,10 @@ public:
 	std::string WaitForReconnectSecondsRemain( std::string seconds );
 	std::string WasUnrecoverablyDroppedFromGProxy( );
 	std::string PlayerReconnectedWithGProxy( std::string name );
+#ifdef STATS_LIA_GHOST
 	std::string HasPlayedLiAGamesWithThisBot( std::string user, std::string totalgames, std::string totalwins, std::string totallosses, std::string totaldeaths, std::string totalpts, std::string totalcreepkills, std::string totalbosskills,  std::string avgdeaths, std::string avgcreepkills, std::string avgbosskills, std::string avgpts);
 	std::string HasntPlayedLiAGamesWithThisBot( std::string user );
+#endif
 };
 
 #endif

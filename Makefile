@@ -29,7 +29,7 @@ ifeq ($(SYSTEM),Darwin)
 CFLAGS += -I./mysql/include/
 endif
 
-OBJS = lia.o discord.o bncsutilinterface.o bnet.o bnetprotocol.o bnlsclient.o bnlsprotocol.o commandpacket.o config.o crc32.o csvparser.o game.o game_admin.o game_base.o gameplayer.o gameprotocol.o gameslot.o ghost.o database/ghostdb.o database/ghostdbmysql.o database/ghostdbsqlite.o gpsprotocol.o language.o map.o packed.o replay.o savegame.o sha1.o socket.o stats/stats.o stats/statsdota.o stats/statsw3mmd.o stats/statslia.o util.o 
+OBJS = lia.o discord.o bncsutilinterface.o bnet.o bnetprotocol.o bnlsclient.o bnlsprotocol.o commandpacket.o config.o crc32.o csvparser.o game.o game_admin.o game_base.o gameplayer.o gameprotocol.o gameslot.o ghost.o database/ghostdb.o database/ghostdbmysql.o database/ghostdbsqlite.o gpsprotocol.o language.o map.o packed.o replay.o savegame.o sha1.o socket.o stats/stats.o stats/statsdota.o stats/statsw3mmd.o stats/statslia.o stats/statsdebug.o util.o 
 COBJS = database/sqlite3.o
 PROGS = ./ghost++
 
@@ -60,7 +60,7 @@ commandpacket.o: ghost.h includes.h commandpacket.h
 config.o: ghost.h includes.h config.h
 crc32.o: ghost.h includes.h crc32.h
 csvparser.o: csvparser.h
-game.o: lia.h discord.h ghost.h includes.h util.h config.h language.h socket.h database/ghostdb.h bnet.h map.h packed.h savegame.h gameplayer.h gameprotocol.h game_base.h game.h stats/stats.h stats/statsdota.h stats/statsw3mmd.h stats/statslia.h
+game.o: lia.h discord.h ghost.h includes.h util.h config.h language.h socket.h database/ghostdb.h bnet.h map.h packed.h savegame.h gameplayer.h gameprotocol.h game_base.h game.h stats/stats.h stats/statsdota.h stats/statsw3mmd.h stats/statslia.h stats/statsdebug.h
 game_admin.o: ghost.h includes.h util.h config.h language.h socket.h database/ghostdb.h bnet.h map.h packed.h savegame.h replay.h gameplayer.h gameprotocol.h game_base.h game_admin.h
 game_base.o: lia.h ghost.h includes.h util.h config.h language.h socket.h database/ghostdb.h bnet.h map.h packed.h savegame.h replay.h gameplayer.h gameprotocol.h game_base.h next_combination.h
 gameplayer.o: ghost.h includes.h util.h language.h socket.h commandpacket.h bnet.h map.h gameplayer.h gameprotocol.h gpsprotocol.h game_base.h
@@ -82,6 +82,7 @@ stats/stats.o: ghost.h includes.h stats/stats.h
 stats/statsdota.o: ghost.h includes.h util.h database/ghostdb.h gameplayer.h gameprotocol.h game_base.h stats/stats.h stats/statsdota.h
 stats/statsw3mmd.o: ghost.h includes.h util.h database/ghostdb.h gameprotocol.h game_base.h stats/stats.h stats/statsw3mmd.h
 stats/statslia.o: ghost.h includes.h util.h database/ghostdb.h gameplayer.h gameprotocol.h game_base.h stats/stats.h stats/statslia.h
+stats/statsdebug.o: ghost.h includes.h util.h database/ghostdb.h gameplayer.h gameprotocol.h game_base.h stats/stats.h stats/statsdebug.h
 util.o: ghost.h includes.h util.h
 discord.o : discord.h
 lia.o : lia.h

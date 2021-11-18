@@ -1167,7 +1167,7 @@ uint32_t CGHostDBSQLite :: DotAPlayerCount( std::string name )
 
 	return Count;
 }
-
+#ifdef STATS_LIA_GHOST
 uint32_t CGHostDBSQLite :: LiAPlayerCount( std::string name )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
@@ -1192,7 +1192,7 @@ uint32_t CGHostDBSQLite :: LiAPlayerCount( std::string name )
 	CONSOLE_Print("Player " + name + " played " + std::to_string(Count) + " LiA games");
 	return Count;
 }
-
+#endif
 CDBDotAPlayerSummary *CGHostDBSQLite :: DotAPlayerSummaryCheck( std::string name )
 {
 	if( DotAPlayerCount( name ) == 0 )
@@ -1282,7 +1282,7 @@ CDBDotAPlayerSummary *CGHostDBSQLite :: DotAPlayerSummaryCheck( std::string name
 
 	return DotAPlayerSummary;
 }
-
+#ifdef STATS_LIA_GHOST
 CDBLiAPlayerSummary *CGHostDBSQLite :: LiAPlayerSummaryCheck( std::string name )
 {
 	CONSOLE_Print("Entering LiAPlayerSummaryCheck. Player = "+name);
@@ -1451,7 +1451,7 @@ uint32_t CGHostDBSQLite :: LiAPlayerAdd( uint32_t nGameID, uint32_t nColour, int
 
 	return RowID;
 }
-
+#endif
 
 std::string CGHostDBSQLite :: FromCheck( uint32_t ip )
 {
@@ -1858,7 +1858,7 @@ CCallableDotAPlayerSummaryCheck *CGHostDBSQLite :: ThreadedDotAPlayerSummaryChec
 	Callable->SetReady( true );
 	return Callable;
 }
-
+#ifdef STATS_LIA_GHOST
 CCallableLiAPlayerSummaryCheck *CGHostDBSQLite :: ThreadedLiAPlayerSummaryCheck( std::string name )
 {
 	CCallableLiAPlayerSummaryCheck *Callable = new CCallableLiAPlayerSummaryCheck( name );
@@ -1883,6 +1883,7 @@ CCallableLiAPlayerAdd *CGHostDBSQLite :: ThreadedLiAPlayerAdd( uint32_t nGameID,
 	Callable->SetReady( true );
 	return Callable;
 }
+#endif
 
 CCallableDownloadAdd *CGHostDBSQLite :: ThreadedDownloadAdd( std::string map, uint32_t mapsize, std::string name, std::string ip, uint32_t spoofed, std::string spoofedrealm, uint32_t downloadtime )
 {

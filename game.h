@@ -34,14 +34,17 @@ class CCallableBanAdd;
 class CCallableGameAdd;
 class CCallableGamePlayerSummaryCheck;
 class CCallableDotAPlayerSummaryCheck;
+#ifdef STATS_LIA_GHOST
 class CCallableLiAPlayerSummaryCheck;
+#endif
 
 typedef std::pair<std::string,CCallableBanCheck *> PairedBanCheck;
 typedef std::pair<std::string,CCallableBanAdd *> PairedBanAdd;
 typedef std::pair<std::string,CCallableGamePlayerSummaryCheck *> PairedGPSCheck;
 typedef std::pair<std::string,CCallableDotAPlayerSummaryCheck *> PairedDPSCheck;
+#ifdef STATS_LIA_GHOST
 typedef std::pair<std::string,CCallableLiAPlayerSummaryCheck *> PairedLPSCheck;
-
+#endif
 class CGame : public CBaseGame
 {
 protected:
@@ -55,8 +58,9 @@ protected:
 	std::vector<PairedBanAdd> m_PairedBanAdds;		// vector of paired threaded database ban adds in progress
 	std::vector<PairedGPSCheck> m_PairedGPSChecks;	// vector of paired threaded database game player summary checks in progress
 	std::vector<PairedDPSCheck> m_PairedDPSChecks;	// vector of paired threaded database DotA player summary checks in progress
+#ifdef STATS_LIA_GHOST
 	std::vector<PairedLPSCheck> m_PairedLPSChecks;	// vector of paired threaded database LiA player summary checks in progress
-
+#endif
 public:
 	CGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHostPort, unsigned char nGameState, std::string nGameName, std::string nOwnerName, std::string nCreatorName, std::string nCreatorServer );
 	virtual ~CGame( );

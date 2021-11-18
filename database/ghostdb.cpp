@@ -146,11 +146,12 @@ CDBDotAPlayerSummary *CGHostDB :: DotAPlayerSummaryCheck( std::string name )
 {
 	return NULL;
 }
-
+#ifdef STATS_LIA_GHOST
 CDBLiAPlayerSummary *CGHostDB :: LiAPlayerSummaryCheck( std::string name )
 {
 	return NULL;
 }
+#endif
 std::string CGHostDB :: FromCheck( uint32_t ip )
 {
 	return "??";
@@ -275,7 +276,7 @@ CCallableDotAPlayerSummaryCheck *CGHostDB :: ThreadedDotAPlayerSummaryCheck( std
 {
 	return NULL;
 }
-
+#ifdef STATS_LIA_GHOST
 CCallableLiAGameAdd *CGHostDB :: ThreadedLiAGameAdd( uint32_t gameid, uint32_t gameresult, uint32_t min, uint32_t sec )
 {
 	return NULL;
@@ -290,6 +291,7 @@ CCallableLiAPlayerSummaryCheck *CGHostDB :: ThreadedLiAPlayerSummaryCheck( std::
 {
 	return NULL;
 }
+#endif
 
 CCallableDownloadAdd *CGHostDB :: ThreadedDownloadAdd( std::string map, uint32_t mapsize, std::string name, std::string ip, uint32_t spoofed, std::string spoofedrealm, uint32_t downloadtime )
 {
@@ -415,6 +417,7 @@ CCallableDotAPlayerSummaryCheck :: ~CCallableDotAPlayerSummaryCheck( )
 {
 	delete m_Result;
 }
+#ifdef STATS_LIA_GHOST
 CCallableLiAGameAdd :: ~CCallableLiAGameAdd( )
 {
 
@@ -428,6 +431,7 @@ CCallableLiAPlayerSummaryCheck :: ~CCallableLiAPlayerSummaryCheck( )
 {
 	delete m_Result;
 }
+#endif
 CCallableDownloadAdd :: ~CCallableDownloadAdd( )
 {
 
@@ -577,6 +581,7 @@ CDBDotAPlayerSummary :: ~CDBDotAPlayerSummary( )
 {
 
 }
+#ifdef STATS_LIA_GHOST
 CDBLiAPlayerSummary :: ~CDBLiAPlayerSummary( )
 {
 
@@ -631,3 +636,4 @@ void CDBLiAPlayer :: SetItem( unsigned int i, std::string item )
 	if( i < 6 )
 		m_Items[i] = item;
 }
+#endif

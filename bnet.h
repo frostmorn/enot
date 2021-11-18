@@ -47,7 +47,9 @@ class CCallableBanRemove;
 class CCallableBanList;
 class CCallableGamePlayerSummaryCheck;
 class CCallableDotAPlayerSummaryCheck;
+#ifdef STATS_LIA_GHOST
 class CCallableLiAPlayerSummaryCheck;
+#endif
 class CDBBan;
 
 typedef std::pair<std::string,CCallableAdminCount *> PairedAdminCount;
@@ -58,7 +60,9 @@ typedef std::pair<std::string,CCallableBanAdd *> PairedBanAdd;
 typedef std::pair<std::string,CCallableBanRemove *> PairedBanRemove;
 typedef std::pair<std::string,CCallableGamePlayerSummaryCheck *> PairedGPSCheck;
 typedef std::pair<std::string,CCallableDotAPlayerSummaryCheck *> PairedDPSCheck;
+#ifdef STATS_LIA_GHOST
 typedef std::pair<std::string,CCallableLiAPlayerSummaryCheck *> PairedLPSCheck;
+#endif
 
 class CBNET
 {
@@ -85,7 +89,9 @@ private:
 	std::vector<PairedBanRemove> m_PairedBanRemoves;		// vector of paired threaded database ban removes in progress
 	std::vector<PairedGPSCheck> m_PairedGPSChecks;		// vector of paired threaded database game player summary checks in progress
 	std::vector<PairedDPSCheck> m_PairedDPSChecks;		// vector of paired threaded database DotA player summary checks in progress
+#ifdef STATS_LIA_GHOST
 	std::vector<PairedLPSCheck> m_PairedLPSChecks;		// vector of paired threaded database LiA player summary checks in progress
+#endif
 	CCallableAdminList *m_CallableAdminList;		// threaded database admin list in progress
 	CCallableBanList *m_CallableBanList;			// threaded database ban list in progress
 	std::vector<std::string> m_Admins;						// vector of cached admins

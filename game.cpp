@@ -36,6 +36,7 @@
 #include "stats/statslia.h"
 #include "stats/statsdota.h"
 #include "stats/statsw3mmd.h"
+#include "stats/statsdebug.h"
 
 #include <cmath>
 #include <string.h>
@@ -89,8 +90,12 @@ CGame :: CGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16_t nHost
 		m_Stats = new CStatsW3MMD( this, m_Map->GetMapStatsW3MMDCategory( ) );
 	else if( m_Map->GetMapType( ) == "dota" )
 		m_Stats = new CStatsDOTA( this );
+	else if ( m_Map->GetMapType( ) == "debug" )
+		m_Stats = new CStatsDEBUG(this);
+#ifdef STATS_LIA_GHOST
 	else if(m_Map->GetMapType() == "lia")
 		m_Stats = new CStatsLiA(this);
+#endif
 }
 
 CGame :: ~CGame( )
@@ -131,10 +136,10 @@ CGame :: ~CGame( )
 
 	for( std::vector<PairedDPSCheck> :: iterator i = m_PairedDPSChecks.begin( ); i != m_PairedDPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
-
+#ifdef STATS_LIA_GHOST
 	for( std::vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
-
+#endif
 	m_GHost->m_CallablesMutex.unlock();
 
 	for( std::vector<CDBBan *> :: iterator i = m_DBBans.begin( ); i != m_DBBans.end( ); ++i )
@@ -307,6 +312,7 @@ bool CGame :: Update( void *fd, void *send_fd )
 		else
 			++i;
 	}
+#ifdef STATS_LIA_GHOST
 		for( std::vector<PairedLPSCheck> :: iterator i = m_PairedLPSChecks.begin( ); i != m_PairedLPSChecks.end( ); )
 	{
 		if( i->second->GetReady( ) )
@@ -358,6 +364,7 @@ bool CGame :: Update( void *fd, void *send_fd )
 		else
 			++i;
 	}
+#endif
 
 
 
@@ -1912,7 +1919,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 	// !STATSLIA
 	// !SL
 	//
-
+#ifdef STATS_LIA_GHOST
 	else if( (Command == "statslia" || Command == "sl") && GetTime( ) - player->GetStatsLiASentTime( ) >= 5 )
 	{
 		std::string StatsUser = User;
@@ -1927,7 +1934,7 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 
 		player->SetStatsLiASentTime( GetTime( ) );
 	}
-
+#endif
 
 	// !VOTESTART
     //

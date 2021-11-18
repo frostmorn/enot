@@ -1535,7 +1535,7 @@ std::string CLanguage :: PlayerReconnectedWithGProxy( std::string name )
 	UTIL_Replace( Out, "$NAME$", name );
 	return Out;
 }
-
+#ifdef STATS_LIA_GHOST
 std::string CLanguage :: HasPlayedLiAGamesWithThisBot( std::string user, std::string totalgames, std::string totalwins, std::string totallosses, std::string totaldeaths, std::string totalpts, std::string totalcreepkills, std::string totalbosskills,  std::string avgdeaths, std::string avgcreepkills, std::string avgbosskills, std::string avgpts)
 {
 	CONSOLE_Print("Entering CLanguage :: HasPlayedLiAGamesWithThisBot");
@@ -1563,3 +1563,4 @@ std::string CLanguage :: HasntPlayedLiAGamesWithThisBot( std::string user )
 	UTIL_Replace( Out, "$USER$", user );
 	return Out;
 }
+#endif
