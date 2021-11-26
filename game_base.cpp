@@ -574,22 +574,22 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	}
 
 	// Calculate count of connected to BNET ICCup and Rubattle accounts	
-	uint8_t Rubattle_connected_count = 0;
-	uint8_t ICCup_connected_count = 0;
-	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ )
-	{
-		if ((*i)->GetLoggedIn()){
-			if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
-				Rubattle_connected_count ++;	
+	// TODO: move specific types of bnets calc depend on BNET events
+	uint32_t iccupOnlineCount = 0;
+	uint32_t rubattleOnlineCount = 0;
+	for (auto iBNet: m_GHost->m_BNETs){
+		if (iBNet->GetLoggedIn()){
+			if (iBNet->GetServerAlias().find("ICCup") != std::string::npos){
+				iccupOnlineCount ++;
 			}
-			if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-				ICCup_connected_count ++;
+			else if (iBNet->GetServerAlias().find("Rubattle") != std::string::npos){
+				rubattleOnlineCount++;
 			}
-		}
+		}		
 	}
-
+	
 	// host Rubattle
-	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && Rubattle_connected_count && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
+	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && rubattleOnlineCount && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
 		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
 			if ((*i)->GetLoggedIn()){
 				if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
@@ -607,16 +607,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			}
 		}
 	}
-	auto iccupOnlineCount = 0;
-	for (auto iBNet: m_GHost->m_BNETs){
-		if (iBNet->GetServerAlias().find("ICCup") != std::string::npos){
-			if (iBNet->GetLoggedIn()){
-				iccupOnlineCount ++;
-			}
-		}
-	}
-
-	if (!m_RefreshError && !m_GameLoaded && ICCup_connected_count && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
+	
+	if (!m_RefreshError && !m_GameLoaded && iccupOnlineCount && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
 		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
 			if ((*i)->GetLoggedIn()){
 				if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
