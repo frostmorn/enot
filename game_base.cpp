@@ -17,7 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-#define ICCUP_REHOST_TIME 60
+#define ICCUP_REHOST_TIME 50
 #include "lia.h"
 #include "ghost.h"
 #include "util.h"
@@ -607,12 +607,20 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			}
 		}
 	}
+	auto iccupOnlineCount = 0;
+	for (auto iBNet: m_GHost->m_BNETs){
+		if (iBNet->GetServerAlias().find("ICCup") != std::string::npos){
+			if (iBNet->GetLoggedIn()){
+				iccupOnlineCount ++;
+			}
+		}
+	}
 
 	if (!m_RefreshError && !m_GameLoaded && ICCup_connected_count && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
 		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
 			if ((*i)->GetLoggedIn()){
 				if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-					if (GetTime() - (*i)->GetLastGameCreateTime() < ICCUP_REHOST_TIME/ICCup_connected_count ){
+					if (GetTime() - (*i)->GetLastGameCreateTime() < ICCUP_REHOST_TIME/iccupOnlineCount ){
 						break;
 					}
 					else
