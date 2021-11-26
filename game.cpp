@@ -1432,10 +1432,10 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 
 			else if( Command == "pub" && !Payload.empty( ) && !m_CountDownStarted && !m_SaveGame )
 			{
-				if( Payload.length() < 31 )
+				if( Payload.length() < 22 ) // By default 31, but random in game name needs more space
 				{
 					// CONSOLE_Print( "[GAME: " + m_GameName + "] trying to rehost as public game [" + Payload + "]" );
-					// SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( Payload ) );
+					SendAllChat( m_GHost->m_Language->TryingToRehostAsPublicGame( Payload ) );
 					m_GameState = GAME_PUBLIC;
 					m_LastGameName = m_GameName;
 					m_GameName = Payload;

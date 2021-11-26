@@ -1102,7 +1102,7 @@ bool CGHost :: Update( long usecBlock )
 			{
 				std::string GameName = m_AutoHostGameName;
 
-				if( GameName.size( ) <= 31 )
+				if( GameName.size( ) <= 22 ) // By default 31, but random in game name needs more space
 				{
 					CreateGame( m_AutoHostMap, GAME_PUBLIC, false, GameName, m_AutoHostOwner, m_AutoHostOwner, m_AutoHostServer, false );
 
@@ -1132,7 +1132,7 @@ bool CGHost :: Update( long usecBlock )
 				}
 				else
 				{
-					CONSOLE_Print( "[GHOST] stopped auto hosting, next game name [" + GameName + "] is too long (the maximum is 31 characters)" );
+					CONSOLE_Print( "[GHOST] stopped auto hosting, next game name [" + GameName + "] is too long (the maximum is 22 characters)" );
 					m_AutoHostGameName.clear( );
 					m_AutoHostOwner.clear( );
 					m_AutoHostServer.clear( );
