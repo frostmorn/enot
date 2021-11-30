@@ -78,13 +78,11 @@ CBaseGame :: CBaseGame( CGHost *nGHost, CMap *nMap, CSaveGame *nSaveGame, uint16
 		// we really just want the open/closed/computer entries
 		// so open all the player slots
 
-		for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
-		{
-			if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 )
-			{
-				(*i).SetPID( 0 );
-				(*i).SetDownloadStatus( 255 );
-				(*i).SetSlotStatus( SLOTSTATUS_OPEN );
+		for (auto iSlot:m_Slots){
+			if(iSlot.GetSlotStatus() == SLOTSTATUS_OCCUPIED && iSlot.GetComputer( ) == 0){
+				iSlot.SetPID( 0 );
+				iSlot.SetDownloadStatus( 255 );
+				iSlot.SetSlotStatus( SLOTSTATUS_OPEN );
 			}
 		}
 	}
@@ -158,17 +156,16 @@ CBaseGame :: ~CBaseGame( )
 	delete m_Map;
 	delete m_Replay;
 
-	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
-		delete *i;
+	for (auto iPotential : m_Potentials)
+		delete iPotential;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		delete *i;
+	for (auto iPlayer: m_Players)
+		delete iPlayer;
 
 	m_GHost->m_CallablesMutex.lock();
 	
 	for( std::vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( *i );
-	
 	m_GHost->m_CallablesMutex.unlock();
 
 	while( !m_Actions.empty( ) )
@@ -260,14 +257,6 @@ void CBaseGame :: loop( )
 		if( SecString.size( ) == 1 )
 			SecString.insert( 0, "0" );
 		
-		CONSOLE_Print("ENOT is trying to save replay...");
-		CONSOLE_Print("Game HCL is : " + this->m_HCLCommandString);
-		CONSOLE_Print("Players :");
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		{
-			CONSOLE_Print("Player " + (*i)->GetNameTerminated());
-		}
-
 		m_Replay->BuildReplay( m_GameName, m_StatString, m_GHost->m_ReplayWar3Version, m_GHost->m_ReplayBuildNumber );
 		
 		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + std::string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
@@ -301,12 +290,10 @@ uint32_t CBaseGame :: GetSlotsOccupied( )
 {
 	uint32_t NumSlotsOccupied = 0;
 
-	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
-	{
-		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED )
+	for (auto iSlot:m_Slots){
+		if (iSlot.GetSlotStatus() == SLOTSTATUS_OCCUPIED)
 			++NumSlotsOccupied;
 	}
-
 	return NumSlotsOccupied;
 }
 
@@ -314,12 +301,10 @@ uint32_t CBaseGame :: GetSlotsOpen( )
 {
 	uint32_t NumSlotsOpen = 0;
 
-	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
-	{
-		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OPEN )
+	for (auto iSlot:m_Slots){
+		if (iSlot.GetSlotStatus( ) == SLOTSTATUS_OPEN)
 			++NumSlotsOpen;
 	}
-
 	return NumSlotsOpen;
 }
 
@@ -337,9 +322,9 @@ uint32_t CBaseGame :: GetNumHumanPlayers( )
 {
 	uint32_t NumHumanPlayers = 0;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-	{
-		if( !(*i)->GetLeftMessageSent( ) )
+
+	for (auto iPlayer:m_Players){
+		if (!iPlayer->GetLeftMessageSent())
 			++NumHumanPlayers;
 	}
 
@@ -386,20 +371,16 @@ unsigned int CBaseGame :: SetFD( void *fd, void *send_fd, int *nfds )
 		++NumFDs;
 	}
 
-	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
-	{
-		if( (*i)->GetSocket( ) )
-		{
-			(*i)->GetSocket( )->SetFD( (fd_set *)fd, (fd_set *)send_fd, nfds );
+	for (auto iPotential:m_Potentials){
+		if (iPotential->GetSocket()){
+			iPotential->GetSocket()->SetFD((fd_set *)fd, (fd_set *)send_fd, nfds);
 			++NumFDs;
 		}
 	}
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-	{
-		if( (*i)->GetSocket( ) )
-		{
-			(*i)->GetSocket( )->SetFD( (fd_set *)fd, (fd_set *)send_fd, nfds );
+	for (auto iPlayer:m_Players){
+		if (iPlayer->GetSocket()){
+			iPlayer->GetSocket( )->SetFD( (fd_set *)fd, (fd_set *)send_fd, nfds );
 			++NumFDs;
 		}
 	}
@@ -444,6 +425,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		else
 			++i;
 	}
+
+	
 
 	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); )
 	{
@@ -557,12 +540,14 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		m_HostCounter = m_GHost->m_HostCounter++;
 		m_RefreshError = false;
 
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
-		{
-			(*i)->QueueGameUncreate( );
-			(*i)->QueueEnterChat( );
-			if (((*i)->GetServerAlias().find("ICCup") == std::string::npos) &&((*i)->GetServerAlias().find("Rubattle")==std::string::npos)){
-				(*i)->QueueGameCreate( m_GameState, m_GameName , std::string( ), m_Map, NULL, m_HostCounter );
+		for (auto iBNET:m_GHost->m_BNETs){
+			iBNET->QueueGameUncreate();
+			iBNET->QueueEnterChat();
+			// Do not create games on ICCup and Rubattle platforms
+			// They will be created at game->Update()
+			if (iBNET->GetServerAlias().find("ICCup") == std::string::npos &&
+				iBNET->GetServerAlias().find("Rubattle") == std::string::npos){
+				iBNET->QueueGameCreate( m_GameState, m_GameName , std::string( ), m_Map, NULL, m_HostCounter );
 			}
 		}
 		
@@ -590,16 +575,16 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	
 	// host Rubattle
 	if (!m_RubattleHosted && !m_RefreshError && !m_GameLoaded && rubattleOnlineCount && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
-		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
-			if ((*i)->GetLoggedIn()){
-				if ((*i)->GetServerAlias().find("Rubattle") != std::string::npos){
-					if (((*i)->GetLastGameCreateTime() == 0) || (GetTime() - (*i)->GetLastGameCreateTime() > 420) ){
-						CONSOLE_Print("Trying to create rubattle game from account "+(*i)->GetUserName());
+		for (auto iBNET:m_GHost->m_BNETs){
+			if (iBNET->GetLoggedIn()){
+				if (iBNET->GetServerAlias().find("Rubattle") != std::string::npos){
+					if ((iBNET->GetLastGameCreateTime() == 0) || (GetTime() - iBNET->GetLastGameCreateTime() > 420) ){
+						CONSOLE_Print("Trying to create rubattle game from account "+iBNET->GetUserName());
 						std::string game_name = m_GameName + " "+UTIL_ToHexString(GetTime());
-						(*i)->UnqueueGameRefreshes( );
-						(*i)->QueueGameUncreate( );
-						(*i)->QueueEnterChat( );
-						(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+						iBNET->UnqueueGameRefreshes( );
+						iBNET->QueueGameUncreate( );
+						iBNET->QueueEnterChat( );
+						iBNET->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
 						m_RubattleHosted = 1;
 						break;					
 					}
@@ -609,21 +594,21 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	}
 	
 	if (!m_RefreshError && !m_GameLoaded && iccupOnlineCount && m_GameState == GAME_PUBLIC && !m_GameLoading && GetSlotsOpen() > 0){
-		for (std::vector<CBNET *> :: iterator i =  m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); i++ ){
-			if ((*i)->GetLoggedIn()){
-				if ((*i)->GetServerAlias().find("ICCup") != std::string::npos){
-					if (GetTime() - (*i)->GetLastGameCreateTime() < ICCUP_REHOST_TIME/iccupOnlineCount ){
+		for (auto iBNET:m_GHost->m_BNETs){
+			if (iBNET->GetLoggedIn()){
+				if (iBNET->GetServerAlias().find("ICCup") != std::string::npos){
+					if (GetTime() - iBNET->GetLastGameCreateTime() < ICCUP_REHOST_TIME/iccupOnlineCount ){
 						break;
 					}
 					else
 					{
-						if (GetTime() - (*i)->GetLastGameCreateTime() >= ICCUP_REHOST_TIME){
-							CONSOLE_Print("Trying to create iccup game from account "+(*i)->GetUserName());
+						if (GetTime() - iBNET->GetLastGameCreateTime() >= ICCUP_REHOST_TIME){
+							CONSOLE_Print("Trying to create iccup game from account "+iBNET->GetUserName());
 							std::string game_name = m_GameName + " "+UTIL_ToHexString(GetTime());
-							(*i)->UnqueueGameRefreshes( );
-							(*i)->QueueGameUncreate( );
-							(*i)->QueueEnterChat( );
-							(*i)->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
+							iBNET->UnqueueGameRefreshes( );
+							iBNET->QueueGameUncreate( );
+							iBNET->QueueEnterChat( );
+							iBNET->QueueGameCreate( m_GameState, game_name , std::string( ), m_Map, NULL, m_HostCounter );
 							break;	
 						}	
 					}
@@ -652,9 +637,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		uint32_t Downloaders = 0;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for( auto iPlayer:m_Players )
 		{
-			if( (*i)->GetDownloadStarted( ) && !(*i)->GetDownloadFinished( ) )
+			if( iPlayer->GetDownloadStarted( ) && !iPlayer->GetDownloadFinished( ) )
 			{
 				++Downloaders;
 
@@ -677,14 +662,14 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 				uint32_t MapSize = UTIL_ByteArrayToUInt32( m_Map->GetMapSize( ), false );
 
-				while( (*i)->GetLastMapPartSent( ) < (*i)->GetLastMapPartAcked( ) + 1442 * 100 && (*i)->GetLastMapPartSent( ) < MapSize )
+				while( iPlayer->GetLastMapPartSent( ) < iPlayer->GetLastMapPartAcked( ) + 1442 * 100 && iPlayer->GetLastMapPartSent( ) < MapSize )
 				{
-					if( (*i)->GetLastMapPartSent( ) == 0 )
+					if( iPlayer->GetLastMapPartSent( ) == 0 )
 					{
 						// overwrite the "started download ticks" since this is the first time we've sent any map data to the player
 						// prior to this we've only determined if the player needs to download the map but it's possible we could have delayed sending any data due to download limits
 
-						(*i)->SetStartedDownloadingTicks( GetTicks( ) );
+						iPlayer->SetStartedDownloadingTicks( GetTicks( ) );
 					}
 
 					// limit the download speed if we're sending too much data
@@ -693,8 +678,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 					if( m_GHost->m_MaxDownloadSpeed > 0 && m_DownloadCounter > m_GHost->m_MaxDownloadSpeed * 1024 )
 						break;
 
-					Send( *i, m_Protocol->SEND_W3GS_MAPPART( GetHostPID( ), (*i)->GetPID( ), (*i)->GetLastMapPartSent( ), m_Map->GetMapData( ) ) );
-					(*i)->SetLastMapPartSent( (*i)->GetLastMapPartSent( ) + 1442 );
+					Send( iPlayer, m_Protocol->SEND_W3GS_MAPPART( GetHostPID( ), iPlayer->GetPID( ), iPlayer->GetLastMapPartSent( ), m_Map->GetMapData( ) ) );
+					iPlayer->SetLastMapPartSent( iPlayer->GetLastMapPartSent( ) + 1442 );
 					m_DownloadCounter += 1442;
 				}
 			}
@@ -717,8 +702,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		m_SayGamesMutex.lock();
 		
-		for( std::vector<std::string> :: iterator i = m_DoSayGames.begin( ); i != m_DoSayGames.end( ); ++i )
-			SendAllChat( "FIONA ADMIN: " + *i );
+		for (auto iDoSayGames:m_DoSayGames)
+			SendAllChat( "FIONA ADMIN: " + iDoSayGames );
 		
 		m_DoSayGames.clear( );
 		
@@ -731,12 +716,11 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		m_SpoofAddMutex.lock();
 		
-		for( std::vector<QueuedSpoofAdd> :: iterator i = m_DoSpoofAdd.begin( ); i != m_DoSpoofAdd.end( ); ++i )
-		{
-			if( (*i).failMessage.empty( ) )
-				AddToSpoofed( (*i).server, (*i).name, (*i).sendMessage );
+		for (auto iSpoofAdd:m_DoSpoofAdd){
+			if (iSpoofAdd.failMessage.empty())
+				AddToSpoofed(iSpoofAdd.server, iSpoofAdd.name, iSpoofAdd.sendMessage);
 			else
-				SendAllChat( (*i).failMessage );
+				SendAllChat(iSpoofAdd.failMessage);
 		}
 		
 		m_DoSpoofAdd.clear( );
@@ -747,14 +731,12 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 	if( !m_CountDownStarted && m_GHost->m_RequireSpoofChecks && m_GameState == GAME_PUBLIC && !m_GHost->m_AutoHostGameName.empty( ) && m_GHost->m_AutoHostMaximumGames != 0 && m_GHost->m_AutoHostAutoStartPlayers != 0 && m_AutoStartPlayers != 0 )
 	{
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		{
-			if( !(*i)->GetSpoofed( ) && GetTime( ) - (*i)->GetJoinTime( ) >= 20 )
-			{
-				(*i)->SetDeleteMe( true );
-				(*i)->SetLeftReason( m_GHost->m_Language->WasKickedForNotSpoofChecking( ) );
-				(*i)->SetLeftCode( PLAYERLEAVE_LOBBY );
-				OpenSlot( GetSIDFromPID( (*i)->GetPID( ) ), false );
+		for (auto iPlayer:m_Players){
+			if (iPlayer->GetSpoofed() && GetTime() - iPlayer->GetJoinTime() >= 20){
+				iPlayer->SetDeleteMe( true );
+				iPlayer->SetLeftReason( m_GHost->m_Language->WasKickedForNotSpoofChecking());
+				iPlayer->SetLeftCode( PLAYERLEAVE_LOBBY );
+				OpenSlot( GetSIDFromPID(iPlayer->GetPID()), false );
 			}
 		}
 	}
@@ -793,10 +775,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		// check if there's a player with reserved status in the game
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		{
-			if( (*i)->GetReserved( ) )
-				m_LastReservedSeen = GetTime( );
+		for (auto iPlayer:m_Players){
+			if(iPlayer->GetReserved())
+				m_LastReservedSeen = GetTime();
 		}
 
 		// check if we've hit the time limit
@@ -814,11 +795,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		bool FinishedLoading = true;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		{
-			FinishedLoading = (*i)->GetFinishedLoading( );
-
-			if( !FinishedLoading )
+		for(auto iPlayer:m_Players){
+			FinishedLoading = iPlayer->GetFinishedLoading();
+			if (!FinishedLoading)
 				break;
 		}
 
@@ -837,22 +816,21 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			{
 				bool UsingGProxy = false;
 
-				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-				{
-					if( (*i)->GetGProxy( ) )
+				for(auto iPlayer:m_Players){
+					if (iPlayer->GetGProxy())
 						UsingGProxy = true;
 				}
-
-				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			
+				for (auto iPlayer:m_Players)
 				{
-					if( (*i)->GetFinishedLoading( ) )
+					if( iPlayer->GetFinishedLoading( ) )
 					{
 						// stop the lag screen
 
-						for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+						for (auto jPlayer:m_Players)
 						{
-							if( !(*j)->GetFinishedLoading( ) )
-								Send( *i, m_Protocol->SEND_W3GS_STOP_LAG( *j, true ) );
+							if( !jPlayer->GetFinishedLoading( ) )
+								Send( iPlayer, m_Protocol->SEND_W3GS_STOP_LAG( jPlayer, true ) );
 						}
 
 						// send an empty update
@@ -861,37 +839,37 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 						// unfortunately we cannot send updates to players who are still loading the map, so we buffer the updates to those players (see the else clause a few lines down for the code)
 						// in addition to this we must ensure any player leave messages are sent in the exact same position relative to these updates so those must be buffered too
 
-						if( UsingGProxy && !(*i)->GetGProxy( ) )
+						if( UsingGProxy && !iPlayer->GetGProxy( ) )
 						{
 							// we must send empty actions to non-GProxy++ players
 							// GProxy++ will insert these itself so we don't need to send them to GProxy++ players
 							// empty actions are used to extend the time a player can use when reconnecting
 
 							for( unsigned char j = 0; j < m_GProxyEmptyActions; ++j )
-								Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
+								Send( iPlayer, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 						}
 
-						Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
+						Send( iPlayer, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 
 						// start the lag screen
 
-						Send( *i, m_Protocol->SEND_W3GS_START_LAG( m_Players, true ) );
+						Send( iPlayer, m_Protocol->SEND_W3GS_START_LAG( m_Players, true ) );
 					}
 					else
 					{
 						// buffer the empty update since the player is still loading the map
 
-						if( UsingGProxy && !(*i)->GetGProxy( ) )
+						if( UsingGProxy && !iPlayer->GetGProxy( ) )
 						{
 							// we must send empty actions to non-GProxy++ players
 							// GProxy++ will insert these itself so we don't need to send them to GProxy++ players
 							// empty actions are used to extend the time a player can use when reconnecting
 
 							for( unsigned char j = 0; j < m_GProxyEmptyActions; ++j )
-								(*i)->AddLoadInGameData( m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
+								iPlayer->AddLoadInGameData( m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 						}
 
-						(*i)->AddLoadInGameData( m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
+						iPlayer->AddLoadInGameData( m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 					}
 				}
 
@@ -931,19 +909,18 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			std::string LaggingString;
 
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-			{
-				if( m_SyncCounter - (*i)->GetSyncCounter( ) > m_SyncLimit )
+			for (auto iPlayer:m_Players){
+				if (m_SyncCounter - iPlayer->GetSyncCounter( ) > m_SyncLimit)
 				{
-					(*i)->SetLagging( true );
-					(*i)->SetStartedLaggingTicks( GetTicks( ) );
+					iPlayer->SetLagging(true);
+					iPlayer->SetStartedLaggingTicks(GetTicks());
 					m_Lagging = true;
-					m_StartedLaggingTime = GetTime( );
+					m_StartedLaggingTime = GetTime();
 
-					if( LaggingString.empty( ) )
-						LaggingString = (*i)->GetName( );
+					if (LaggingString.empty( ))
+						LaggingString = iPlayer->GetName();
 					else
-						LaggingString += ", " + (*i)->GetName( );
+						LaggingString += ", " + iPlayer->GetName( );
 				}
 			}
 
@@ -956,8 +933,8 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 				// reset everyone's drop vote
 
-				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-					(*i)->SetDropVote( false );
+				for (auto iPlayer:m_Players)
+					iPlayer->SetDropVote( false );
 
 				m_LastLagScreenResetTime = GetTime( );
 			}
@@ -967,9 +944,13 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			bool UsingGProxy = false;
 
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for ( auto iPlayer:m_Players )
 			{
-				if( (*i)->GetGProxy( ) )
+				if( iPlayer->GetGProxy( ) )
+					UsingGProxy = true;
+			}
+			for ( auto iPlayer:m_Players ){
+				if (( iPlayer->GetGProxy( ) ))
 					UsingGProxy = true;
 			}
 
@@ -986,36 +967,38 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			// another solution is to reset the lag screen the same way we reset it when using load-in-game
 			// this is required in order to give GProxy++ clients more time to reconnect
 
+			// TODO: Set to lower lag screen reset time to make players not be able to disconnect!!! [ Need TEST ]
 			if( GetTime( ) - m_LastLagScreenResetTime >= 60 )
 			{
-				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+				for (auto iPlayer:m_Players)
 				{
 					// stop the lag screen
 
-					for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+					
+					for(auto jPlayer:m_Players)
 					{
-						if( (*j)->GetLagging( ) )
-							Send( *i, m_Protocol->SEND_W3GS_STOP_LAG( *j ) );
+						if (jPlayer->GetLagging( ) )
+							Send( iPlayer, m_Protocol->SEND_W3GS_STOP_LAG( jPlayer ) );
 					}
 
 					// send an empty update
 					// this resets the lag screen timer
 
-					if( UsingGProxy && !(*i)->GetGProxy( ) )
+					if( UsingGProxy && !iPlayer->GetGProxy( ) )
 					{
 						// we must send additional empty actions to non-GProxy++ players
 						// GProxy++ will insert these itself so we don't need to send them to GProxy++ players
 						// empty actions are used to extend the time a player can use when reconnecting
 
 						for( unsigned char j = 0; j < m_GProxyEmptyActions; ++j )
-							Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
+							Send( iPlayer, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 					}
 
-					Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
+					Send( iPlayer, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 
 					// start the lag screen
 
-					Send( *i, m_Protocol->SEND_W3GS_START_LAG( m_Players ) );
+					Send( iPlayer, m_Protocol->SEND_W3GS_START_LAG( m_Players ) );
 				}
 
 				// add actions to replay
@@ -1043,16 +1026,16 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 			// check if anyone has stopped lagging normally
 			// we consider a player to have stopped lagging if they're less than half m_SyncLimit keepalives behind
 
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for (auto iPlayer:m_Players)
 			{
-				if( (*i)->GetLagging( ) && m_SyncCounter - (*i)->GetSyncCounter( ) < m_SyncLimit / 2 )
+				if( iPlayer->GetLagging( ) && m_SyncCounter - iPlayer->GetSyncCounter( ) < m_SyncLimit / 2 )
 				{
 					// stop the lag screen for this player
 
-					CONSOLE_Print( "[GAME: " + m_GameName + "] stopped lagging on [" + (*i)->GetName( ) + "]" );
-					SendAll( m_Protocol->SEND_W3GS_STOP_LAG( *i ) );
-					(*i)->SetLagging( false );
-					(*i)->SetStartedLaggingTicks( 0 );
+					CONSOLE_Print( "[GAME: " + m_GameName + "] stopped lagging on [" + iPlayer->GetName( ) + "]" );
+					SendAll( m_Protocol->SEND_W3GS_STOP_LAG( iPlayer ) );
+					iPlayer->SetLagging( false );
+					iPlayer->SetStartedLaggingTicks( 0 );
 				}
 			}
 
@@ -1060,9 +1043,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 
 			bool Lagging = false;
 
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for (auto iPlayer:m_Players)
 			{
-				if( (*i)->GetLagging( ) )
+				if( iPlayer->GetLagging( ) )
 					Lagging = true;
 			}
 
@@ -1143,9 +1126,9 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 	{
 		bool AlreadyStopped = true;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for (auto iPlayer:m_Players)
 		{
-			if( !(*i)->GetDeleteMe( ) )
+			if( !iPlayer->GetDeleteMe( ) )
 			{
 				AlreadyStopped = false;
 				break;
@@ -1211,16 +1194,14 @@ void CBaseGame :: UpdatePost( void *send_fd )
 	// this is in case player 2 generates a packet for player 1 during the update but it doesn't get sent because player 1 already finished updating
 	// in reality since we're queueing actions it might not make a big difference but oh well
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-	{
-		if( (*i)->GetSocket( ) )
-			(*i)->GetSocket( )->DoSend( (fd_set *)send_fd );
+	for ( auto iPlayer:m_Players ){
+		if ( iPlayer->GetSocket() )
+			iPlayer->GetSocket( )->DoSend( (fd_set *)send_fd );
 	}
 
-	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
-	{
-		if( (*i)->GetSocket( ) )
-			(*i)->GetSocket( )->DoSend( (fd_set *)send_fd );
+	for ( auto iPlayer:m_Players ){
+		if ( iPlayer->GetSocket( ) )
+			iPlayer->GetSocket( )->DoSend( (fd_set *)send_fd );
 	}
 }
 
@@ -1243,8 +1224,8 @@ void CBaseGame :: Send( BYTEARRAY PIDs, BYTEARRAY data )
 
 void CBaseGame :: SendAll( BYTEARRAY data )
 {
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		(*i)->Send( data );
+	for ( auto iPlayer:m_Players )
+		iPlayer->Send( data );
 }
 
 void CBaseGame :: SendChat( unsigned char fromPID, CGamePlayer *player, std::string message )
@@ -1336,17 +1317,15 @@ void CBaseGame :: SendLocalAdminChat( std::string message )
 	// at the time of this writing it is only possible for the game owner to meet this criteria because being an admin requires spoof checking
 	// this is mainly used for relaying battle.net whispers, chat messages, and emotes to these players
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-	{
-		if( (*i)->GetSpoofed( ) && IsOwner( (*i)->GetName( ) ) && ( UTIL_IsLanIP( (*i)->GetExternalIP( ) ) || UTIL_IsLocalIP( (*i)->GetExternalIP( ), m_GHost->m_LocalAddresses ) ) )
+	for ( auto iPlayer:m_Players ){
+		if ( iPlayer->GetSpoofed( ) && IsOwner( iPlayer->GetName( ) ) && UTIL_IsLanIP( iPlayer->GetExternalIP( ) ) || UTIL_IsLocalIP( iPlayer->GetExternalIP( ), m_GHost->m_LocalAddresses ) )
 		{
-			if( m_VirtualHostPID != 255 )
-				SendChat( m_VirtualHostPID, *i, message );
+			if ( m_VirtualHostPID != 255 )
+				SendChat( m_VirtualHostPID, iPlayer, message );
 			else
 			{
 				// make the chat message originate from the recipient since it's not going to be logged to the replay
-
-				SendChat( (*i)->GetPID( ), *i, message );
+				SendChat(iPlayer->GetPID( ), iPlayer, message);
 			}
 		}
 	}
@@ -1391,9 +1370,8 @@ void CBaseGame :: SendAllActions( )
 {
 	bool UsingGProxy = false;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-	{
-		if( (*i)->GetGProxy( ) )
+	for ( auto iPlayer:m_Players ){
+		if ( iPlayer->GetGProxy( ) )
 			UsingGProxy = true;
 	}
 
@@ -1405,12 +1383,10 @@ void CBaseGame :: SendAllActions( )
 		// GProxy++ will insert these itself so we don't need to send them to GProxy++ players
 		// empty actions are used to extend the time a player can use when reconnecting
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		{
-			if( !(*i)->GetGProxy( ) )
-			{
+		for ( auto iPlayer:m_Players ){
+			if (!iPlayer->GetGProxy( ) ){
 				for( unsigned char j = 0; j < m_GProxyEmptyActions; ++j )
-					Send( *i, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
+					Send( iPlayer, m_Protocol->SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction *>( ), 0 ) );
 			}
 		}
 
@@ -1551,7 +1527,7 @@ void CBaseGame :: SendWelcomeMessage( CGamePlayer *player )
 		
 		if (!m_HCLCommandString.empty())
 		{
-			if (m_Map->GetMapType() == "lia")
+			if (m_Map->GetMapType() == "lia" || m_Map->GetMapType() == "lia_debug")
 				SendChat(player, detect_lia_mode(m_HCLCommandString));
 		}
 
@@ -1638,18 +1614,18 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 
 	if( player->GetWhoisSent( ) && !player->GetJoinedRealm( ).empty( ) && player->GetSpoofedRealm( ).empty( ) )
 	{
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for ( auto iBNET:m_GHost->m_BNETs )
 		{
-			if( (*i)->GetServer( ) == player->GetJoinedRealm( ) )
+			if( iBNET->GetServer( ) == player->GetJoinedRealm( ) )
 			{
 				// hackhack: there must be a better way to do this
 
-				if( (*i)->GetPasswordHashType( ) == "pvpgn" )
-					(*i)->UnqueueChatCommand( "/whereis " + player->GetName( ) );
+				if( iBNET->GetPasswordHashType( ) == "pvpgn" )
+					iBNET->UnqueueChatCommand( "/whereis " + player->GetName( ) );
 				else
-					(*i)->UnqueueChatCommand( "/whois " + player->GetName( ) );
+					iBNET->UnqueueChatCommand( "/whois " + player->GetName( ) );
 
-				(*i)->UnqueueChatCommand( "/w " + player->GetName( ) + " " + m_GHost->m_Language->SpoofCheckByReplying( ) );
+				iBNET->UnqueueChatCommand( "/w " + player->GetName( ) + " " + m_GHost->m_Language->SpoofCheckByReplying( ) );
 			}
 		}
 	}
@@ -1689,17 +1665,17 @@ void CBaseGame :: EventPlayerDeleted( CGamePlayer *player )
 		// we must buffer player leave messages when using "load in game" to prevent desyncs
 		// this ensures the player leave messages are correctly interleaved with the empty updates sent to each player
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players )
 		{
-			if( (*i)->GetFinishedLoading( ) )
+			if( iPlayer->GetFinishedLoading( ) )
 			{
 				if( !player->GetFinishedLoading( ) )
-					Send( *i, m_Protocol->SEND_W3GS_STOP_LAG( player ) );
+					Send( iPlayer, m_Protocol->SEND_W3GS_STOP_LAG( player ) );
 
-				Send( *i, m_Protocol->SEND_W3GS_PLAYERLEAVE_OTHERS( player->GetPID( ), player->GetLeftCode( ) ) );
+				Send( iPlayer, m_Protocol->SEND_W3GS_PLAYERLEAVE_OTHERS( player->GetPID( ), player->GetLeftCode( ) ) );
 			}
 			else
-				(*i)->AddLoadInGameData( m_Protocol->SEND_W3GS_PLAYERLEAVE_OTHERS( player->GetPID( ), player->GetLeftCode( ) ) );
+				iPlayer->AddLoadInGameData( m_Protocol->SEND_W3GS_PLAYERLEAVE_OTHERS( player->GetPID( ), player->GetLeftCode( ) ) );
 		}
 	}
 	else
@@ -1909,10 +1885,9 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	uint32_t HostCounterID = joinPlayer->GetHostCounter( ) >> 24;
 	std::string JoinedRealm;
 
-	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
-	{
-		if( (*i)->GetHostCounterID( ) == HostCounterID )
-			JoinedRealm = (*i)->GetServer( );
+	for ( auto iBNET:m_GHost->m_BNETs ){
+		if ( iBNET->GetHostCounterID( ) == HostCounterID )
+			JoinedRealm = iBNET->GetServer( );
 	}
 
 	if( JoinedRealm.empty( ) )
@@ -1939,11 +1914,11 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	if( m_GHost->m_BanMethod != 0 )
 	{
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for ( auto iBNET:m_GHost->m_BNETs)
 		{
-			if( (*i)->GetServer( ) == JoinedRealm )
+			if( iBNET->GetServer( ) == JoinedRealm )
 			{
-				CDBBan *Ban = (*i)->IsBannedName( joinPlayer->GetName( ) );
+				CDBBan *Ban = iBNET->IsBannedName( joinPlayer->GetName( ) );
 
 				if( Ban )
 				{
@@ -1971,7 +1946,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 				}
 			}
 
-			CDBBan *Ban = (*i)->IsBannedIP( potential->GetExternalIPString( ) );
+			CDBBan *Ban = iBNET->IsBannedIP( potential->GetExternalIPString( ) );
 
 			if( Ban )
 			{
@@ -1991,6 +1966,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 					std::vector<CGameSlot> Slots = m_Map->GetSlots( );
 					potential->Send( m_Protocol->SEND_W3GS_SLOTINFOJOIN( 1, potential->GetSocket( )->GetPort( ), potential->GetExternalIP( ), Slots, 0, m_Map->GetMapLayoutStyle( ), m_Map->GetMapNumPlayers( ) ) );
+					// TODO: Send chat to player with ban reason and where to find unban
 					potential->SetDeleteMe( true );
 					return;
 				}
@@ -2015,9 +1991,9 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	bool AnyAdminCheck = false;
 
-	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	for ( auto iBNET:m_GHost->m_BNETs)
 	{
-		if( (*i)->IsAdmin( joinPlayer->GetName( ) ) || (*i)->IsRootAdmin( joinPlayer->GetName( ) ) )
+		if( iBNET->IsAdmin( joinPlayer->GetName( ) ) || iBNET->IsRootAdmin( joinPlayer->GetName( ) ) )
 		{
 			AnyAdminCheck = true;
 			break;
@@ -2039,17 +2015,17 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 		// unfortunately we don't know how to extract the player layout from the saved game so we use the data from a replay instead
 		// the !enforcesg command defines the player layout by parsing a replay
 
-		for( std::vector<PIDPlayer> :: iterator i = m_EnforcePlayers.begin( ); i != m_EnforcePlayers.end( ); ++i )
+		for (auto iEnforcePlayer:m_EnforcePlayers)
 		{
-			if( (*i).second == joinPlayer->GetName( ) )
-				EnforcePID = (*i).first;
+			if( iEnforcePlayer.second == joinPlayer->GetName( ) )
+				EnforcePID = iEnforcePlayer.first;
 		}
 
-		for( std::vector<CGameSlot> :: iterator i = m_EnforceSlots.begin( ); i != m_EnforceSlots.end( ); ++i )
+		for ( auto iEnforceSlot:m_EnforceSlots )
 		{
-			if( (*i).GetPID( ) == EnforcePID )
+			if( iEnforceSlot.GetPID( ) == EnforcePID )
 			{
-				EnforceSlot = *i;
+				EnforceSlot = iEnforceSlot;
 				break;
 			}
 
@@ -2143,11 +2119,11 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	if( m_GHost->m_BanMethod == 0 )
 	{
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for ( auto iBNET:m_GHost->m_BNETs )
 		{
-			if( (*i)->GetServer( ) == JoinedRealm )
+			if( iBNET->GetServer( ) == JoinedRealm )
 			{
-				CDBBan *Ban = (*i)->IsBannedName( joinPlayer->GetName( ) );
+				CDBBan *Ban = iBNET->IsBannedName( joinPlayer->GetName( ) );
 
 				if( Ban )
 				{
@@ -2158,7 +2134,7 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 				}
 			}
 
-			CDBBan *Ban = (*i)->IsBannedIP( potential->GetExternalIPString( ) );
+			CDBBan *Ban = iBNET->IsBannedIP( potential->GetExternalIPString( ) );
 
 			if( Ban )
 			{
@@ -2255,26 +2231,26 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	BlankIP.push_back( 0 );
 	BlankIP.push_back( 0 );
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players )
 	{
-		if( !(*i)->GetLeftMessageSent( ) && *i != Player )
+		if( !iPlayer->GetLeftMessageSent( ) && iPlayer != Player )
 		{
 			// send info about the new player to every other player
 
-			if( (*i)->GetSocket( ) )
+			if( iPlayer->GetSocket( ) )
 			{
 				if( m_GHost->m_HideIPAddresses )
-					(*i)->Send( m_Protocol->SEND_W3GS_PLAYERINFO( Player->GetPID( ), Player->GetName( ), BlankIP, BlankIP ) );
+					iPlayer->Send( m_Protocol->SEND_W3GS_PLAYERINFO( Player->GetPID( ), Player->GetName( ), BlankIP, BlankIP ) );
 				else
-					(*i)->Send( m_Protocol->SEND_W3GS_PLAYERINFO( Player->GetPID( ), Player->GetName( ), Player->GetExternalIP( ), Player->GetInternalIP( ) ) );
+					iPlayer->Send( m_Protocol->SEND_W3GS_PLAYERINFO( Player->GetPID( ), Player->GetName( ), Player->GetExternalIP( ), Player->GetInternalIP( ) ) );
 			}
 
 			// send info about every other player to the new player
 
 			if( m_GHost->m_HideIPAddresses )
-				Player->Send( m_Protocol->SEND_W3GS_PLAYERINFO( (*i)->GetPID( ), (*i)->GetName( ), BlankIP, BlankIP ) );
+				Player->Send( m_Protocol->SEND_W3GS_PLAYERINFO( iPlayer->GetPID( ), iPlayer->GetName( ), BlankIP, BlankIP ) );
 			else
-				Player->Send( m_Protocol->SEND_W3GS_PLAYERINFO( (*i)->GetPID( ), (*i)->GetName( ), (*i)->GetExternalIP( ), (*i)->GetInternalIP( ) ) );
+				Player->Send( m_Protocol->SEND_W3GS_PLAYERINFO( iPlayer->GetPID( ), iPlayer->GetName( ), iPlayer->GetExternalIP( ), iPlayer->GetInternalIP( ) ) );
 		}
 	}
 
@@ -2296,16 +2272,16 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 
 	if( m_GHost->m_RequireSpoofChecks && !Player->GetWhoisShouldBeSent( ) )
 	{
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for ( auto iBNET:m_GHost->m_BNETs )
 		{
 			// note: the following (commented out) line of code will crash because calling GetUniqueName( ) twice will result in two different return values
 			// and unfortunately iterators are not valid if compared against different containers
 			// this comment shall serve as warning to not make this mistake again since it has now been made twice before in GHost++
-			// std::string( (*i)->GetUniqueName( ).begin( ), (*i)->GetUniqueName( ).end( ) )
+			// std::string( iBNET->GetUniqueName( ).begin( ), iBNET->GetUniqueName( ).end( ) )
 
-			BYTEARRAY UniqueName = (*i)->GetUniqueName( );
+			BYTEARRAY UniqueName = iBNET->GetUniqueName( );
 
-			if( (*i)->GetServer( ) == JoinedRealm )
+			if( iBNET->GetServer( ) == JoinedRealm )
 				SendChat( Player, m_GHost->m_Language->SpoofCheckByWhispering( std::string( UniqueName.begin( ), UniqueName.end( ) )  ) );
 		}
 	}
@@ -2316,14 +2292,14 @@ void CBaseGame :: EventPlayerJoined( CPotentialPlayer *potential, CIncomingJoinP
 	{
 		std::string Others;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players )
 		{
-			if( Player != *i && Player->GetExternalIPString( ) == (*i)->GetExternalIPString( ) )
+			if( Player != iPlayer && Player->GetExternalIPString( ) == iPlayer->GetExternalIPString( ) )
 			{
 				if( Others.empty( ) )
-					Others = (*i)->GetName( );
+					Others = iPlayer->GetName( );
 				else
-					Others += ", " + (*i)->GetName( );
+					Others += ", " + iPlayer->GetName( );
 			}
 		}
 
@@ -2399,9 +2375,9 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	bool AnyAdminCheck = false;
 
-	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	for ( auto iBNET:m_GHost->m_BNETs )
 	{
-		if( (*i)->IsAdmin( joinPlayer->GetName( ) ) || (*i)->IsRootAdmin( joinPlayer->GetName( ) ) )
+		if( iBNET->IsAdmin( joinPlayer->GetName( ) ) || iBNET->IsRootAdmin( joinPlayer->GetName( ) ) )
 		{
 			AnyAdminCheck = true;
 			break;
@@ -2434,11 +2410,11 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 				PlayersScored = 1;
 			}
 
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for ( auto iPlayer:m_Players )
 			{
-				if( (*i)->GetScore( ) > -99999.0 )
+				if( iPlayer->GetScore( ) > -99999.0 )
 				{
-					AverageScore += (*i)->GetScore( );
+					AverageScore += iPlayer->GetScore( );
 					PlayersScored++;
 				}
 			}
@@ -2450,10 +2426,10 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 			CGamePlayer *FurthestPlayer = NULL;
 
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for( auto iPlayer:m_Players)
 			{
-				if( !FurthestPlayer || (*i)->GetScore( ) < -99999.0 || abs( (*i)->GetScore( ) - AverageScore ) > abs( FurthestPlayer->GetScore( ) - AverageScore ) )
-					FurthestPlayer = *i;
+				if( !FurthestPlayer || iPlayer->GetScore( ) < -99999.0 || abs( iPlayer->GetScore( ) - AverageScore ) > abs( FurthestPlayer->GetScore( ) - AverageScore ) )
+					FurthestPlayer = iPlayer;
 			}
 
 			if( !FurthestPlayer )
@@ -2510,10 +2486,10 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 			CGamePlayer *LowestPlayer = NULL;
 
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for ( auto iPlayer:m_Players)
 			{
-				if( !LowestPlayer || (*i)->GetScore( ) < -99999.0 || (*i)->GetScore( ) < LowestPlayer->GetScore( ) )
-					LowestPlayer = *i;
+				if( !LowestPlayer || iPlayer->GetScore( ) < -99999.0 || iPlayer->GetScore( ) < LowestPlayer->GetScore( ) )
+					LowestPlayer = iPlayer;
 			}
 
 			if( !LowestPlayer )
@@ -2588,10 +2564,10 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	// we use an ID value of 0 to denote joining via LAN
 
-	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+	for ( auto iBNET:m_GHost->m_BNETs)
 	{
-		if( (*i)->GetHostCounterID( ) == HostCounterID )
-			JoinedRealm = (*i)->GetServer( );
+		if( iBNET->GetHostCounterID( ) == HostCounterID )
+			JoinedRealm = iBNET->GetServer( );
 	}
 
 	if( JoinedRealm.empty( ) )
@@ -2652,26 +2628,26 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	BlankIP.push_back( 0 );
 	BlankIP.push_back( 0 );
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) && *i != Player )
+		if( !iPlayer->GetLeftMessageSent( ) && iPlayer != Player )
 		{
 			// send info about the new player to every other player
 
-			if( (*i)->GetSocket( ) )
+			if( iPlayer->GetSocket( ) )
 			{
 				if( m_GHost->m_HideIPAddresses )
-					(*i)->Send( m_Protocol->SEND_W3GS_PLAYERINFO( Player->GetPID( ), Player->GetName( ), BlankIP, BlankIP ) );
+					iPlayer->Send( m_Protocol->SEND_W3GS_PLAYERINFO( Player->GetPID( ), Player->GetName( ), BlankIP, BlankIP ) );
 				else
-					(*i)->Send( m_Protocol->SEND_W3GS_PLAYERINFO( Player->GetPID( ), Player->GetName( ), Player->GetExternalIP( ), Player->GetInternalIP( ) ) );
+					iPlayer->Send( m_Protocol->SEND_W3GS_PLAYERINFO( Player->GetPID( ), Player->GetName( ), Player->GetExternalIP( ), Player->GetInternalIP( ) ) );
 			}
 
 			// send info about every other player to the new player
 
 			if( m_GHost->m_HideIPAddresses )
-				Player->Send( m_Protocol->SEND_W3GS_PLAYERINFO( (*i)->GetPID( ), (*i)->GetName( ), BlankIP, BlankIP ) );
+				Player->Send( m_Protocol->SEND_W3GS_PLAYERINFO( iPlayer->GetPID( ), iPlayer->GetName( ), BlankIP, BlankIP ) );
 			else
-				Player->Send( m_Protocol->SEND_W3GS_PLAYERINFO( (*i)->GetPID( ), (*i)->GetName( ), (*i)->GetExternalIP( ), (*i)->GetInternalIP( ) ) );
+				Player->Send( m_Protocol->SEND_W3GS_PLAYERINFO( iPlayer->GetPID( ), iPlayer->GetName( ), iPlayer->GetExternalIP( ), iPlayer->GetInternalIP( ) ) );
 		}
 	}
 
@@ -2694,16 +2670,16 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 	if( m_GHost->m_RequireSpoofChecks && !Player->GetWhoisShouldBeSent( ) )
 	{
-		for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+		for ( auto iBNET:m_GHost->m_BNETs)
 		{
 			// note: the following (commented out) line of code will crash because calling GetUniqueName( ) twice will result in two different return values
 			// and unfortunately iterators are not valid if compared against different containers
 			// this comment shall serve as warning to not make this mistake again since it has now been made twice before in GHost++
 			// std::string( (*i)->GetUniqueName( ).begin( ), (*i)->GetUniqueName( ).end( ) )
 
-			BYTEARRAY UniqueName = (*i)->GetUniqueName( );
+			BYTEARRAY UniqueName = iBNET->GetUniqueName( );
 
-			if( (*i)->GetServer( ) == JoinedRealm )
+			if( iBNET->GetServer( ) == JoinedRealm )
 				SendChat( Player, m_GHost->m_Language->SpoofCheckByWhispering( std::string( UniqueName.begin( ), UniqueName.end( ) )  ) );
 		}
 	}
@@ -2720,22 +2696,22 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	double MaxScore = 0.0;
 	bool Found = false;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) )
+		if( !iPlayer->GetLeftMessageSent( ) )
 		{
-			if( (*i)->GetScore( ) < -99999.0 )
+			if( iPlayer->GetScore( ) < -99999.0 )
 				PlayersNotScored++;
 			else
 			{
 				PlayersScored++;
-				AverageScore += (*i)->GetScore( );
+				AverageScore += iPlayer->GetScore( );
 
-				if( !Found || (*i)->GetScore( ) < MinScore )
-					MinScore = (*i)->GetScore( );
+				if( !Found || iPlayer->GetScore( ) < MinScore )
+					MinScore = iPlayer->GetScore( );
 
-				if( !Found || (*i)->GetScore( ) > MaxScore )
-					MaxScore = (*i)->GetScore( );
+				if( !Found || iPlayer->GetScore( ) > MaxScore )
+					MaxScore = iPlayer->GetScore( );
 
 				Found = true;
 			}
@@ -2751,14 +2727,14 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 	{
 		std::string Others;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for (auto iPlayer:m_Players)
 		{
-			if( Player != *i && Player->GetExternalIPString( ) == (*i)->GetExternalIPString( ) )
+			if( Player != iPlayer && Player->GetExternalIPString( ) == iPlayer->GetExternalIPString( ) )
 			{
 				if( Others.empty( ) )
-					Others = (*i)->GetName( );
+					Others = iPlayer->GetName( );
 				else
-					Others += ", " + (*i)->GetName( );
+					Others += ", " + iPlayer->GetName( );
 			}
 		}
 
@@ -2829,9 +2805,9 @@ void CBaseGame :: EventPlayerLoaded( CGamePlayer *player )
 
 		bool FinishedLoading = true;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players)
 		{
-			FinishedLoading = (*i)->GetFinishedLoading( );
+			FinishedLoading = iPlayer->GetFinishedLoading( );
 
 			if( !FinishedLoading )
 				break;
@@ -2842,18 +2818,18 @@ void CBaseGame :: EventPlayerLoaded( CGamePlayer *player )
 
 		// remove the new player from previously loaded players' lag screens
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players)
 		{
-			if( *i != player && (*i)->GetFinishedLoading( ) )
-				Send( *i, m_Protocol->SEND_W3GS_STOP_LAG( player ) );
+			if( iPlayer != player && iPlayer->GetFinishedLoading( ) )
+				Send( iPlayer, m_Protocol->SEND_W3GS_STOP_LAG( player ) );
 		}
 
 		// send a chat message to previously loaded players
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players)
 		{
-			if( *i != player && (*i)->GetFinishedLoading( ) )
-				SendChat( *i, m_GHost->m_Language->PlayerFinishedLoading( player->GetName( ) ) );
+			if( iPlayer != player && iPlayer->GetFinishedLoading( ) )
+				SendChat( iPlayer, m_GHost->m_Language->PlayerFinishedLoading( player->GetName( ) ) );
 		}
 
 		if( !FinishedLoading )
@@ -2899,9 +2875,9 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 	// however, it's possible that not every player has sent a checksum for this frame yet
 	// first we verify that we have enough checksums to work with otherwise we won't know exactly who desynced
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetDeleteMe( ) && (*i)->GetCheckSums( )->empty( ) )
+		if( !iPlayer->GetDeleteMe( ) && iPlayer->GetCheckSums( )->empty( ) )
 			return;
 	}
 
@@ -2910,12 +2886,12 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 	bool FoundPlayer = false;
 	uint32_t FirstCheckSum = 0;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetDeleteMe( ) )
+		if( !iPlayer->GetDeleteMe( ) )
 		{
 			FoundPlayer = true;
-			FirstCheckSum = (*i)->GetCheckSums( )->front( );
+			FirstCheckSum = iPlayer->GetCheckSums( )->front( );
 			break;
 		}
 	}
@@ -2925,9 +2901,9 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 
 	bool AddToReplay = true;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetDeleteMe( ) && (*i)->GetCheckSums( )->front( ) != FirstCheckSum )
+		if( !iPlayer->GetDeleteMe( ) && iPlayer->GetCheckSums( )->front( ) != FirstCheckSum )
 		{
 			CONSOLE_Print( "[GAME: " + m_GameName + "] desync detected" );
 			SendAllChat( m_GHost->m_Language->DesyncDetected( ) );
@@ -2940,10 +2916,10 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 
 			std::map<uint32_t, std::vector<unsigned char> > Bins;
 
-			for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+			for ( auto jPlayer:m_Players)
 			{
-				if( !(*j)->GetDeleteMe( ) )
-					Bins[(*j)->GetCheckSums( )->front( )].push_back( (*j)->GetPID( ) );
+				if( !jPlayer->GetDeleteMe( ) )
+					Bins[jPlayer->GetCheckSums( )->front( )].push_back( jPlayer->GetPID( ) );
 			}
 
 			uint32_t StateNumber = 1;
@@ -3028,10 +3004,10 @@ void CBaseGame :: EventPlayerKeepAlive( CGamePlayer *player, uint32_t checkSum )
 		}
 	}
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetDeleteMe( ) )
-			(*i)->GetCheckSums( )->pop( );
+		if( !iPlayer->GetDeleteMe( ) )
+			iPlayer->GetCheckSums( )->pop( );
 	}
 
 	// add checksum to replay
@@ -3321,9 +3297,9 @@ void CBaseGame :: EventPlayerDropRequest( CGamePlayer *player )
 
 		uint32_t Votes = 0;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players)
 		{
-			if( (*i)->GetDropVote( ) )
+			if( iPlayer->GetDropVote( ) )
 				++Votes;
 		}
 
@@ -3572,8 +3548,8 @@ void CBaseGame :: EventGameStarted( )
 
 	if( m_Replay )
 	{
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-			m_Replay->AddPlayer( (*i)->GetPID( ), (*i)->GetName( ) );
+		for ( auto iPlayer:m_Players)
+			m_Replay->AddPlayer( iPlayer->GetPID( ), iPlayer->GetName( ) );
 
 		if( m_FakePlayerPID != 255 )
 			m_Replay->AddPlayer( m_FakePlayerPID, "|CFF00FF00EN0T" );
@@ -3639,10 +3615,10 @@ void CBaseGame :: EventGameStarted( )
 		// this ensures that every player receives the same set of player loaded messages in the same order, even if someone leaves during loading
 		// if someone leaves during loading we buffer the leave message to ensure it gets sent in the correct position but the player loaded message wouldn't get sent if we didn't buffer it now
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players)
 		{
-			for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
-				(*j)->AddLoadInGameData( m_Protocol->SEND_W3GS_GAMELOADED_OTHERS( (*i)->GetPID( ) ) );
+			for ( auto jPlayer:m_Players)
+				jPlayer->AddLoadInGameData( m_Protocol->SEND_W3GS_GAMELOADED_OTHERS( iPlayer->GetPID( ) ) );
 		}
 	}
 
@@ -3671,13 +3647,13 @@ void CBaseGame :: EventGameLoaded( )
 	CGamePlayer *Shortest = NULL;
 	CGamePlayer *Longest = NULL;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !Shortest || (*i)->GetFinishedLoadingTicks( ) < Shortest->GetFinishedLoadingTicks( ) )
-			Shortest = *i;
+		if( !Shortest || iPlayer->GetFinishedLoadingTicks( ) < Shortest->GetFinishedLoadingTicks( ) )
+			Shortest = iPlayer;
 
-		if( !Longest || (*i)->GetFinishedLoadingTicks( ) > Longest->GetFinishedLoadingTicks( ) )
-			Longest = *i;
+		if( !Longest || iPlayer->GetFinishedLoadingTicks( ) > Longest->GetFinishedLoadingTicks( ) )
+			Longest = iPlayer;
 	}
 
 	if( Shortest && Longest )
@@ -3686,8 +3662,8 @@ void CBaseGame :: EventGameLoaded( )
 		SendAllChat( m_GHost->m_Language->LongestLoadByPlayer( Longest->GetName( ), std::to_string( (float)( Longest->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000 ) ) );
 	}
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		SendChat( *i, m_GHost->m_Language->YourLoadingTimeWas( std::to_string( (float)( (*i)->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000 ) ) );
+	for ( auto iPlayer:m_Players)
+		SendChat( iPlayer, m_GHost->m_Language->YourLoadingTimeWas( std::to_string( (float)( iPlayer->GetFinishedLoadingTicks( ) - m_StartedLoadingTicks ) / 1000 ) ) );
 
 	// read from gameloaded.txt if available
 
@@ -3736,10 +3712,10 @@ unsigned char CBaseGame :: GetSIDFromPID( unsigned char PID )
 
 CGamePlayer *CBaseGame :: GetPlayerFromPID( unsigned char PID )
 {
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) && (*i)->GetPID( ) == PID )
-			return *i;
+		if( !iPlayer->GetLeftMessageSent( ) && iPlayer->GetPID( ) == PID )
+			return iPlayer;
 	}
 
 	return NULL;
@@ -3758,17 +3734,17 @@ CGamePlayer *CBaseGame :: GetPlayerFromName( std::string name, bool sensitive )
 	if( !sensitive )
 		transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) )
+		if( !iPlayer->GetLeftMessageSent( ) )
 		{
-			std::string TestName = (*i)->GetName( );
+			std::string TestName = iPlayer->GetName( );
 
 			if( !sensitive )
 				transform( TestName.begin( ), TestName.end( ), TestName.begin( ), (int(*)(int))tolower );
 
 			if( TestName == name )
-				return *i;
+				return iPlayer;
 		}
 	}
 
@@ -3783,17 +3759,17 @@ uint32_t CBaseGame :: GetPlayerFromNamePartial( std::string name, CGamePlayer **
 
 	// try to match each player with the passed std::string (e.g. "Varlock" would be matched with "lock")
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) )
+		if( !iPlayer->GetLeftMessageSent( ) )
 		{
-			std::string TestName = (*i)->GetName( );
+			std::string TestName = iPlayer->GetName( );
 			transform( TestName.begin( ), TestName.end( ), TestName.begin( ), (int(*)(int))tolower );
 
 			if( TestName.find( name ) != std::string :: npos )
 			{
 				++Matches;
-				*player = *i;
+				*player = iPlayer;
 
 				// if the name matches exactly stop any further matching
 
@@ -3831,9 +3807,9 @@ unsigned char CBaseGame :: GetNewPID( )
 
 		bool InUse = false;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players)
 		{
-			if( !(*i)->GetLeftMessageSent( ) && (*i)->GetPID( ) == TestPID )
+			if( !iPlayer->GetLeftMessageSent( ) && iPlayer->GetPID( ) == TestPID )
 			{
 				InUse = true;
 				break;
@@ -3879,10 +3855,10 @@ BYTEARRAY CBaseGame :: GetPIDs( )
 {
 	BYTEARRAY result;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) )
-			result.push_back( (*i)->GetPID( ) );
+		if( !iPlayer->GetLeftMessageSent( ) )
+			result.push_back( iPlayer->GetPID( ) );
 	}
 
 	return result;
@@ -3892,10 +3868,10 @@ BYTEARRAY CBaseGame :: GetPIDs( unsigned char excludePID )
 {
 	BYTEARRAY result;
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) && (*i)->GetPID( ) != excludePID )
-			result.push_back( (*i)->GetPID( ) );
+		if( !iPlayer->GetLeftMessageSent( ) && iPlayer->GetPID( ) != excludePID )
+			result.push_back( iPlayer->GetPID( ) );
 	}
 
 	return result;
@@ -3916,18 +3892,18 @@ unsigned char CBaseGame :: GetHostPID( )
 
 	// try to find the owner player next
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) && IsOwner( (*i)->GetName( ) ) )
-			return (*i)->GetPID( );
+		if( !iPlayer->GetLeftMessageSent( ) && IsOwner( iPlayer->GetName( ) ) )
+			return iPlayer->GetPID( );
 	}
 
 	// okay then, just use the first available player
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( !(*i)->GetLeftMessageSent( ) )
-			return (*i)->GetPID( );
+		if( !iPlayer->GetLeftMessageSent( ) )
+			return iPlayer->GetPID( );
 	}
 
 	return 255;
@@ -4414,9 +4390,9 @@ void CBaseGame :: BalanceSlots( )
 	double PlayerScores[13];
 	memset( TeamSizes, 0, sizeof( unsigned char ) * 12 );
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players )
 	{
-		unsigned char PID = (*i)->GetPID( );
+		unsigned char PID = iPlayer->GetPID( );
 
 		if( PID < 13 )
 		{
@@ -4430,7 +4406,7 @@ void CBaseGame :: BalanceSlots( )
 				{
 					// we are forced to use a default score because there's no way to balance the teams otherwise
 
-					double Score = (*i)->GetScore( );
+					double Score = iPlayer->GetScore( );
 
 					if( Score < -99999.0 )
 						Score = m_Map->GetMapDefaultPlayerScore( );
@@ -4537,14 +4513,14 @@ void CBaseGame :: BalanceSlots( )
 		bool TeamHasPlayers = false;
 		double TeamScore = 0.0;
 
-		for( std::vector<CGamePlayer *> :: iterator j = m_Players.begin( ); j != m_Players.end( ); ++j )
+		for(auto jPlayer:m_Players)
 		{
-			unsigned char SID = GetSIDFromPID( (*j)->GetPID( ) );
+			unsigned char SID = GetSIDFromPID( jPlayer->GetPID( ) );
 
 			if( SID < m_Slots.size( ) && m_Slots[SID].GetTeam( ) == i )
 			{
 				TeamHasPlayers = true;
-				double Score = (*j)->GetScore( );
+				double Score = jPlayer->GetScore( );
 
 				if( Score < -99999.0 )
 					Score = m_Map->GetMapDefaultPlayerScore( );
@@ -4588,13 +4564,13 @@ void CBaseGame :: AddToReserved( std::string name )
 
 	// upgrade the user if they're already in the game
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		std::string NameLower = (*i)->GetName( );
+		std::string NameLower = iPlayer->GetName( );
 		transform( NameLower.begin( ), NameLower.end( ), NameLower.begin( ), (int(*)(int))tolower );
 
 		if( NameLower == name )
-			(*i)->SetReserved( true );
+			iPlayer->SetReserved( true );
 	}
 }
 
@@ -4623,9 +4599,9 @@ bool CBaseGame :: IsDownloading( )
 {
 	// returns true if at least one player is downloading the map
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( (*i)->GetDownloadStarted( ) && !(*i)->GetDownloadFinished( ) )
+		if( iPlayer->GetDownloadStarted( ) && !iPlayer->GetDownloadFinished( ) )
 			return true;
 	}
 
@@ -4711,14 +4687,14 @@ void CBaseGame :: StartCountDown( bool force )
 
 			if( m_GHost->m_RequireSpoofChecks )
 			{
-				for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+				for ( auto iPlayer:m_Players)
 				{
-					if( !(*i)->GetSpoofed( ) )
+					if( !iPlayer->GetSpoofed( ) )
 					{
 						if( NotSpoofChecked.empty( ) )
-							NotSpoofChecked = (*i)->GetName( );
+							NotSpoofChecked = iPlayer->GetName( );
 						else
-							NotSpoofChecked += ", " + (*i)->GetName( );
+							NotSpoofChecked += ", " + iPlayer->GetName( );
 					}
 				}
 
@@ -4731,14 +4707,14 @@ void CBaseGame :: StartCountDown( bool force )
 
 			std::string NotPinged;
 
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for ( auto iPlayer:m_Players)
 			{
-				if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 1 )
+				if( !iPlayer->GetReserved( ) && iPlayer->GetNumPings( ) < 1 )
 				{
 					if( NotPinged.empty( ) )
-						NotPinged = (*i)->GetName( );
+						NotPinged = iPlayer->GetName( );
 					else
-						NotPinged += ", " + (*i)->GetName( );
+						NotPinged += ", " + iPlayer->GetName( );
 				}
 			}
 
@@ -4805,14 +4781,14 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 
 		if( requireSpoofChecks )
 		{
-			for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+			for ( auto iPlayer:m_Players)
 			{
-				if( !(*i)->GetSpoofed( ) )
+				if( !iPlayer->GetSpoofed( ) )
 				{
 					if( NotSpoofChecked.empty( ) )
-						NotSpoofChecked = (*i)->GetName( );
+						NotSpoofChecked = iPlayer->GetName( );
 					else
-						NotSpoofChecked += ", " + (*i)->GetName( );
+						NotSpoofChecked += ", " + iPlayer->GetName( );
 				}
 			}
 
@@ -4825,14 +4801,14 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 
 		std::string NotPinged;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players)
 		{
-			if( !(*i)->GetReserved( ) && (*i)->GetNumPings( ) < 2 )
+			if( !iPlayer->GetReserved( ) && iPlayer->GetNumPings( ) < 2 )
 			{
 				if( NotPinged.empty( ) )
-					NotPinged = (*i)->GetName( );
+					NotPinged = iPlayer->GetName( );
 				else
-					NotPinged += ", " + (*i)->GetName( );
+					NotPinged += ", " + iPlayer->GetName( );
 			}
 		}
 
@@ -4859,23 +4835,23 @@ void CBaseGame :: StopPlayers( std::string reason )
 	// therefore calling this function when m_GameLoading || m_GameLoaded is roughly equivalent to setting m_Exiting = true
 	// the only difference is whether the code in the Update function is executed or not
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		(*i)->SetDeleteMe( true );
-		(*i)->SetLeftReason( reason );
-		(*i)->SetLeftCode( PLAYERLEAVE_LOST );
+		iPlayer->SetDeleteMe( true );
+		iPlayer->SetLeftReason( reason );
+		iPlayer->SetLeftCode( PLAYERLEAVE_LOST );
 	}
 }
 
 void CBaseGame :: StopLaggers( std::string reason )
 {
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( (*i)->GetLagging( ) )
+		if( iPlayer->GetLagging( ) )
 		{
-			(*i)->SetDeleteMe( true );
-			(*i)->SetLeftReason( reason );
-			(*i)->SetLeftCode( PLAYERLEAVE_DISCONNECT );
+			iPlayer->SetDeleteMe( true );
+			iPlayer->SetLeftReason( reason );
+			iPlayer->SetLeftCode( PLAYERLEAVE_DISCONNECT );
 		}
 	}
 }

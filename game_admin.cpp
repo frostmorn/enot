@@ -274,10 +274,10 @@ bool CAdminGame :: Update( void *fd, void *send_fd )
 
 void CAdminGame :: SendAdminChat( std::string message )
 {
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+	for ( auto iPlayer:m_Players)
 	{
-		if( (*i)->GetLoggedIn( ) )
-			SendChat( *i, message );
+		if( iPlayer->GetLoggedIn( ) )
+			SendChat( iPlayer, message );
 	}
 }
 

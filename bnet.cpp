@@ -186,21 +186,23 @@ CBNET :: ~CBNET( )
 	}
 
 	delete m_BNCSUtil;
-
-	for( std::vector<CIncomingFriendList *> :: iterator i = m_Friends.begin( ); i != m_Friends.end( ); ++i )
-		delete *i;
+	for (auto iFriend : m_Friends)
+		delete iFriend;
 	#ifdef GHOST_CLANS
-	for( std::vector<CIncomingClanList *> :: iterator i = m_Clans.begin( ); i != m_Clans.end( ); ++i )
-		delete *i;
+	for (auto iClan:m_Clans)
+		delete iClan;
 	#endif
 	m_GHost->m_CallablesMutex.lock();
 	
+	// TODO: Annihilate any kind of callables.
+	// There is no reason to create so many connections to database.
+	// There must be a better way
 	for( std::vector<PairedAdminCount> :: iterator i = m_PairedAdminCounts.begin( ); i != m_PairedAdminCounts.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
 
 	for( std::vector<PairedAdminAdd> :: iterator i = m_PairedAdminAdds.begin( ); i != m_PairedAdminAdds.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
-
+	
 	for( std::vector<PairedAdminRemove> :: iterator i = m_PairedAdminRemoves.begin( ); i != m_PairedAdminRemoves.end( ); ++i )
 		m_GHost->m_Callables.push_back( i->second );
 
@@ -232,9 +234,9 @@ CBNET :: ~CBNET( )
 
 	m_BansMutex.lock();
 
-	for( std::vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
-		delete *i;
-	
+	for (auto iBan:m_Bans)
+		delete iBan;
+
 	m_BansMutex.unlock();
 }
 
@@ -510,9 +512,9 @@ bool CBNET :: Update( void *fd, void *send_fd )
 		// CONSOLE_Print( "[BNET: " + m_ServerAlias + "] refreshed ban list (" + std::to_string( m_Bans.size( ) ) + " -> " + std::to_string( m_CallableBanList->GetResult( ).size( ) ) + " bans)" );
 		m_BansMutex.lock();
 		
-		for( std::vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
-			delete *i;
-
+		for (auto iBan:m_Bans){
+			delete iBan;
+		}
 		m_Bans = m_CallableBanList->GetResult( );
 		m_BansMutex.unlock();
 		
@@ -1033,9 +1035,9 @@ void CBNET :: ProcessPackets( )
 
 			case CBNETProtocol :: SID_FRIENDSLIST:
 				Friends = m_Protocol->RECEIVE_SID_FRIENDSLIST( Packet->GetData( ) );
-
-				for( std::vector<CIncomingFriendList *> :: iterator i = m_Friends.begin( ); i != m_Friends.end( ); ++i )
-					delete *i;
+				
+				for (auto iFriend: m_Friends)
+					delete iFriend;
 
 				m_Friends = Friends;
 				break;
@@ -1044,8 +1046,8 @@ void CBNET :: ProcessPackets( )
 				{
 				std::vector<CIncomingClanList *> Clans = m_Protocol->RECEIVE_SID_CLANMEMBERLIST( Packet->GetData( ) );
 
-				for( std::vector<CIncomingClanList *> :: iterator i = m_Clans.begin( ); i != m_Clans.end( ); ++i )
-					delete *i;
+				for (auto iClan:m_Clans)
+					delete iClan;
 
 				m_Clans = Clans;
 				break;
@@ -2109,11 +2111,10 @@ void CBNET :: BotCommand( std::string Message, std::string User, bool Whisper, b
 					m_GHost->m_CurrentGame->m_SayGamesMutex.unlock();
 				}
 
-				for( std::vector<CBaseGame *> :: iterator i = m_GHost->m_Games.begin( ); i != m_GHost->m_Games.end( ); ++i )
-				{
-					(*i)->m_SayGamesMutex.lock();
-					(*i)->m_DoSayGames.push_back( Payload );
-					(*i)->m_SayGamesMutex.unlock(); 
+				for (auto iGame : m_GHost->m_Games){
+					iGame->m_SayGamesMutex.lock();
+					iGame->m_DoSayGames.push_back( Payload );
+					iGame->m_SayGamesMutex.unlock();
 				}
 		
 				m_GHost->m_GamesMutex.unlock();
@@ -2541,9 +2542,9 @@ bool CBNET :: IsAdmin( std::string name )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 
-	for( std::vector<std::string> :: iterator i = m_Admins.begin( ); i != m_Admins.end( ); ++i )
+	for (auto iAdmin:m_Admins)
 	{
-		if( *i == name )
+		if (iAdmin == name)
 			return true;
 	}
 
@@ -2583,11 +2584,10 @@ CDBBan *CBNET :: IsBannedName( std::string name )
 	
 	m_BansMutex.lock();
 
-	for( std::vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
-	{
-		if( (*i)->GetName( ) == name ){
+	for (auto iBan:m_Bans){
+		if (iBan->GetName() == name){
 			m_BansMutex.unlock();
-			return *i;
+			return iBan;
 		}
 	}
 	
@@ -2601,11 +2601,10 @@ CDBBan *CBNET :: IsBannedIP( std::string ip )
 	
 	m_BansMutex.lock();
 	
-	for( std::vector<CDBBan *> :: iterator i = m_Bans.begin( ); i != m_Bans.end( ); ++i )
-	{
-		if( (*i)->GetIP( ) == ip ){
+	for (auto iBan:m_Bans){
+		if (iBan->GetIP() == ip){
 			m_BansMutex.unlock();
-			return *i;
+			return iBan;
 		}
 	}
 
@@ -2662,8 +2661,8 @@ void CBNET :: HoldFriends( CBaseGame *game )
 {
 	if( game )
 	{
-		for( std::vector<CIncomingFriendList *> :: iterator i = m_Friends.begin( ); i != m_Friends.end( ); ++i )
-			game->AddToReserved( (*i)->GetAccount( ) );
+		for(auto iFriend:m_Friends)
+			game->AddToReserved(iFriend->GetAccount());
 	}
 }
 #ifdef GHOST_CLANS
@@ -2671,8 +2670,8 @@ void CBNET :: HoldClan( CBaseGame *game )
 {
 	if( game )
 	{
-		for( std::vector<CIncomingClanList *> :: iterator i = m_Clans.begin( ); i != m_Clans.end( ); ++i )
-			game->AddToReserved( (*i)->GetName( ) );
+		for (auto iClan : m_Clans)
+			game->AddToReserved(iClan->GetName());
 	}
 }
 #endif

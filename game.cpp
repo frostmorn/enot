@@ -1961,8 +1961,8 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 			return HideCommand;
                 }
  
-                for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-                    (*i)->SetStartVote( false );
+                for ( auto iPlayer:m_Players)
+                    iPlayer->SetStartVote( false );
  
                 m_StartedVoteStartTime = GetTime();
            
@@ -1975,9 +1975,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
             uint32_t Votes = 0;
  
  
-            for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+            for ( auto iPlayer:m_Players)
             {
-                if( (*i)->GetStartVote( ) )
+                if( iPlayer->GetStartVote( ) )
                     ++Votes;
             }
  
@@ -2044,8 +2044,8 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 					m_KickVotePlayer = LastMatch->GetName( );
 					m_StartedKickVoteTime = GetTime( );
 
-					for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-						(*i)->SetKickVote( false );
+					for ( auto iPlayer:m_Players)
+						iPlayer->SetKickVote( false );
 
 					player->SetKickVote( true );
 					CONSOLE_Print( "[GAME: " + m_GameName + "] votekick against player [" + m_KickVotePlayer + "] started by player [" + User + "]" );
@@ -2068,9 +2068,9 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 		uint32_t VotesNeeded = (uint32_t)ceil( ( GetNumHumanPlayers( ) - 1 ) * (float)m_GHost->m_VoteKickPercentage / 100 );
 		uint32_t Votes = 0;
 
-		for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
+		for ( auto iPlayer:m_Players)
 		{
-			if( (*i)->GetKickVote( ) )
+			if( iPlayer->GetKickVote( ) )
 				++Votes;
 		}
 
@@ -2116,8 +2116,8 @@ void CGame :: EventGameStarted( )
 	// but since the player has already left the game we don't have access to their information anymore
 	// so we create a "potential ban" for each player and only store it in the database if requested to by an admin
 
-	for( std::vector<CGamePlayer *> :: iterator i = m_Players.begin( ); i != m_Players.end( ); ++i )
-		m_DBBans.push_back( new CDBBan( (*i)->GetJoinedRealm( ), (*i)->GetName( ), (*i)->GetExternalIPString( ), std::string( ), std::string( ), std::string( ), std::string( ) ) );
+	for ( auto iPlayer:m_Players)
+		m_DBBans.push_back( new CDBBan( iPlayer->GetJoinedRealm( ), iPlayer->GetName( ), iPlayer->GetExternalIPString( ), std::string( ), std::string( ), std::string( ), std::string( ) ) );
 }
 
 bool CGame :: IsGameDataSaved( )
