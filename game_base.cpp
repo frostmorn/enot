@@ -166,6 +166,7 @@ CBaseGame :: ~CBaseGame( )
 	
 	for( std::vector<CCallableScoreCheck *> :: iterator i = m_ScoreChecks.begin( ); i != m_ScoreChecks.end( ); ++i )
 		m_GHost->m_Callables.push_back( *i );
+
 	m_GHost->m_CallablesMutex.unlock();
 
 	while( !m_Actions.empty( ) )
@@ -398,10 +399,10 @@ bool CBaseGame :: Update( void *fd, void *send_fd )
 		{
 			double Score = (*i)->GetResult( );
 
-			for( std::vector<CPotentialPlayer *> :: iterator j = m_Potentials.begin( ); j != m_Potentials.end( ); ++j )
+			for(auto jPotential:m_Potentials)
 			{
-				if( (*j)->GetJoinPlayer( ) && (*j)->GetJoinPlayer( )->GetName( ) == (*i)->GetName( ) )
-					EventPlayerJoinedWithScore( *j, (*j)->GetJoinPlayer( ), Score );
+				if( jPotential->GetJoinPlayer( ) && jPotential->GetJoinPlayer( )->GetName( ) == (*i)->GetName( ) )
+					EventPlayerJoinedWithScore( jPotential, jPotential->GetJoinPlayer( ), Score );
 			}
 
 			m_GHost->m_DB->RecoverCallable( *i );
@@ -3539,9 +3540,8 @@ void CBaseGame :: EventGameStarted( )
 
 	// delete any potential players that are still hanging around
 
-	for( std::vector<CPotentialPlayer *> :: iterator i = m_Potentials.begin( ); i != m_Potentials.end( ); ++i )
-		delete *i;
-
+	for( auto iPotential:m_Potentials )
+		delete iPotential;
 	m_Potentials.clear( );
 
 	// set initial values for replay
@@ -3631,10 +3631,9 @@ void CBaseGame :: EventGameStarted( )
 
 	// and finally reenter battle.net chat
 
-	for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
-	{
-		(*i)->QueueGameUncreate( );
-		(*i)->QueueEnterChat( );
+	for ( auto iBNET:m_GHost->m_BNETs){
+		iBNET->QueueGameUncreate();
+		iBNET->QueueEnterChat();
 	}
 }
 
@@ -4185,15 +4184,13 @@ void CBaseGame :: OpenAllSlots( )
 {
 	bool Changed = false;
 
-	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
-	{
-		if( (*i).GetSlotStatus( ) == SLOTSTATUS_CLOSED )
+	for(auto iSlot:m_Slots){
+		if( iSlot.GetSlotStatus( ) == SLOTSTATUS_CLOSED )
 		{
-			(*i).SetSlotStatus( SLOTSTATUS_OPEN );
+			iSlot.SetSlotStatus( SLOTSTATUS_OPEN );
 			Changed = true;
 		}
 	}
-
 	if( Changed )
 		SendAllSlotInfo( );
 }
@@ -4201,12 +4198,12 @@ void CBaseGame :: OpenAllSlots( )
 void CBaseGame :: CloseAllSlots( )
 {
 	bool Changed = false;
-
-	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
-	{
-		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OPEN )
+	
+	for(auto iSlot:m_Slots){
+	
+		if( iSlot.GetSlotStatus( ) == SLOTSTATUS_OPEN )
 		{
-			(*i).SetSlotStatus( SLOTSTATUS_CLOSED );
+			iSlot.SetSlotStatus( SLOTSTATUS_CLOSED );
 			Changed = true;
 		}
 	}
@@ -4223,10 +4220,10 @@ void CBaseGame :: ShuffleSlots( )
 
 	std::vector<CGameSlot> PlayerSlots;
 
-	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
-	{
-		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 && (*i).GetTeam( ) != 12 )
-			PlayerSlots.push_back( *i );
+	
+	for ( auto iSlot:m_Slots){
+		if( iSlot.GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && iSlot.GetComputer( ) == 0 && iSlot.GetTeam( ) != 12 )
+			PlayerSlots.push_back( iSlot );
 	}
 
 	// now we shuffle PlayerSlots
@@ -4269,15 +4266,15 @@ void CBaseGame :: ShuffleSlots( )
 	std::vector<CGameSlot> :: iterator CurrentPlayer = PlayerSlots.begin( );
 	std::vector<CGameSlot> Slots;
 
-	for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+	for(auto iSlot:m_Slots)
 	{
-		if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 && (*i).GetTeam( ) != 12 )
+		if( iSlot.GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && iSlot.GetComputer( ) == 0 && iSlot.GetTeam( ) != 12 )
 		{
 			Slots.push_back( *CurrentPlayer );
 			++CurrentPlayer;
 		}
 		else
-			Slots.push_back( *i );
+			Slots.push_back( iSlot );
 	}
 
 	m_Slots = Slots;
@@ -4554,9 +4551,9 @@ void CBaseGame :: AddToReserved( std::string name )
 
 	// check that the user is not already reserved
 
-	for( std::vector<std::string> :: iterator i = m_Reserved.begin( ); i != m_Reserved.end( ); ++i )
+	for (auto iReserved:m_Reserved)
 	{
-		if( *i == name )
+		if( iReserved == name )
 			return;
 	}
 
@@ -4586,11 +4583,12 @@ bool CBaseGame :: IsReserved( std::string name )
 {
 	transform( name.begin( ), name.end( ), name.begin( ), (int(*)(int))tolower );
 
-	for( std::vector<std::string> :: iterator i = m_Reserved.begin( ); i != m_Reserved.end( ); ++i )
+	for (auto iReserved:m_Reserved)
 	{
-		if( *i == name )
+		if( iReserved == name )
 			return true;
 	}
+	
 
 	return false;
 }
@@ -4662,11 +4660,11 @@ void CBaseGame :: StartCountDown( bool force )
 
 			std::string StillDownloading;
 
-			for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+			for(auto iSlot:m_Slots)
 			{
-				if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 && (*i).GetDownloadStatus( ) != 100 )
+				if( iSlot.GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && iSlot.GetComputer( ) == 0 && iSlot.GetDownloadStatus( ) != 100 )
 				{
-					CGamePlayer *Player = GetPlayerFromPID( (*i).GetPID( ) );
+					CGamePlayer *Player = GetPlayerFromPID( iSlot.GetPID( ) );
 
 					if( Player )
 					{
@@ -4753,11 +4751,11 @@ void CBaseGame :: StartCountDownAuto( bool requireSpoofChecks )
 
 		std::string StillDownloading;
 
-		for( std::vector<CGameSlot> :: iterator i = m_Slots.begin( ); i != m_Slots.end( ); ++i )
+		for (auto iSlot:m_Slots)
 		{
-			if( (*i).GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && (*i).GetComputer( ) == 0 && (*i).GetDownloadStatus( ) != 100 )
+			if( iSlot.GetSlotStatus( ) == SLOTSTATUS_OCCUPIED && iSlot.GetComputer( ) == 0 && iSlot.GetDownloadStatus( ) != 100 )
 			{
-				CGamePlayer *Player = GetPlayerFromPID( (*i).GetPID( ) );
+				CGamePlayer *Player = GetPlayerFromPID( iSlot.GetPID( ) );
 
 				if( Player )
 				{

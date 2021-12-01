@@ -115,7 +115,6 @@ void CGHostDBMySQL :: UpdateCallables(){
 		}
 		
 		m_DatabaseMutex.unlock();
-		MILLISLEEP(5000);
 	}
 } 
 void CGHostDBMySQL :: RecoverCallable( CBaseCallable *callable )

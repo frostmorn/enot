@@ -370,18 +370,18 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 				std::string Servers;
 				bool FoundServer = false;
 
-				for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+				for ( auto iBNET:m_GHost->m_BNETs)
 				{
 					if( Servers.empty( ) )
-						Servers = (*i)->GetServer( );
+						Servers = iBNET->GetServer( );
 					else
-						Servers += ", " + (*i)->GetServer( );
+						Servers += ", " + iBNET->GetServer( );
 
-					if( (*i)->GetServer( ) == Server )
+					if( iBNET->GetServer( ) == Server )
 					{
 						FoundServer = true;
 
-						if( (*i)->IsAdmin( Name ) )
+						if( iBNET->IsAdmin( Name ) )
 							SendChat( player, m_GHost->m_Language->UserIsAlreadyAnAdmin( Server, Name ) );
 						else
 							m_PairedAdminAdds.push_back( PairedAdminAdd( player->GetName( ), m_GHost->m_DB->ThreadedAdminAdd( Server, Name ) ) );
@@ -579,18 +579,18 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 				std::string Servers;
 				bool FoundServer = false;
 
-				for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+				for ( auto iBNET:m_GHost->m_BNETs )
 				{
 					if( Servers.empty( ) )
-						Servers = (*i)->GetServer( );
+						Servers = iBNET->GetServer( );
 					else
-						Servers += ", " + (*i)->GetServer( );
+						Servers += ", " + iBNET->GetServer( );
 
-					if( (*i)->GetServer( ) == Server )
+					if( iBNET->GetServer( ) == Server )
 					{
 						FoundServer = true;
 
-						if( (*i)->IsAdmin( Name ) )
+						if( iBNET->IsAdmin( Name ) )
 							SendChat( player, m_GHost->m_Language->UserIsAnAdmin( Server, Name ) );
 						else
 							SendChat( player, m_GHost->m_Language->UserIsNotAnAdmin( Server, Name ) );
@@ -634,17 +634,17 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 				std::string Servers;
 				bool FoundServer = false;
 
-				for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+				for ( auto iBNET:m_GHost->m_BNETs )
 				{
 					if( Servers.empty( ) )
-						Servers = (*i)->GetServer( );
+						Servers = iBNET->GetServer( );
 					else
-						Servers += ", " + (*i)->GetServer( );
+						Servers += ", " + iBNET->GetServer( );
 
-					if( (*i)->GetServer( ) == Server )
+					if( iBNET->GetServer( ) == Server )
 					{
 						FoundServer = true;
-						CDBBan *Ban = (*i)->IsBannedName( Name );
+						CDBBan *Ban = iBNET->IsBannedName( Name );
 
 						if( Ban )
 							SendChat( player, m_GHost->m_Language->UserWasBannedOnByBecause( Server, Name, Ban->GetDate( ), Ban->GetAdmin( ), Ban->GetReason( ) ) );
@@ -720,18 +720,18 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 				std::string Servers;
 				bool FoundServer = false;
 
-				for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
+				for ( auto iBNET:m_GHost->m_BNETs )
 				{
 					if( Servers.empty( ) )
-						Servers = (*i)->GetServer( );
+						Servers = iBNET->GetServer( );
 					else
-						Servers += ", " + (*i)->GetServer( );
+						Servers += ", " + iBNET->GetServer( );
 
-					if( (*i)->GetServer( ) == Server )
+					if( iBNET->GetServer( ) == Server )
 					{
 						FoundServer = true;
 
-						if( !(*i)->IsAdmin( Name ) )
+						if( !iBNET->IsAdmin( Name ) )
 							SendChat( player, m_GHost->m_Language->UserIsNotAnAdmin( Server, Name ) );
 						else
 							m_PairedAdminRemoves.push_back( PairedAdminRemove( player->GetName( ), m_GHost->m_DB->ThreadedAdminRemove( Server, Name ) ) );
@@ -1199,8 +1199,9 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 
 		else if( Command == "say" && !Payload.empty( ) )
 		{
-			for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
-				(*i)->QueueChatCommand( Payload );
+
+			for( auto iBNET:m_GHost->m_BNETs )
+				iBNET->QueueChatCommand( Payload );
 		}
 
 		//
@@ -1249,8 +1250,8 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 			if( m_GHost->m_CurrentGame )
 				m_GHost->m_CurrentGame->SendAllChat( Payload );
 
-			for( std::vector<CBaseGame *> :: iterator i = m_GHost->m_Games.begin( ); i != m_GHost->m_Games.end( ); ++i )
-				(*i)->SendAllChat( "ADMIN: " + Payload );
+			for( auto iGame:m_GHost->m_Games )
+				iGame->SendAllChat( "FIONA ADMIN" + Payload);
 		}
 
 		//
@@ -1291,8 +1292,8 @@ bool CAdminGame :: EventPlayerBotCommand( CGamePlayer *player, std::string comma
 				Name = Payload.substr( 0, MessageStart );
 				Message = Payload.substr( MessageStart + 1 );
 
-				for( std::vector<CBNET *> :: iterator i = m_GHost->m_BNETs.begin( ); i != m_GHost->m_BNETs.end( ); ++i )
-					(*i)->QueueChatCommand( Message, Name, true );
+				for ( auto iBNET:m_GHost->m_BNETs )
+					iBNET->QueueChatCommand( Message, Name, true);
 			}
 		}
 	}

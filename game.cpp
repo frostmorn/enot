@@ -142,13 +142,14 @@ CGame :: ~CGame( )
 #endif
 	m_GHost->m_CallablesMutex.unlock();
 
-	for( std::vector<CDBBan *> :: iterator i = m_DBBans.begin( ); i != m_DBBans.end( ); ++i )
-		delete *i;
+	for (auto iDBBan:m_DBBans)
+		delete iDBBan;
+	
 
 	delete m_DBGame;
 
-	for( std::vector<CDBGamePlayer *> :: iterator i = m_DBGamePlayers.begin( ); i != m_DBGamePlayers.end( ); ++i )
-		delete *i;
+	for( auto iDBGamePlayer:m_DBGamePlayers )
+		delete iDBGamePlayer;
 
 	delete m_Stats;
 
@@ -401,10 +402,10 @@ void CGame :: EventPlayerDeleted( CGamePlayer *player )
 
 		// also keep track of the last player to leave for the !banlast command
 
-		for( std::vector<CDBBan *> :: iterator i = m_DBBans.begin( ); i != m_DBBans.end( ); ++i )
+		for (auto iDBBan:m_DBBans)
 		{
-			if( (*i)->GetName( ) == player->GetName( ) )
-				m_DBBanLast = *i;
+			if( iDBBan->GetName( ) == player->GetName( ) )
+				m_DBBanLast = iDBBan;
 		}
 	}
 }
@@ -515,15 +516,15 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 					// try to match each player with the passed std::string (e.g. "Varlock" would be matched with "lock")
 					// we use the m_DBBans vector for this in case the player already left and thus isn't in the m_Players vector anymore
 
-					for( std::vector<CDBBan *> :: iterator i = m_DBBans.begin( ); i != m_DBBans.end( ); ++i )
+					for (auto iDBBan:m_DBBans)
 					{
-						std::string TestName = (*i)->GetName( );
+						std::string TestName = iDBBan->GetName( );
 						transform( TestName.begin( ), TestName.end( ), TestName.begin( ), (int(*)(int))tolower );
 
 						if( TestName.find( VictimLower ) != std::string :: npos )
 						{
 							Matches++;
-							LastMatch = *i;
+							LastMatch = iDBBan;
 
 							// if the name matches exactly stop any further matching
 
