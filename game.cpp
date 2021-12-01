@@ -1398,7 +1398,11 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 					m_GameState = GAME_PRIVATE;
 					m_LastGameName = m_GameName;
 					m_GameName = Payload;
+					#ifndef GHOST_HOSTCOUNTER
 					m_HostCounter = m_GHost->m_HostCounter++;
+					#else
+					m_HostCounter = m_GHost->m_HostCounter;
+					#endif
 					m_RefreshError = false;
 					m_RefreshRehosted = true;
 
@@ -1440,7 +1444,11 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 					m_GameState = GAME_PUBLIC;
 					m_LastGameName = m_GameName;
 					m_GameName = Payload;
+					#ifndef GHOST_HOSTCOUNTER
 					m_HostCounter = m_GHost->m_HostCounter++;
+					#else
+					m_HostCounter = m_GHost->m_HostCounter;
+					#endif
 					m_RefreshError = false;
 					m_RefreshRehosted = true;
 
