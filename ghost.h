@@ -66,6 +66,8 @@ public:
 	CAdminGame *m_AdminGame;				// this "fake game" allows an admin who knows the password to control the bot from the local network
 	std::vector<CBaseGame *> m_Games;			// these games are in progress
 	std::mutex m_GamesMutex;
+	// TODO: Test dat 
+	std::mutex m_ReplayMutex;					// Mutex used to lock replay save, if something bad happens there
 	CGHostDB *m_DB;							// database
 	CGHostDB *m_DBLocal;					// local database (for temporary data)
 	std::vector<CBaseCallable *> m_Callables;	// vector of orphaned callables waiting to die
@@ -144,6 +146,7 @@ public:
 	uint16_t m_AdminGamePort;				// config value: the port to host the admin game on
 	std::string m_AdminGamePassword;				// config value: the admin game password
 	std::string m_AdminGameMap;					// config value: the admin game map config to use
+	
 	#ifdef GHOST_DISCORD
 	std::string m_discord_bug_webhook_url;		// config value: bug report message webhook url
 	std::string m_discord_g_create_webhook_url;	// config value: game creation message webhook url

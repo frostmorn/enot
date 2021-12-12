@@ -250,6 +250,7 @@ void CBaseGame :: loop( )
 	}
 	
 	// save replay
+	m_GHost->m_ReplayMutex.lock();
 	if( m_Replay && ( m_GameLoading || m_GameLoaded ) )
 	{
 		time_t Now = time( NULL );
@@ -269,6 +270,7 @@ void CBaseGame :: loop( )
 		
 		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + std::string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
 	}
+	m_GHost->m_ReplayMutex.unlock();
 
 	if(m_DoDelete == 1)
 		delete this;
