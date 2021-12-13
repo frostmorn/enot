@@ -250,9 +250,10 @@ void CBaseGame :: loop( )
 	}
 	
 	// save replay
-	m_GHost->m_ReplayMutex.lock();
+	
 	if( m_Replay && ( m_GameLoading || m_GameLoaded ) )
 	{
+		m_GHost->m_ReplayMutex.lock();
 		time_t Now = time( NULL );
 		char Time[17];
 		memset( Time, 0, sizeof( char ) * 17 );
@@ -269,8 +270,9 @@ void CBaseGame :: loop( )
 		m_Replay->BuildReplay( m_GameName, m_StatString, m_GHost->m_ReplayWar3Version, m_GHost->m_ReplayBuildNumber );
 		
 		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + std::string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
+		m_GHost->m_ReplayMutex.unlock();
 	}
-	m_GHost->m_ReplayMutex.unlock();
+	
 
 	if(m_DoDelete == 1)
 		delete this;
