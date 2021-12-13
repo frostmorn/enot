@@ -158,6 +158,30 @@ m_HostCounter( m_GHost->m_HostCounter++ )
 
 CBaseGame :: ~CBaseGame( )
 {	
+	// save replay on game destroy
+	
+	if( m_Replay && ( m_GameLoading || m_GameLoaded ) )
+	{
+		m_GHost->m_ReplayMutex.lock();
+		time_t Now = time( NULL );
+		char Time[17];
+		memset( Time, 0, sizeof( char ) * 17 );
+		strftime( Time, sizeof( char ) * 17, "%Y-%m-%d %H-%M", localtime( &Now ) );
+		std::string MinString = std::to_string( ( m_GameTicks / 1000 ) / 60 );
+		std::string SecString = std::to_string( ( m_GameTicks / 1000 ) % 60 );
+
+		if( MinString.size( ) == 1 )
+			MinString.insert( 0, "0" );
+
+		if( SecString.size( ) == 1 )
+			SecString.insert( 0, "0" );
+		
+		m_Replay->BuildReplay( m_GameName, m_StatString, m_GHost->m_ReplayWar3Version, m_GHost->m_ReplayBuildNumber );
+		
+		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + std::string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
+		m_GHost->m_ReplayMutex.unlock();
+	}
+
 	delete m_Socket;
 	delete m_Protocol;
 	delete m_Map;
@@ -195,8 +219,6 @@ bool CBaseGame :: readyDelete( )
 
 void CBaseGame :: loop( )
 {
-
-
 	
 	while( m_DoDelete == 0 )
 	{
@@ -247,32 +269,7 @@ void CBaseGame :: loop( )
 		{
 			UpdatePost( &send_fd );
 		}
-	}
-	
-	// save replay
-	
-	if( m_Replay && ( m_GameLoading || m_GameLoaded ) )
-	{
-		m_GHost->m_ReplayMutex.lock();
-		time_t Now = time( NULL );
-		char Time[17];
-		memset( Time, 0, sizeof( char ) * 17 );
-		strftime( Time, sizeof( char ) * 17, "%Y-%m-%d %H-%M", localtime( &Now ) );
-		std::string MinString = std::to_string( ( m_GameTicks / 1000 ) / 60 );
-		std::string SecString = std::to_string( ( m_GameTicks / 1000 ) % 60 );
-
-		if( MinString.size( ) == 1 )
-			MinString.insert( 0, "0" );
-
-		if( SecString.size( ) == 1 )
-			SecString.insert( 0, "0" );
-		
-		m_Replay->BuildReplay( m_GameName, m_StatString, m_GHost->m_ReplayWar3Version, m_GHost->m_ReplayBuildNumber );
-		
-		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + std::string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
-		m_GHost->m_ReplayMutex.unlock();
-	}
-	
+	}	
 
 	if(m_DoDelete == 1)
 		delete this;
