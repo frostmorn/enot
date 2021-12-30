@@ -399,8 +399,6 @@ CGHost :: CGHost( CConfig *CFG )
 	m_UDPSocket->SetDontRoute( CFG->GetInt( "udp_dontroute", 0 ) == 0 ? false : true );
 	m_ReconnectSocket = NULL;
 	m_GPSProtocol = new CGPSProtocol( );
-	m_CRC = new CCRC32( );
-	m_CRC->Initialize( );
 	m_SHA = new CSHA1( );
 	m_CurrentGame = NULL;
 
@@ -713,7 +711,6 @@ CGHost :: ~CGHost( )
 		delete *i;
 
 	delete m_GPSProtocol;
-	delete m_CRC;
 	delete m_SHA;
 
 	for( std::vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )

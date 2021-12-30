@@ -59,7 +59,6 @@ public:
 	CTCPServer *m_ReconnectSocket;			// listening socket for GProxy++ reliable reconnects
 	std::vector<CTCPSocket *> m_ReconnectSockets;// vector of sockets attempting to reconnect (connected but not identified yet)
 	CGPSProtocol *m_GPSProtocol;
-	CCRC32 *m_CRC;							// for calculating CRC's
 	CSHA1 *m_SHA;							// for calculating SHA1's
 	std::vector<CBNET *> m_BNETs;				// all our battle.net connections (there can be more than one)
 	CBaseGame *m_CurrentGame;				// this game is still in the lobby state

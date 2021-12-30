@@ -513,8 +513,8 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_INCOMING_ACTION( std::queue<CIncomingAction
 		}
 
 		// calculate crc (we only care about the first 2 bytes though)
-
-		BYTEARRAY crc32 = UTIL_CreateByteArray( m_GHost->m_CRC->FullCRC( (unsigned char *)std::string( subpacket.begin( ), subpacket.end( ) ).c_str( ), subpacket.size( ) ), false );
+		
+		BYTEARRAY crc32 = UTIL_CreateByteArray( crc32_fast((unsigned char *)std::string( subpacket.begin( ), subpacket.end( ) ).c_str( ), subpacket.size(), 0U), false );
 		crc32.resize( 2 );
 
 		// finish subpacket
@@ -848,8 +848,8 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_MAPPART( unsigned char fromPID, unsigned ch
 			End = mapData->size( );
 
 		// calculate crc
-
-		BYTEARRAY crc32 = UTIL_CreateByteArray( m_GHost->m_CRC->FullCRC( (unsigned char *)mapData->c_str( ) + start, End - start ), false );
+		uint32_t crc = crc32_fast((unsigned char *)mapData->c_str( ) + start,  End - start, 0U);
+		BYTEARRAY crc32 = UTIL_CreateByteArray( crc, false );
 		UTIL_AppendByteArrayFast( packet, crc32 );
 
 		// map data
@@ -892,8 +892,8 @@ BYTEARRAY CGameProtocol :: SEND_W3GS_INCOMING_ACTION2( std::queue<CIncomingActio
 		}
 
 		// calculate crc (we only care about the first 2 bytes though)
-
-		BYTEARRAY crc32 = UTIL_CreateByteArray( m_GHost->m_CRC->FullCRC( (unsigned char *)std::string( subpacket.begin( ), subpacket.end( ) ).c_str( ), subpacket.size( ) ), false );
+		uint32_t crc = crc32_fast((unsigned char *)std::string( subpacket.begin( ), subpacket.end( ) ).c_str( ) ,subpacket.size( ), 0U);
+		BYTEARRAY crc32 = UTIL_CreateByteArray(crc, false );
 		crc32.resize( 2 );
 
 		// finish subpacket

@@ -271,8 +271,8 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 		CONSOLE_Print( "[MAP] calculated map_size = " + UTIL_ByteArrayToDecString( MapSize ) );
 
 		// calculate map_info (this is actually the CRC)
-
-		MapInfo = UTIL_CreateByteArray( (uint32_t)m_GHost->m_CRC->FullCRC( (unsigned char *)m_MapData.c_str( ), m_MapData.size( ) ), false );
+		
+		MapInfo = UTIL_CreateByteArray( crc32_fast((unsigned char *)m_MapData.c_str( ), m_MapData.size( ),0U), false );
 		CONSOLE_Print( "[MAP] calculated map_info = " + UTIL_ByteArrayToDecString( MapInfo ) );
 
 		// calculate map_crc (this is not the CRC) and map_sha1

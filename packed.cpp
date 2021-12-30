@@ -68,13 +68,12 @@ int tzuncompress( Bytef *dest, uLongf *destLen, const Bytef *source, uLong sourc
 
 CPacked :: CPacked( ) : m_Valid( true ), m_HeaderSize( 0 ), m_CompressedSize( 0 ), m_HeaderVersion( 0 ), m_DecompressedSize( 0 ), m_NumBlocks( 0 ), m_War3Identifier( 0 ), m_War3Version( 0 ), m_BuildNumber( 0 ), m_Flags( 0 ), m_ReplayLength( 0 )
 {
-	m_CRC = new CCRC32( );
-	m_CRC->Initialize( );
+
 }
 
 CPacked :: ~CPacked( )
 {
-	delete m_CRC;
+
 }
 
 void CPacked :: Load( std::string fileName, bool allBlocks )
@@ -350,7 +349,7 @@ void CPacked :: Compress( bool TFT )
 	// calculate header CRC
 
 	std::string HeaderString = std::string( Header.begin( ), Header.end( ) );
-	uint32_t CRC = m_CRC->FullCRC( (unsigned char *)HeaderString.c_str( ), HeaderString.size( ) );
+	uint32_t CRC = crc32_fast( (unsigned char *)HeaderString.c_str( ), HeaderString.size( ), 0U );
 
 	// overwrite the (currently zero) header CRC with the calculated CRC
 
@@ -375,9 +374,9 @@ void CPacked :: Compress( bool TFT )
 		// calculate block header CRC
 
 		std::string BlockHeaderString = std::string( BlockHeader.begin( ), BlockHeader.end( ) );
-		uint32_t CRC1 = m_CRC->FullCRC( (unsigned char *)BlockHeaderString.c_str( ), BlockHeaderString.size( ) );
+		uint32_t CRC1 = crc32_fast( (unsigned char *)BlockHeaderString.c_str( ), BlockHeaderString.size( ), 0U );
 		CRC1 = CRC1 ^ ( CRC1 >> 16 );
-		uint32_t CRC2 = m_CRC->FullCRC( (unsigned char *)(*i).c_str( ), (*i).size( ) );
+		uint32_t CRC2 = crc32_fast( (unsigned char *)(*i).c_str( ), (*i).size( ), 0U );
 		CRC2 = CRC2 ^ ( CRC2 >> 16 );
 		uint32_t BlockCRC = ( CRC1 & 0xFFFF ) | ( CRC2 << 16 );
 
