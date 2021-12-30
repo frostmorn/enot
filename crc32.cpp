@@ -63,8 +63,8 @@
 
 namespace
 {
-  /// zlib's CRC32 polynomial
-  const uint32_t Polynomial = 0xEDB88320;
+  /// WC3's CRC32 polynomial
+  const uint32_t Polynomial = 0x04c11db7;
 
 #if __BYTE_ORDER == __BIG_ENDIAN
   /// swap endianess
