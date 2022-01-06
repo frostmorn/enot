@@ -29,7 +29,7 @@ ifeq ($(SYSTEM),Darwin)
 CFLAGS += -I./mysql/include/
 endif
 
-OBJS = lia.o discord.o bncsutilinterface.o bnet.o bnetprotocol.o bnlsclient.o bnlsprotocol.o commandpacket.o config.o crc32.o csvparser.o game.o game_admin.o game_base.o gameplayer.o gameprotocol.o gameslot.o ghost.o database/ghostdb.o database/ghostdbmysql.o database/ghostdbsqlite.o gpsprotocol.o language.o map.o packed.o replay.o savegame.o socket.o stats/stats.o stats/statsdota.o stats/statsw3mmd.o stats/statslia.o stats/statsdebug.o util.o 
+OBJS = lia.o discord.o bncsutilinterface.o bnet.o bnetprotocol.o bnlsclient.o bnlsprotocol.o commandpacket.o config.o crc32.o csvparser.o game.o game_admin.o game_base.o gameplayer.o gameprotocol.o gameslot.o ghost.o database/ghostdb.o database/ghostdbmysql.o database/ghostdbsqlite.o gpsprotocol.o language.o map.o packed.o replay.o savegame.o socket.o stats/stats.o stats/statsdota.o stats/statsw3mmd.o stats/statslia.o stats/statsdebug.o util.o irinaprotocol.o
 COBJS = 
 PROGS = ./ghost++
 
@@ -85,3 +85,4 @@ stats/statsdebug.o: ghost.h includes.h util.h database/ghostdb.h gameplayer.h ga
 util.o: ghost.h includes.h util.h
 discord.o : discord.h
 lia.o : lia.h
+irinaprotocol.o: irinaprotocol.h
