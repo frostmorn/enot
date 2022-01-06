@@ -23,7 +23,7 @@
 #include "config.h"
 #include "ghostdb.h"
 #include "ghostdbsqlite.h"
-#include "sqlite3.h"
+#include <sqlite3.h>
 
 //
 // CQSLITE3 (wrapper class)

@@ -4,7 +4,7 @@ C++ = g++
 CC = gcc
 DFLAGS = -DGHOST_MYSQL
 OFLAGS = -O3
-LFLAGS =  -L. -L./bncsutil -L./StormLib -L./zlib-ng  -Wl,-Bstatic -lbncsutil_static -lz -lstorm  -Wl,-Bdynamic -lpthread -ldl -lbz2 -lmysqlclient -lgmp 
+LFLAGS =  -L. -L./bncsutil -L./StormLib -L./zlib-ng  -Wl,-Bstatic -lbncsutil_static -lz -lstorm  -Wl,-Bdynamic -lpthread -ldl -lbz2 -lmysqlclient -lgmp -lsqlite3 -lssl -lcrypto
 CFLAGS = -g3 -Wall
 
 ifeq ($(SYSTEM),Darwin)
@@ -29,8 +29,8 @@ ifeq ($(SYSTEM),Darwin)
 CFLAGS += -I./mysql/include/
 endif
 
-OBJS = lia.o discord.o bncsutilinterface.o bnet.o bnetprotocol.o bnlsclient.o bnlsprotocol.o commandpacket.o config.o crc32.o csvparser.o game.o game_admin.o game_base.o gameplayer.o gameprotocol.o gameslot.o ghost.o database/ghostdb.o database/ghostdbmysql.o database/ghostdbsqlite.o gpsprotocol.o language.o map.o packed.o replay.o savegame.o sha1.o socket.o stats/stats.o stats/statsdota.o stats/statsw3mmd.o stats/statslia.o stats/statsdebug.o util.o 
-COBJS = database/sqlite3.o
+OBJS = lia.o discord.o bncsutilinterface.o bnet.o bnetprotocol.o bnlsclient.o bnlsprotocol.o commandpacket.o config.o crc32.o csvparser.o game.o game_admin.o game_base.o gameplayer.o gameprotocol.o gameslot.o ghost.o database/ghostdb.o database/ghostdbmysql.o database/ghostdbsqlite.o gpsprotocol.o language.o map.o packed.o replay.o savegame.o socket.o stats/stats.o stats/statsdota.o stats/statsw3mmd.o stats/statslia.o stats/statsdebug.o util.o 
+COBJS = 
 PROGS = ./ghost++
 
 all: $(OBJS) $(COBJS) $(PROGS)
@@ -66,17 +66,16 @@ game_base.o: lia.h ghost.h includes.h util.h config.h language.h socket.h databa
 gameplayer.o: ghost.h includes.h util.h language.h socket.h commandpacket.h bnet.h map.h gameplayer.h gameprotocol.h gpsprotocol.h game_base.h
 gameprotocol.o: ghost.h includes.h util.h crc32.h gameplayer.h gameprotocol.h game_base.h
 gameslot.o: ghost.h includes.h gameslot.h
-ghost.o: discord.o ghost.h includes.h util.h crc32.h sha1.h csvparser.h config.h language.h socket.h database/ghostdb.h database/ghostdbsqlite.h database/ghostdbmysql.h bnet.h map.h packed.h savegame.h gameplayer.h gameprotocol.h gpsprotocol.h game_base.h game.h game_admin.h
+ghost.o: discord.o ghost.h includes.h util.h crc32.h csvparser.h config.h language.h socket.h database/ghostdb.h database/ghostdbsqlite.h database/ghostdbmysql.h bnet.h map.h packed.h savegame.h gameplayer.h gameprotocol.h gpsprotocol.h game_base.h game.h game_admin.h
 database/ghostdb.o: ghost.h includes.h util.h config.h database/ghostdb.h
 database/ghostdbmysql.o: ghost.h includes.h util.h config.h database/ghostdb.h database/ghostdbmysql.h
 database/ghostdbsqlite.o: ghost.h includes.h util.h config.h database/ghostdb.h database/ghostdbsqlite.h
 gpsprotocol.o: ghost.h util.h gpsprotocol.h
 language.o: ghost.h includes.h config.h language.h
-map.o: ghost.h includes.h util.h crc32.h sha1.h config.h map.h
+map.o: ghost.h includes.h util.h crc32.h config.h map.h
 packed.o: ghost.h includes.h util.h crc32.h packed.h
 replay.o: ghost.h includes.h util.h packed.h replay.h gameprotocol.h
 savegame.o: ghost.h includes.h util.h packed.h savegame.h
-sha1.o: sha1.h
 socket.o: ghost.h includes.h util.h socket.h
 stats/stats.o: ghost.h includes.h stats/stats.h
 stats/statsdota.o: ghost.h includes.h util.h database/ghostdb.h gameplayer.h gameprotocol.h game_base.h stats/stats.h stats/statsdota.h

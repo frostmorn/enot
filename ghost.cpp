@@ -20,7 +20,7 @@
 #include "ghost.h"
 #include "util.h"
 #include "crc32.h"
-#include "sha1.h"
+#include <openssl/sha.h>
 #include "csvparser.h"
 #include "config.h"
 #include "language.h"
@@ -52,7 +52,7 @@
 #include "ghost.h"
 #include "util.h"
 #include "crc32.h"
-#include "sha1.h"
+#include <openssl/sha.h>
 #include "csvparser.h"
 #include "config.h"
 #include "language.h"
@@ -80,7 +80,7 @@
 #include "game_admin.h"
 #include "stats.h"
 #include "statsdota.h"
-#include "sqlite3.h"
+#include <sqlite3.h>
 
 */
 
@@ -399,7 +399,6 @@ CGHost :: CGHost( CConfig *CFG )
 	m_UDPSocket->SetDontRoute( CFG->GetInt( "udp_dontroute", 0 ) == 0 ? false : true );
 	m_ReconnectSocket = NULL;
 	m_GPSProtocol = new CGPSProtocol( );
-	m_SHA = new CSHA1( );
 	m_CurrentGame = NULL;
 
 	
@@ -711,7 +710,6 @@ CGHost :: ~CGHost( )
 		delete *i;
 
 	delete m_GPSProtocol;
-	delete m_SHA;
 
 	for( std::vector<CBNET *> :: iterator i = m_BNETs.begin( ); i != m_BNETs.end( ); ++i )
 		delete *i;

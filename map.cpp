@@ -21,7 +21,7 @@
 #include "ghost.h"
 #include "util.h"
 #include "crc32.h"
-#include "sha1.h"
+#include <openssl/sha.h>
 #include "config.h"
 #include "map.h"
 
@@ -263,10 +263,11 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 
 	if( !m_MapData.empty( ) )
 	{
-		m_GHost->m_SHA->Reset( );
-
+		SHA_CTX sha1_context;
 		// calculate map_size
-
+		if (!(SHA1_Init(&sha1_context))){
+			CONSOLE_Print("[MAP] initializing SHA1_CTX failed");
+		}
 		MapSize = UTIL_CreateByteArray( (uint32_t)m_MapData.size( ), false );
 		CONSOLE_Print( "[MAP] calculated map_size = " + UTIL_ByteArrayToDecString( MapSize ) );
 
@@ -318,7 +319,7 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 								CONSOLE_Print( "[MAP] overriding default common.j with map copy while calculating map_crc/sha1" );
 								OverrodeCommonJ = true;
 								Val = Val ^ XORRotateLeft( (unsigned char *)SubFileData, BytesRead );
-								m_GHost->m_SHA->Update( (unsigned char *)SubFileData, BytesRead );
+								SHA1_Update(&sha1_context, SubFileData, BytesRead);
 							}
 
 							delete [] SubFileData;
@@ -331,7 +332,7 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 				if( !OverrodeCommonJ )
 				{
 					Val = Val ^ XORRotateLeft( (unsigned char *)CommonJ.c_str( ), CommonJ.size( ) );
-					m_GHost->m_SHA->Update( (unsigned char *)CommonJ.c_str( ), CommonJ.size( ) );
+					SHA1_Update(&sha1_context, CommonJ.c_str(), CommonJ.size());
 				}
 
 				if( MapMPQReady )
@@ -354,7 +355,7 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 								CONSOLE_Print( "[MAP] overriding default blizzard.j with map copy while calculating map_crc/sha1" );
 								OverrodeBlizzardJ = true;
 								Val = Val ^ XORRotateLeft( (unsigned char *)SubFileData, BytesRead );
-								m_GHost->m_SHA->Update( (unsigned char *)SubFileData, BytesRead );
+								SHA1_Update(&sha1_context, SubFileData, BytesRead);
 							}
 
 							delete [] SubFileData;
@@ -367,12 +368,12 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 				if( !OverrodeBlizzardJ )
 				{
 					Val = Val ^ XORRotateLeft( (unsigned char *)BlizzardJ.c_str( ), BlizzardJ.size( ) );
-					m_GHost->m_SHA->Update( (unsigned char *)BlizzardJ.c_str( ), BlizzardJ.size( ) );
+					SHA1_Update(&sha1_context, BlizzardJ.c_str(), BlizzardJ.size());
 				}
 
 				Val = ROTL( Val, 3 );
 				Val = ROTL( Val ^ 0x03F1379E, 3 );
-				m_GHost->m_SHA->Update( (unsigned char *)"\x9E\x37\xF1\x03", 4 );
+				SHA1_Update(&sha1_context, (unsigned char *)"\x9E\x37\xF1\x03", 4 );
 
 				if( MapMPQReady )
 				{
@@ -413,7 +414,7 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 										FoundScript = true;
 
 									Val = ROTL( Val ^ XORRotateLeft( (unsigned char *)SubFileData, BytesRead ), 3 );
-									m_GHost->m_SHA->Update( (unsigned char *)SubFileData, BytesRead );
+									SHA1_Update(&sha1_context, SubFileData, BytesRead);
 									// DEBUG_Print( "*** found: " + *i );
 								}
 
@@ -434,11 +435,10 @@ void CMap :: Load( CConfig *CFG, std::string nCFGFile )
 					MapCRC = UTIL_CreateByteArray( Val, false );
 					CONSOLE_Print( "[MAP] calculated map_crc = " + UTIL_ByteArrayToDecString( MapCRC ) );
 
-					m_GHost->m_SHA->Final( );
-					unsigned char SHA1[20];
-					memset( SHA1, 0, sizeof( unsigned char ) * 20 );
-					m_GHost->m_SHA->GetHash( SHA1 );
-					MapSHA1 = UTIL_CreateByteArray( SHA1, 20 );
+					unsigned char SHA1[SHA1_DIGEST_SIZE];
+					memset( SHA1, 0, sizeof( unsigned char ) * SHA1_DIGEST_SIZE );
+					SHA1_Final(SHA1,&sha1_context);
+					MapSHA1 = UTIL_CreateByteArray( SHA1, SHA1_DIGEST_SIZE );
 					CONSOLE_Print( "[MAP] calculated map_sha1 = " + UTIL_ByteArrayToDecString( MapSHA1 ) );
 				}
 				else

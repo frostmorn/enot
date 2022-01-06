@@ -32,8 +32,6 @@ class CUDPSocket;
 class CTCPServer;
 class CTCPSocket;
 class CGPSProtocol;
-class CCRC32;
-class CSHA1;
 class CBNET;
 class CBaseGame;
 class CAdminGame;
@@ -59,7 +57,6 @@ public:
 	CTCPServer *m_ReconnectSocket;			// listening socket for GProxy++ reliable reconnects
 	std::vector<CTCPSocket *> m_ReconnectSockets;// vector of sockets attempting to reconnect (connected but not identified yet)
 	CGPSProtocol *m_GPSProtocol;
-	CSHA1 *m_SHA;							// for calculating SHA1's
 	std::vector<CBNET *> m_BNETs;				// all our battle.net connections (there can be more than one)
 	CBaseGame *m_CurrentGame;				// this game is still in the lobby state
 	CAdminGame *m_AdminGame;				// this "fake game" allows an admin who knows the password to control the bot from the local network

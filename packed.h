@@ -25,12 +25,10 @@
 // CPacked
 //
 
-class CCRC32;
 
 class CPacked
 {
 public:
-	CCRC32 *m_CRC;
 
 protected:
 	bool m_Valid;
