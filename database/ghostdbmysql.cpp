@@ -106,14 +106,14 @@ void CGHostDBMySQL :: UpdateCallables(){
 	while (1){
 		m_DatabaseMutex.lock();
 		CBaseCallable *callable = NULL;
-		if (!m_Callables.empty()){
+		while (!m_Callables.empty()){
 			callable = m_Callables.front();
 			m_Callables.pop();
 			if (callable){
 				callable->operator()();
 			}
 		}
-		
+		MILLISLEEP(100);	
 		m_DatabaseMutex.unlock();
 	}
 } 
