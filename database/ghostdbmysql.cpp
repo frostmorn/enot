@@ -104,17 +104,18 @@ std::string CGHostDBMySQL :: GetStatus( )
 }
 void CGHostDBMySQL :: UpdateCallables(){
 	while (1){
-		m_DatabaseMutex.lock();
 		CBaseCallable *callable = NULL;
 		while (!m_Callables.empty()){
+			m_DatabaseMutex.lock();
 			callable = m_Callables.front();
 			m_Callables.pop();
 			if (callable){
 				callable->operator()();
 			}
+			m_DatabaseMutex.unlock();
 		}
 		MILLISLEEP(100);	
-		m_DatabaseMutex.unlock();
+
 	}
 } 
 void CGHostDBMySQL :: RecoverCallable( CBaseCallable *callable )
