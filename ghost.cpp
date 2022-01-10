@@ -354,9 +354,9 @@ int main( int argc, char **argv )
 	/* In windows, this will init the winsock stuff */ 
 	while( 1 )
 	{
-		// block for 50ms on all sockets - if you intend to perform any timed actions more frequently you should change this
+		// block for 5ms on all sockets - if you intend to perform any timed actions more frequently you should change this
 		// that said it's likely we'll loop more often than this due to there being data waiting on one of the sockets but there aren't any guarantees
-		if( gGHost->Update( 50000 ) )
+		if( gGHost->Update( 5000 ) )
 			break;
 	}
 

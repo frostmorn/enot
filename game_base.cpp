@@ -230,7 +230,7 @@ void CBaseGame :: loop( )
 		int nfds = 0;
 		unsigned int NumFDs = SetFD( &fd, &send_fd, &nfds );
 		
-		long usecBlock = 50000;
+		long usecBlock = 5000;
 		
 		if( GetNextTimedActionTicks( ) * 1000 < usecBlock )
 			usecBlock = GetNextTimedActionTicks( ) * 1000;
@@ -2442,7 +2442,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 			for( auto iPlayer:m_Players)
 			{
-				if( !FurthestPlayer || iPlayer->GetScore( ) < -99999.0 || abs( iPlayer->GetScore( ) - AverageScore ) > abs( FurthestPlayer->GetScore( ) - AverageScore ) )
+				if( !FurthestPlayer || iPlayer->GetScore( ) < -99999.0 || std::abs( iPlayer->GetScore( ) - AverageScore ) > std::abs( FurthestPlayer->GetScore( ) - AverageScore ) )
 					FurthestPlayer = iPlayer;
 			}
 
@@ -2458,7 +2458,7 @@ void CBaseGame :: EventPlayerJoinedWithScore( CPotentialPlayer *potential, CInco
 
 			// kick the new player if they have the furthest score
 
-			if( score < -99999.0 || abs( score - AverageScore ) > abs( FurthestPlayer->GetScore( ) - AverageScore ) )
+			if( score < -99999.0 || std::abs( score - AverageScore ) > std::abs( FurthestPlayer->GetScore( ) - AverageScore ) )
 			{
 				if( score < -99999.0 )
 					CONSOLE_Print( "[GAME: " + m_GameName + "] player [" + joinPlayer->GetName( ) + "|" + potential->GetExternalIPString( ) + "] is trying to join the game but has the furthest rating [N/A] from the average [" + std::to_string( AverageScore  ) + "]" );
@@ -4361,7 +4361,7 @@ std::vector<unsigned char> CBaseGame :: BalanceSlotsRecursive( std::vector<unsig
 						{
 							if( TeamSizes[k] > 0 )
 							{
-								double Difference = abs( TeamScores[j] - TeamScores[k] );
+								double Difference = std::abs( TeamScores[j] - TeamScores[k] );
 
 								if( Difference > LargestDifference )
 									LargestDifference = Difference;
