@@ -124,7 +124,7 @@ void DiscordConnector::BugMessage(const std::string &bug_message, const std::str
     Send(j_msg, webhook_url);
 }
 void DiscordConnector::BugMessage(const std::string &bug_message, const std::string &bug_provider, const std::string &realm_provider){
-    BugMessage(bug_message, bug_provider, m_DiscordWebhookUrl);
+    BugMessage(bug_message, bug_provider, realm_provider, m_DiscordWebhookUrl);
 }
 
 void DiscordConnector::DiscordThreadLoop(){
