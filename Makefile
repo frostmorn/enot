@@ -2,7 +2,7 @@ SHELL = /bin/sh
 SYSTEM = $(shell uname)
 C++ = clang++
 CC = clang
-DFLAGS = -DGHOST_MYSQL -DGCC_8
+DFLAGS = -DGHOST_MYSQL -DGCC_8 -DGHOST_IRINA
 OFLAGS = -O3
 LFLAGS =  -L. -L./bncsutil -L./StormLib -L./zlib-ng  -Wl,-Bstatic -lbncsutil_static -lz -lstorm  -Wl,-Bdynamic -lpthread -ldl -lbz2 -lmysqlclient -lgmp -lsqlite3 -lssl -lcrypto -lstdc++fs
 CFLAGS = -g3 -Wall
@@ -29,7 +29,7 @@ ifeq ($(SYSTEM),Darwin)
 CFLAGS += -I./mysql/include/
 endif
 
-OBJS = lia.o discord.o bncsutilinterface.o bnet.o bnetprotocol.o bnlsclient.o bnlsprotocol.o commandpacket.o config.o crc32.o csvparser.o game.o game_admin.o game_base.o gameplayer.o gameprotocol.o gameslot.o ghost.o database/ghostdb.o database/ghostdbmysql.o database/ghostdbsqlite.o gpsprotocol.o language.o map.o packed.o replay.o savegame.o socket.o stats/stats.o stats/statsdota.o stats/statsw3mmd.o stats/statslia.o stats/statsdebug.o util.o irinaprotocol.o
+OBJS = lia.o discord.o bncsutilinterface.o bnet.o bnetprotocol.o bnlsclient.o bnlsprotocol.o commandpacket.o config.o crc32.o csvparser.o game.o game_admin.o game_base.o gameplayer.o gameprotocol.o gameslot.o ghost.o database/ghostdb.o database/ghostdbmysql.o database/ghostdbsqlite.o gpsprotocol.o language.o map.o packed.o replay.o savegame.o socket.o stats/stats.o stats/statsdota.o stats/statsw3mmd.o stats/statslia.o stats/statsdebug.o util.o irinaprotocol.o irinaconnector.o
 COBJS = 
 PROGS = ./ghost++
 
@@ -86,3 +86,4 @@ util.o: ghost.h includes.h util.h
 discord.o : discord.h
 lia.o : lia.h
 irinaprotocol.o: irinaprotocol.h
+irinaconnector.o: irinaconnector.h

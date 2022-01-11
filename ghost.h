@@ -3,7 +3,6 @@
 
 #include "includes.h"
 #include <mutex>
-
 /*
 
    Copyright [2008] [Trevor Hogan]
@@ -41,6 +40,9 @@ class CLanguage;
 class CMap;
 class CSaveGame;
 class CConfig;
+#ifdef GHOST_IRINA
+#include "irinaconnector.h"
+#endif
 
 struct GProxyReconnector {
 	CTCPSocket *socket;
@@ -53,6 +55,10 @@ struct GProxyReconnector {
 class CGHost
 {
 public:
+#ifdef GHOST_IRINA
+	CIrinaConnector *m_IrinaConnector;		// Protocol used to host to irinabot.ru
+	std::string m_IrinaToken;				// token used to connect to irinabot.ru
+#endif
 	CUDPSocket *m_UDPSocket;				// a UDP socket for sending broadcasts and other junk (used with !sendlan)
 	CTCPServer *m_ReconnectSocket;			// listening socket for GProxy++ reliable reconnects
 	std::vector<CTCPSocket *> m_ReconnectSockets;// vector of sockets attempting to reconnect (connected but not identified yet)
@@ -142,7 +148,7 @@ public:
 	uint16_t m_AdminGamePort;				// config value: the port to host the admin game on
 	std::string m_AdminGamePassword;				// config value: the admin game password
 	std::string m_AdminGameMap;					// config value: the admin game map config to use
-	
+
 	#ifdef GHOST_DISCORD
 	std::string m_discord_bug_webhook_url;		// config value: bug report message webhook url
 	std::string m_discord_g_create_webhook_url;	// config value: game creation message webhook url

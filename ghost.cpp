@@ -40,6 +40,9 @@
 #include "game_admin.h"
 #include <signal.h>
 #include <stdlib.h>
+#ifdef GHOST_IRINA
+#include "irinaconnector.h"
+#endif
 #ifdef WIN32
  #include <ws2tcpip.h>		// for WSAIoctl
 #endif
@@ -400,9 +403,6 @@ CGHost :: CGHost( CConfig *CFG )
 	m_ReconnectSocket = NULL;
 	m_GPSProtocol = new CGPSProtocol( );
 	m_CurrentGame = NULL;
-
-	
-	
 	std::string DBType = CFG->GetString( "db_type", "sqlite3" );
 	CONSOLE_Print( "[GHOST] opening primary database" );
 
@@ -518,6 +518,11 @@ CGHost :: CGHost( CConfig *CFG )
 	m_ReplayWar3Version = CFG->GetInt( "replay_war3version", 26 );
 	m_ReplayBuildNumber = CFG->GetInt( "replay_buildnumber", 6059 );
 
+	#ifdef GHOST_IRINA
+	m_IrinaToken = CFG->GetString( "irina_token", std::string( ) );
+	this->m_IrinaConnector = new CIrinaConnector(this, m_IrinaToken);
+	this->m_IrinaConnector->Run();
+	#endif
 	SetConfigs( CFG );
 
 	// load the battle.net connections
