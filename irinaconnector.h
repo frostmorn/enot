@@ -13,24 +13,26 @@ class CIrinaProtocol;
 class CIrinaConnector;
 class CTCPClient;
 class CIncomingIrinaAuthToken;
-class CIrinaConnector{
+class CIrinaConnector
+{
 private:
     int nfds;
     fd_set fd;
-	fd_set send_fd;
+    fd_set send_fd;
 
     CGHost *m_GHost;
-    std::string token;
-    CIrinaProtocol *irina_proto;
+    std::string m_Token;
+    CIrinaProtocol *m_IrinaProto;
     CTCPClient *m_Socket;
-    std::thread *irina_thread;
+    std::thread *m_IrinaThread;
     bool m_Authorized = false;
-    
+
     void Authorize();
     //void Update();
     void IrinaLoop();
+
 public:
-    bool GetAuthorized(){ m_Authorized;}
+    bool GetAuthorized() { return m_Authorized; }
     void Run();
     CIrinaConnector(CGHost *nGHost, std::string &token);
     ~CIrinaConnector();
