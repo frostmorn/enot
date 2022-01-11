@@ -3,7 +3,7 @@ SYSTEM = $(shell uname)
 C++ = clang++
 CC = clang
 DFLAGS = -DGHOST_MYSQL -DGCC_8 -DGHOST_DISCORD
-OFLAGS = -O3
+OFLAGS = -O3 -march=native -mtune=native
 LFLAGS =  -L. -L./bncsutil -L./StormLib -L./zlib-ng  -Wl,-Bstatic -lbncsutil_static -lz -lstorm  -Wl,-Bdynamic -lpthread -ldl -lbz2 -lmysqlclient -lgmp -lsqlite3 -lssl -lcrypto -lstdc++fs -lcurl
 CFLAGS = -g3 -Wall
 
