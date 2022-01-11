@@ -40,6 +40,7 @@
 #include "game_admin.h"
 #include <signal.h>
 #include <stdlib.h>
+#include "discord.h"
 #ifdef WIN32
  #include <ws2tcpip.h>		// for WSAIoctl
 #endif
@@ -400,7 +401,6 @@ CGHost :: CGHost( CConfig *CFG )
 	m_ReconnectSocket = NULL;
 	m_GPSProtocol = new CGPSProtocol( );
 	m_CurrentGame = NULL;
-
 	
 	
 	std::string DBType = CFG->GetString( "db_type", "sqlite3" );
@@ -1357,10 +1357,12 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_MapGameType = CFG->GetUInt32( "bot_mapgametype", 0 );
 //	Discord config
 #ifdef GHOST_DISCORD
-
-	m_discord_bug_webhook_url = CFG->GetString( "bot_discord_bug_webhook_url", "https://discordapp.com/api/webhooks/751543718317785160/bkzrTG4cY1t9vKMILgNJRWxHkKn2O6YwRPYRfY0nHLdocGq9jdotsJUfxE1N4NvfbtsE" );	// config value: bug report message webhook url
-	m_discord_g_create_webhook_url = CFG->GetString( "bot_discord_g_create_webhook_url", "https://discordapp.com/api/webhooks/739464707760455781/xiBR1ELF_8fsXXYOQ_ViHXuu7wDmr8ptE9uM98P5kEJQX0AXzM9FRE7J7YrJlpbM9ErW" );
+	m_DiscordDefaultWebhookUrl = CFG->GetString("discord_default_wurl", std::string());
+	m_DiscordBugWebhookUrl = CFG->GetString("discord_bug_wurl", std::string());
+	// Creating discord connector instance
+	m_DiscordConnector = new DiscordConnector(m_DiscordDefaultWebhookUrl);
 #endif
+	
 }
 
 void CGHost :: ExtractScripts( )
@@ -1672,7 +1674,7 @@ void CGHost :: CreateGame( CMap *map, unsigned char gameState, bool saveGame, st
 
 	CONSOLE_Print( "[GHOST] creating game [" + gameName + "]" );
 	#ifdef GHOST_DISCORD
-	discord_game_created(m_discord_g_create_webhook_url, gameName, ownerName, map->GetMapPath());
+	// discord_game_created(m_discord_g_create_webhook_url, gameName, ownerName, map->GetMapPath());
 	#endif
 	if( saveGame )
 		m_CurrentGame = new CGame( this, map, m_SaveGame, m_HostPort, gameState, gameName, ownerName, creatorName, creatorServer );

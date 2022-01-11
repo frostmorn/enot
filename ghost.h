@@ -41,6 +41,7 @@ class CLanguage;
 class CMap;
 class CSaveGame;
 class CConfig;
+class DiscordConnector;
 
 struct GProxyReconnector {
 	CTCPSocket *socket;
@@ -53,6 +54,9 @@ struct GProxyReconnector {
 class CGHost
 {
 public:
+#ifdef GHOST_DISCORD
+	DiscordConnector *m_DiscordConnector;	//	Connector to discord webhooks
+#endif
 	CUDPSocket *m_UDPSocket;				// a UDP socket for sending broadcasts and other junk (used with !sendlan)
 	CTCPServer *m_ReconnectSocket;			// listening socket for GProxy++ reliable reconnects
 	std::vector<CTCPSocket *> m_ReconnectSockets;// vector of sockets attempting to reconnect (connected but not identified yet)
@@ -144,8 +148,8 @@ public:
 	std::string m_AdminGameMap;					// config value: the admin game map config to use
 	
 	#ifdef GHOST_DISCORD
-	std::string m_discord_bug_webhook_url;		// config value: bug report message webhook url
-	std::string m_discord_g_create_webhook_url;	// config value: game creation message webhook url
+	std::string m_DiscordDefaultWebhookUrl;		// config value: bug report message webhook url
+	std::string m_DiscordBugWebhookUrl;	// config value: game creation message webhook url
 	#endif
 	unsigned char m_LANWar3Version;			// config value: LAN warcraft 3 version
 	uint32_t m_ReplayWar3Version;			// config value: replay warcraft 3 version (for saving replays)

@@ -29,9 +29,6 @@
  #include <stdint.h>
 #endif
 
-// WEBHOOKS
-
-#include "discord.h"
 
 // STL
 
@@ -46,9 +43,6 @@
 #include <string>
 #include <vector>
 
-//#include <boost/algorithm/string/trim.hpp>
-
-// using namespace std;
 #include <unistd.h>
 typedef std::vector<unsigned char> BYTEARRAY;
 typedef std::pair<unsigned char,std::string> PIDPlayer;

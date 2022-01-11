@@ -2,9 +2,9 @@ SHELL = /bin/sh
 SYSTEM = $(shell uname)
 C++ = clang++
 CC = clang
-DFLAGS = -DGHOST_MYSQL -DGCC_8
+DFLAGS = -DGHOST_MYSQL -DGCC_8 -DGHOST_DISCORD
 OFLAGS = -O3
-LFLAGS =  -L. -L./bncsutil -L./StormLib -L./zlib-ng  -Wl,-Bstatic -lbncsutil_static -lz -lstorm  -Wl,-Bdynamic -lpthread -ldl -lbz2 -lmysqlclient -lgmp -lsqlite3 -lssl -lcrypto -lstdc++fs
+LFLAGS =  -L. -L./bncsutil -L./StormLib -L./zlib-ng  -Wl,-Bstatic -lbncsutil_static -lz -lstorm  -Wl,-Bdynamic -lpthread -ldl -lbz2 -lmysqlclient -lgmp -lsqlite3 -lssl -lcrypto -lstdc++fs -lcurl
 CFLAGS = -g3 -Wall
 
 ifeq ($(SYSTEM),Darwin)

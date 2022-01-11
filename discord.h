@@ -2,14 +2,34 @@
 #ifndef DISCORD_H
 #define DISCORD_H
 #include <curl/curl.h>
+#include <nlohmann/json.hpp>
+//#include <vector>
+#include <thread>
 #include <iostream>
-#include <algorithm>
-#include <string>
-#include <sstream>
-#include <iomanip>
+#include <queue>
+struct DiscordSendMessage{
+    nlohmann::json json;
+    std::string webhook_url;
+};
 
-int discord_request(std::string json_data);
-int discord_game_created(std::string discord_g_create_webhook_url, std::string game_name, std::string game_owner, std::string map_path);
-int discord_bug_message(std::string discord_bug_webhook_url, std::string game_name,  std::string bug_provider, std::string bug_description);
+class DiscordConnector{
+    private:        
+        std::queue<struct DiscordSendMessage > m_DiscordMessages;
+        std::thread *m_DiscordThread;
+        std::string m_DiscordWebhookUrl;
+        void Send(const nlohmann::json &json, const std::string &webhook_url);
+        void Send(const nlohmann::json &json);
+        void SendFile(const std::string &file_path, const nlohmann::json &json, const std::string &webhook_url);
+        void SendFile(const std::string &file_path, const nlohmann::json &json);
+        void SendFile(const std::string &file_path);
+    public:
+        DiscordConnector(const std::string &webhook_url);
+        ~DiscordConnector();
+        
+
+        void BugMessage(const std::string &bug_message, const std::string &bug_provider, const std::string &realm_provider, const std::string &webhook_url);
+        void BugMessage(const std::string &bug_message, const std::string &bug_provider, const std::string &realm_provider);
+        void DiscordThreadLoop();
+};
 #endif
 #endif

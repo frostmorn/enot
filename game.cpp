@@ -2022,7 +2022,14 @@ bool CGame :: EventPlayerBotCommand( CGamePlayer *player, std::string command, s
 			SendChat(player, "Error! Bug message not provided. Usage : !bug <message>" );
 		}
 		else {
-			discord_bug_message(m_GHost->m_discord_bug_webhook_url, GetGameName(), player->GetName(), Payload);
+			//discord_bug_message(m_GHost->m_discord_bug_webhook_url, GetGameName(), player->GetName(), Payload);
+			if (!m_GHost->m_DiscordBugWebhookUrl.empty()){
+				m_GHost->m_DiscordConnector->BugMessage(Payload,  player->GetName(), player->GetSpoofedRealm(), m_GHost->m_DiscordBugWebhookUrl);
+			}
+			else
+			{
+				m_GHost->m_DiscordConnector->BugMessage(Payload, player->GetName(), player->GetSpoofedRealm());
+			}
 			SendChat(player, "Bug reported! Thnx :)" );			
 		}
 
