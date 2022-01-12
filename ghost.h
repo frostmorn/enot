@@ -148,8 +148,9 @@ public:
 	std::string m_AdminGameMap;					// config value: the admin game map config to use
 	
 	#ifdef GHOST_DISCORD
-	std::string m_DiscordDefaultWebhookUrl;		// config value: bug report message webhook url
 	std::string m_DiscordBugWebhookUrl;	// config value: game creation message webhook url
+	std::string m_DiscordReplayWebhookUrl;
+	bool m_DiscordWebhooksEnabled;
 	#endif
 	unsigned char m_LANWar3Version;			// config value: LAN warcraft 3 version
 	uint32_t m_ReplayWar3Version;			// config value: replay warcraft 3 version (for saving replays)

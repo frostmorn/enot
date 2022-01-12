@@ -1355,12 +1355,15 @@ void CGHost :: SetConfigs( CConfig *CFG )
 	m_TCPNoDelay = CFG->GetInt( "tcp_nodelay", 0 ) == 0 ? false : true;
 	m_MatchMakingMethod = CFG->GetInt( "bot_matchmakingmethod", 1 );
 	m_MapGameType = CFG->GetUInt32( "bot_mapgametype", 0 );
-//	Discord config
 #ifdef GHOST_DISCORD
-	m_DiscordDefaultWebhookUrl = CFG->GetString("discord_default_wurl", std::string());
-	m_DiscordBugWebhookUrl = CFG->GetString("discord_bug_wurl", std::string());
-	// Creating discord connector instance
-	m_DiscordConnector = new DiscordConnector(m_DiscordDefaultWebhookUrl);
+//	Discord config
+	m_DiscordWebhooksEnabled = CFG->GetInt("discord_webhooks_enabled", 0);
+	if (m_DiscordWebhooksEnabled){
+		m_DiscordBugWebhookUrl = CFG->GetString("discord_bug_wurl", std::string());
+		m_DiscordReplayWebhookUrl = CFG->GetString("discord_replay_wurl", std::string());
+		// Creating discord connector instance
+		m_DiscordConnector = new DiscordConnector();
+	}
 #endif
 	
 }

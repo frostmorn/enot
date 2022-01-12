@@ -33,7 +33,9 @@
 #include "gameplayer.h"
 #include "gameprotocol.h"
 #include "game_base.h"
-
+#ifdef GHOST_DISCORD
+#include "discord.h"
+#endif
 #include <cmath>
 #include <string.h>
 #include <time.h>
@@ -176,9 +178,15 @@ CBaseGame :: ~CBaseGame( )
 		if( SecString.size( ) == 1 )
 			SecString.insert( 0, "0" );
 		
+		auto replay_path = m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + std::string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" );
 		m_Replay->BuildReplay( m_GameName, m_StatString, m_GHost->m_ReplayWar3Version, m_GHost->m_ReplayBuildNumber );
 		
-		m_Replay->Save( m_GHost->m_TFT, m_GHost->m_ReplayPath + UTIL_FileSafeName( "GHost++ " + std::string( Time ) + " " + m_GameName + " (" + MinString + "m" + SecString + "s).w3g" ) );
+		m_Replay->Save( m_GHost->m_TFT,  replay_path);
+		auto map_path = m_Map->GetMapPath();
+		auto map_name = map_path.substr(map_path.find_last_of("/\\") + 1);
+		if (m_GHost->m_DiscordWebhooksEnabled){
+			m_GHost->m_DiscordConnector->ReplayMessage(m_GameName, map_name, m_GHost->m_ReplayWar3Version, replay_path, m_GHost->m_DiscordReplayWebhookUrl);
+		}
 		m_GHost->m_ReplayMutex.unlock();
 	}
 
@@ -3620,9 +3628,6 @@ void CBaseGame :: EventGameStarted( )
 	m_StatString = std::string( StatString.begin( ), StatString.end( ) );
 
 	// delete the map data
-
-	delete m_Map;
-	m_Map = NULL;
 
 	if( m_LoadInGame )
 	{
