@@ -22,7 +22,7 @@
 
 #ifndef GHOSTDBMYSQL_H
 #define GHOSTDBMYSQL_H
-
+#include <mysql/mysql.h>
 /**************
  *** SCHEMA ***
  **************
@@ -175,8 +175,7 @@ private:
 	std::queue<CBaseCallable*> m_Callables;
 	uint16_t m_Port;
 	uint32_t m_BotID;
-	std::queue<void *> m_IdleConnections;
-	uint32_t m_NumConnections;
+	MYSQL * m_Connection;
 	uint32_t m_OutstandingCallables;
 	std::mutex m_DatabaseMutex;
 	std::thread *m_CallablesUpdateThread;
@@ -222,7 +221,6 @@ public:
 #endif
 	// other database functions
 	void UpdateCallables();
-	virtual void *GetIdleConnection( );
 };
 
 //
@@ -260,7 +258,7 @@ bool MySQLW3MMDVarAdd( void *conn, std::string *error, uint32_t botid, uint32_t 
 class CMySQLCallable : virtual public CBaseCallable
 {
 protected:
-	void *m_Connection;
+	MYSQL *m_Connection;
 	std::string m_SQLServer;
 	std::string m_SQLDatabase;
 	std::string m_SQLUser;
@@ -269,7 +267,7 @@ protected:
 	uint32_t m_SQLBotID;
 
 public:
-	CMySQLCallable( void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), m_Connection( nConnection ), m_SQLBotID( nSQLBotID ), m_SQLServer( nSQLServer ), m_SQLDatabase( nSQLDatabase ), m_SQLUser( nSQLUser ), m_SQLPassword( nSQLPassword ), m_SQLPort( nSQLPort ) { }
+	CMySQLCallable( MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), m_Connection( nConnection ), m_SQLBotID( nSQLBotID ), m_SQLServer( nSQLServer ), m_SQLDatabase( nSQLDatabase ), m_SQLUser( nSQLUser ), m_SQLPassword( nSQLPassword ), m_SQLPort( nSQLPort ) { }
 	virtual ~CMySQLCallable( ) { }
 
 	virtual void *GetConnection( )	{ return m_Connection; }
@@ -281,7 +279,7 @@ public:
 class CMySQLCallableAdminCount : public CCallableAdminCount, public CMySQLCallable
 {
 public:
-	CMySQLCallableAdminCount( std::string nServer, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminCount( nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableAdminCount( std::string nServer, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminCount( nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableAdminCount( ) { }
 
 	virtual void operator( )( );
@@ -292,7 +290,7 @@ public:
 class CMySQLCallableAdminCheck : public CCallableAdminCheck, public CMySQLCallable
 {
 public:
-	CMySQLCallableAdminCheck( std::string nServer, std::string nUser, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminCheck( nServer, nUser ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableAdminCheck( std::string nServer, std::string nUser, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminCheck( nServer, nUser ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableAdminCheck( ) { }
 
 	virtual void operator( )( );
@@ -303,7 +301,7 @@ public:
 class CMySQLCallableAdminAdd : public CCallableAdminAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableAdminAdd( std::string nServer, std::string nUser, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminAdd( nServer, nUser ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableAdminAdd( std::string nServer, std::string nUser, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminAdd( nServer, nUser ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableAdminAdd( ) { }
 
 	virtual void operator( )( );
@@ -314,7 +312,7 @@ public:
 class CMySQLCallableAdminRemove : public CCallableAdminRemove, public CMySQLCallable
 {
 public:
-	CMySQLCallableAdminRemove( std::string nServer, std::string nUser, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminRemove( nServer, nUser ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableAdminRemove( std::string nServer, std::string nUser, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminRemove( nServer, nUser ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableAdminRemove( ) { }
 
 	virtual void operator( )( );
@@ -325,7 +323,7 @@ public:
 class CMySQLCallableAdminList : public CCallableAdminList, public CMySQLCallable
 {
 public:
-	CMySQLCallableAdminList( std::string nServer, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminList( nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableAdminList( std::string nServer, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableAdminList( nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableAdminList( ) { }
 
 	virtual void operator( )( );
@@ -336,7 +334,7 @@ public:
 class CMySQLCallableBanCount : public CCallableBanCount, public CMySQLCallable
 {
 public:
-	CMySQLCallableBanCount( std::string nServer, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanCount( nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableBanCount( std::string nServer, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanCount( nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableBanCount( ) { }
 
 	virtual void operator( )( );
@@ -347,7 +345,7 @@ public:
 class CMySQLCallableBanCheck : public CCallableBanCheck, public CMySQLCallable
 {
 public:
-	CMySQLCallableBanCheck( std::string nServer, std::string nUser, std::string nIP, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanCheck( nServer, nUser, nIP ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableBanCheck( std::string nServer, std::string nUser, std::string nIP, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanCheck( nServer, nUser, nIP ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableBanCheck( ) { }
 
 	virtual void operator( )( );
@@ -358,7 +356,7 @@ public:
 class CMySQLCallableBanAdd : public CCallableBanAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableBanAdd( std::string nServer, std::string nUser, std::string nIP, std::string nGameName, std::string nAdmin, std::string nReason, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanAdd( nServer, nUser, nIP, nGameName, nAdmin, nReason ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableBanAdd( std::string nServer, std::string nUser, std::string nIP, std::string nGameName, std::string nAdmin, std::string nReason, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanAdd( nServer, nUser, nIP, nGameName, nAdmin, nReason ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableBanAdd( ) { }
 
 	virtual void operator( )( );
@@ -369,7 +367,7 @@ public:
 class CMySQLCallableBanRemove : public CCallableBanRemove, public CMySQLCallable
 {
 public:
-	CMySQLCallableBanRemove( std::string nServer, std::string nUser, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanRemove( nServer, nUser ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableBanRemove( std::string nServer, std::string nUser, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanRemove( nServer, nUser ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableBanRemove( ) { }
 
 	virtual void operator( )( );
@@ -380,7 +378,7 @@ public:
 class CMySQLCallableBanList : public CCallableBanList, public CMySQLCallable
 {
 public:
-	CMySQLCallableBanList( std::string nServer, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanList( nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableBanList( std::string nServer, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableBanList( nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableBanList( ) { }
 
 	virtual void operator( )( );
@@ -391,7 +389,7 @@ public:
 class CMySQLCallableGameAdd : public CCallableGameAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableGameAdd( std::string nServer, std::string nMap, std::string nGameName, std::string nOwnerName, uint32_t nDuration, uint32_t nGameState, std::string nCreatorName, std::string nCreatorServer, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableGameAdd( nServer, nMap, nGameName, nOwnerName, nDuration, nGameState, nCreatorName, nCreatorServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableGameAdd( std::string nServer, std::string nMap, std::string nGameName, std::string nOwnerName, uint32_t nDuration, uint32_t nGameState, std::string nCreatorName, std::string nCreatorServer, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableGameAdd( nServer, nMap, nGameName, nOwnerName, nDuration, nGameState, nCreatorName, nCreatorServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableGameAdd( ) { }
 
 	virtual void operator( )( );
@@ -402,7 +400,7 @@ public:
 class CMySQLCallableGamePlayerAdd : public CCallableGamePlayerAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableGamePlayerAdd( uint32_t nGameID, std::string nName, std::string nIP, uint32_t nSpoofed, std::string nSpoofedRealm, uint32_t nReserved, uint32_t nLoadingTime, uint32_t nLeft, std::string nLeftReason, uint32_t nTeam, uint32_t nColour, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableGamePlayerAdd( nGameID, nName, nIP, nSpoofed, nSpoofedRealm, nReserved, nLoadingTime, nLeft, nLeftReason, nTeam, nColour ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableGamePlayerAdd( uint32_t nGameID, std::string nName, std::string nIP, uint32_t nSpoofed, std::string nSpoofedRealm, uint32_t nReserved, uint32_t nLoadingTime, uint32_t nLeft, std::string nLeftReason, uint32_t nTeam, uint32_t nColour, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableGamePlayerAdd( nGameID, nName, nIP, nSpoofed, nSpoofedRealm, nReserved, nLoadingTime, nLeft, nLeftReason, nTeam, nColour ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableGamePlayerAdd( ) { }
 
 	virtual void operator( )( );
@@ -413,7 +411,7 @@ public:
 class CMySQLCallableGamePlayerSummaryCheck : public CCallableGamePlayerSummaryCheck, public CMySQLCallable
 {
 public:
-	CMySQLCallableGamePlayerSummaryCheck( std::string nName, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableGamePlayerSummaryCheck( nName ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableGamePlayerSummaryCheck( std::string nName, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableGamePlayerSummaryCheck( nName ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableGamePlayerSummaryCheck( ) { }
 
 	virtual void operator( )( );
@@ -424,7 +422,7 @@ public:
 class CMySQLCallableDotAGameAdd : public CCallableDotAGameAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableDotAGameAdd( uint32_t nGameID, uint32_t nWinner, uint32_t nMin, uint32_t nSec, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableDotAGameAdd( nGameID, nWinner, nMin, nSec ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableDotAGameAdd( uint32_t nGameID, uint32_t nWinner, uint32_t nMin, uint32_t nSec, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableDotAGameAdd( nGameID, nWinner, nMin, nSec ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableDotAGameAdd( ) { }
 
 	virtual void operator( )( );
@@ -435,7 +433,7 @@ public:
 class CMySQLCallableDotAPlayerAdd : public CCallableDotAPlayerAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableDotAPlayerAdd( uint32_t nGameID, uint32_t nColour, uint32_t nKills, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nCreepDenies, uint32_t nAssists, uint32_t nGold, uint32_t nNeutralKills, std::string nItem1, std::string nItem2, std::string nItem3, std::string nItem4, std::string nItem5, std::string nItem6, std::string nHero, uint32_t nNewColour, uint32_t nTowerKills, uint32_t nRaxKills, uint32_t nCourierKills, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableDotAPlayerAdd( nGameID, nColour, nKills, nDeaths, nCreepKills, nCreepDenies, nAssists, nGold, nNeutralKills, nItem1, nItem2, nItem3, nItem4, nItem5, nItem6, nHero, nNewColour, nTowerKills, nRaxKills, nCourierKills ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableDotAPlayerAdd( uint32_t nGameID, uint32_t nColour, uint32_t nKills, uint32_t nDeaths, uint32_t nCreepKills, uint32_t nCreepDenies, uint32_t nAssists, uint32_t nGold, uint32_t nNeutralKills, std::string nItem1, std::string nItem2, std::string nItem3, std::string nItem4, std::string nItem5, std::string nItem6, std::string nHero, uint32_t nNewColour, uint32_t nTowerKills, uint32_t nRaxKills, uint32_t nCourierKills, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableDotAPlayerAdd( nGameID, nColour, nKills, nDeaths, nCreepKills, nCreepDenies, nAssists, nGold, nNeutralKills, nItem1, nItem2, nItem3, nItem4, nItem5, nItem6, nHero, nNewColour, nTowerKills, nRaxKills, nCourierKills ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableDotAPlayerAdd( ) { }
 
 	virtual void operator( )( );
@@ -446,7 +444,7 @@ public:
 class CMySQLCallableDotAPlayerSummaryCheck : public CCallableDotAPlayerSummaryCheck, public CMySQLCallable
 {
 public:
-	CMySQLCallableDotAPlayerSummaryCheck( std::string nName, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableDotAPlayerSummaryCheck( nName ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableDotAPlayerSummaryCheck( std::string nName, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableDotAPlayerSummaryCheck( nName ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableDotAPlayerSummaryCheck( ) { }
 
 	virtual void operator( )( );
@@ -457,7 +455,7 @@ public:
 class CMySQLCallableDownloadAdd : public CCallableDownloadAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableDownloadAdd( std::string nMap, uint32_t nMapSize, std::string nName, std::string nIP, uint32_t nSpoofed, std::string nSpoofedRealm, uint32_t nDownloadTime, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableDownloadAdd( nMap, nMapSize, nName, nIP, nSpoofed, nSpoofedRealm, nDownloadTime ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableDownloadAdd( std::string nMap, uint32_t nMapSize, std::string nName, std::string nIP, uint32_t nSpoofed, std::string nSpoofedRealm, uint32_t nDownloadTime, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableDownloadAdd( nMap, nMapSize, nName, nIP, nSpoofed, nSpoofedRealm, nDownloadTime ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableDownloadAdd( ) { }
 
 	virtual void operator( )( );
@@ -468,7 +466,7 @@ public:
 class CMySQLCallableScoreCheck : public CCallableScoreCheck, public CMySQLCallable
 {
 public:
-	CMySQLCallableScoreCheck( std::string nCategory, std::string nName, std::string nServer, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableScoreCheck( nCategory, nName, nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableScoreCheck( std::string nCategory, std::string nName, std::string nServer, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableScoreCheck( nCategory, nName, nServer ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableScoreCheck( ) { }
 
 	virtual void operator( )( );
@@ -479,7 +477,7 @@ public:
 class CMySQLCallableW3MMDPlayerAdd : public CCallableW3MMDPlayerAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableW3MMDPlayerAdd( std::string nCategory, uint32_t nGameID, uint32_t nPID, std::string nName, std::string nFlag, uint32_t nLeaver, uint32_t nPracticing, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableW3MMDPlayerAdd( nCategory, nGameID, nPID, nName, nFlag, nLeaver, nPracticing ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableW3MMDPlayerAdd( std::string nCategory, uint32_t nGameID, uint32_t nPID, std::string nName, std::string nFlag, uint32_t nLeaver, uint32_t nPracticing, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableW3MMDPlayerAdd( nCategory, nGameID, nPID, nName, nFlag, nLeaver, nPracticing ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableW3MMDPlayerAdd( ) { }
 
 	virtual void operator( )( );
@@ -490,9 +488,9 @@ public:
 class CMySQLCallableW3MMDVarAdd : public CCallableW3MMDVarAdd, public CMySQLCallable
 {
 public:
-	CMySQLCallableW3MMDVarAdd( uint32_t nGameID, std::map<VarP,int32_t> nVarInts, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableW3MMDVarAdd( nGameID, nVarInts ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
-	CMySQLCallableW3MMDVarAdd( uint32_t nGameID, std::map<VarP,double> nVarReals, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableW3MMDVarAdd( nGameID, nVarReals ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
-	CMySQLCallableW3MMDVarAdd( uint32_t nGameID, std::map<VarP,std::string> nVarStrings, void *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableW3MMDVarAdd( nGameID, nVarStrings ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableW3MMDVarAdd( uint32_t nGameID, std::map<VarP,int32_t> nVarInts, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableW3MMDVarAdd( nGameID, nVarInts ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableW3MMDVarAdd( uint32_t nGameID, std::map<VarP,double> nVarReals, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableW3MMDVarAdd( nGameID, nVarReals ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
+	CMySQLCallableW3MMDVarAdd( uint32_t nGameID, std::map<VarP,std::string> nVarStrings, MYSQL *nConnection, uint32_t nSQLBotID, std::string nSQLServer, std::string nSQLDatabase, std::string nSQLUser, std::string nSQLPassword, uint16_t nSQLPort ) : CBaseCallable( ), CCallableW3MMDVarAdd( nGameID, nVarStrings ), CMySQLCallable( nConnection, nSQLBotID, nSQLServer, nSQLDatabase, nSQLUser, nSQLPassword, nSQLPort ) { }
 	virtual ~CMySQLCallableW3MMDVarAdd( ) { }
 
 	virtual void operator( )( );

@@ -17,7 +17,7 @@
    CODE PORTED FROM THE ORIGINAL GHOST PROJECT: http://ghost.pwner.org/
 
 */
-
+#include "includes.h"
 #ifdef GHOST_MYSQL
 
 #include "ghost.h"
@@ -32,7 +32,7 @@
  #include <winsock.h>
 #endif
 
-#include <mysql/mysql.h>
+
 #include <thread>
 
 //
@@ -47,36 +47,32 @@ CGHostDBMySQL :: CGHostDBMySQL( CConfig *CFG ) : CGHostDB( CFG )
 	m_Password = CFG->GetString( "db_mysql_password", std::string( ) );
 	m_Port = CFG->GetInt( "db_mysql_port", 0 );
 	m_BotID = CFG->GetInt( "db_mysql_botid", 0 );
-	m_NumConnections = 1;
 	m_OutstandingCallables = 0;
 
 	mysql_library_init( 0, NULL, NULL );
 
-	// create the first connection
+	// create the first m_Connection
 
 	CONSOLE_Print( "[MYSQL] connecting to database server" );
-	MYSQL *Connection = NULL;
 
-	if( !( Connection = mysql_init( NULL ) ) )
+	if( !( m_Connection = mysql_init( NULL ) ) )
 	{
-		CONSOLE_Print( std::string( "[MYSQL] " ) + mysql_error( Connection ) );
+		CONSOLE_Print( std::string( "[MYSQL] " ) + mysql_error( m_Connection ) );
 		m_HasError = true;
-		m_Error = "error initializing MySQL connection";
+		m_Error = "error initializing MySQL m_Connection";
 		return;
 	}
 
 	my_bool Reconnect = true;
-	mysql_options( Connection, MYSQL_OPT_RECONNECT, &Reconnect );
+	mysql_options( m_Connection, MYSQL_OPT_RECONNECT, &Reconnect );
 
-	if( !( mysql_real_connect( Connection, m_Server.c_str( ), m_User.c_str( ), m_Password.c_str( ), m_Database.c_str( ), m_Port, NULL, 0 ) ) )
+	if( !( mysql_real_connect( m_Connection, m_Server.c_str( ), m_User.c_str( ), m_Password.c_str( ), m_Database.c_str( ), m_Port, NULL, 0 ) ) )
 	{
-		CONSOLE_Print( std::string( "[MYSQL] " ) + mysql_error( Connection ) );
+		CONSOLE_Print( std::string( "[MYSQL] " ) + mysql_error( m_Connection ) );
 		m_HasError = true;
 		m_Error = "error connecting to MySQL server";
 		return;
 	}
-
-	m_IdleConnections.push( Connection );
 	this->m_CallablesUpdateThread = new std::thread(&CGHostDBMySQL::UpdateCallables, this);
 	
 }
@@ -84,12 +80,9 @@ CGHostDBMySQL :: CGHostDBMySQL( CConfig *CFG ) : CGHostDB( CFG )
 CGHostDBMySQL :: ~CGHostDBMySQL( )
 {
 	m_DatabaseMutex.lock();
-	CONSOLE_Print( "[MYSQL] closing " + std::to_string( m_IdleConnections.size( ) ) + "/" + std::to_string( m_NumConnections ) + " idle MySQL connections" );
 
-	while( !m_IdleConnections.empty( ) )
-	{
-		mysql_close( (MYSQL *)m_IdleConnections.front( ) );
-		m_IdleConnections.pop( );
+	if (m_Connection){
+		mysql_close(m_Connection);
 	}
 
 	if( m_OutstandingCallables > 0 )
@@ -100,7 +93,8 @@ CGHostDBMySQL :: ~CGHostDBMySQL( )
 
 std::string CGHostDBMySQL :: GetStatus( )
 {
-	return "DB STATUS --- Connections: " + std::to_string( m_IdleConnections.size( ) ) + "/" + std::to_string( m_NumConnections ) + " idle. Outstanding callables: " + std::to_string( m_OutstandingCallables ) + ".";
+	// return "DB STATUS --- m_Connections: " + std::to_string( m_Idlem_Connections.size( ) ) + "/" + std::to_string( m_Numm_Connections ) + " idle. Outstanding callables: " + std::to_string( m_OutstandingCallables ) + ".";
+	return "DB STATUS: ";
 }
 void CGHostDBMySQL :: UpdateCallables(){
 	while (1){
@@ -125,13 +119,13 @@ void CGHostDBMySQL :: RecoverCallable( CBaseCallable *callable )
 
 	if( MySQLCallable )
 	{
-		if( m_IdleConnections.size( ) > 30 )
-		{
-			mysql_close( (MYSQL *)MySQLCallable->GetConnection( ) );
-			--m_NumConnections;
-		}
-		else
-			m_IdleConnections.push( MySQLCallable->GetConnection( ) );
+		// if( m_Idlem_Connections.size( ) > 30 )
+		// {
+		// 	mysql_close( (MYSQL *)MySQLCallable->Getm_Connection( ) );
+		// 	--m_Numm_Connections;
+		// }
+		// else
+		// 	m_Idlem_Connections.push( MySQLCallable->Getm_Connection( ) );
 
 		if( m_OutstandingCallables == 0 )
 			CONSOLE_Print( "[MYSQL] recovered a mysql callable with zero outstanding" );
@@ -155,12 +149,10 @@ void CGHostDBMySQL :: CreateThread( CBaseCallable *callable )
 
 CCallableAdminCount *CGHostDBMySQL :: ThreadedAdminCount( std::string server )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableAdminCount *Callable = new CMySQLCallableAdminCount( server, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableAdminCount *Callable = new CMySQLCallableAdminCount( server, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -168,12 +160,10 @@ CCallableAdminCount *CGHostDBMySQL :: ThreadedAdminCount( std::string server )
 
 CCallableAdminCheck *CGHostDBMySQL :: ThreadedAdminCheck( std::string server, std::string user )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableAdminCheck *Callable = new CMySQLCallableAdminCheck( server, user, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableAdminCheck *Callable = new CMySQLCallableAdminCheck( server, user, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -181,12 +171,10 @@ CCallableAdminCheck *CGHostDBMySQL :: ThreadedAdminCheck( std::string server, st
 
 CCallableAdminAdd *CGHostDBMySQL :: ThreadedAdminAdd( std::string server, std::string user )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableAdminAdd *Callable = new CMySQLCallableAdminAdd( server, user, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableAdminAdd *Callable = new CMySQLCallableAdminAdd( server, user, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -194,12 +182,10 @@ CCallableAdminAdd *CGHostDBMySQL :: ThreadedAdminAdd( std::string server, std::s
 
 CCallableAdminRemove *CGHostDBMySQL :: ThreadedAdminRemove( std::string server, std::string user )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableAdminRemove *Callable = new CMySQLCallableAdminRemove( server, user, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableAdminRemove *Callable = new CMySQLCallableAdminRemove( server, user, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -207,12 +193,10 @@ CCallableAdminRemove *CGHostDBMySQL :: ThreadedAdminRemove( std::string server, 
 
 CCallableAdminList *CGHostDBMySQL :: ThreadedAdminList( std::string server )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableAdminList *Callable = new CMySQLCallableAdminList( server, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableAdminList *Callable = new CMySQLCallableAdminList( server, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -220,12 +204,10 @@ CCallableAdminList *CGHostDBMySQL :: ThreadedAdminList( std::string server )
 
 CCallableBanCount *CGHostDBMySQL :: ThreadedBanCount( std::string server )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableBanCount *Callable = new CMySQLCallableBanCount( server, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableBanCount *Callable = new CMySQLCallableBanCount( server, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -233,12 +215,10 @@ CCallableBanCount *CGHostDBMySQL :: ThreadedBanCount( std::string server )
 
 CCallableBanCheck *CGHostDBMySQL :: ThreadedBanCheck( std::string server, std::string user, std::string ip )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableBanCheck *Callable = new CMySQLCallableBanCheck( server, user, ip, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableBanCheck *Callable = new CMySQLCallableBanCheck( server, user, ip, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -246,12 +226,10 @@ CCallableBanCheck *CGHostDBMySQL :: ThreadedBanCheck( std::string server, std::s
 
 CCallableBanAdd *CGHostDBMySQL :: ThreadedBanAdd( std::string server, std::string user, std::string ip, std::string gamename, std::string admin, std::string reason )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableBanAdd *Callable = new CMySQLCallableBanAdd( server, user, ip, gamename, admin, reason, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableBanAdd *Callable = new CMySQLCallableBanAdd( server, user, ip, gamename, admin, reason, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -259,12 +237,10 @@ CCallableBanAdd *CGHostDBMySQL :: ThreadedBanAdd( std::string server, std::strin
 
 CCallableBanRemove *CGHostDBMySQL :: ThreadedBanRemove( std::string server, std::string user )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableBanRemove *Callable = new CMySQLCallableBanRemove( server, user, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableBanRemove *Callable = new CMySQLCallableBanRemove( server, user, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -272,12 +248,10 @@ CCallableBanRemove *CGHostDBMySQL :: ThreadedBanRemove( std::string server, std:
 
 CCallableBanRemove *CGHostDBMySQL :: ThreadedBanRemove( std::string user )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableBanRemove *Callable = new CMySQLCallableBanRemove( std::string( ), user, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableBanRemove *Callable = new CMySQLCallableBanRemove( std::string( ), user, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -285,12 +259,10 @@ CCallableBanRemove *CGHostDBMySQL :: ThreadedBanRemove( std::string user )
 
 CCallableBanList *CGHostDBMySQL :: ThreadedBanList( std::string server )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableBanList *Callable = new CMySQLCallableBanList( server, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableBanList *Callable = new CMySQLCallableBanList( server, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -298,12 +270,10 @@ CCallableBanList *CGHostDBMySQL :: ThreadedBanList( std::string server )
 
 CCallableGameAdd *CGHostDBMySQL :: ThreadedGameAdd( std::string server, std::string map, std::string gamename, std::string ownername, uint32_t duration, uint32_t gamestate, std::string creatorname, std::string creatorserver )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableGameAdd *Callable = new CMySQLCallableGameAdd( server, map, gamename, ownername, duration, gamestate, creatorname, creatorserver, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableGameAdd *Callable = new CMySQLCallableGameAdd( server, map, gamename, ownername, duration, gamestate, creatorname, creatorserver, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -311,12 +281,10 @@ CCallableGameAdd *CGHostDBMySQL :: ThreadedGameAdd( std::string server, std::str
 
 CCallableGamePlayerAdd *CGHostDBMySQL :: ThreadedGamePlayerAdd( uint32_t gameid, std::string name, std::string ip, uint32_t spoofed, std::string spoofedrealm, uint32_t reserved, uint32_t loadingtime, uint32_t left, std::string leftreason, uint32_t team, uint32_t colour )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableGamePlayerAdd *Callable = new CMySQLCallableGamePlayerAdd( gameid, name, ip, spoofed, spoofedrealm, reserved, loadingtime, left, leftreason, team, colour, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableGamePlayerAdd *Callable = new CMySQLCallableGamePlayerAdd( gameid, name, ip, spoofed, spoofedrealm, reserved, loadingtime, left, leftreason, team, colour, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -324,12 +292,10 @@ CCallableGamePlayerAdd *CGHostDBMySQL :: ThreadedGamePlayerAdd( uint32_t gameid,
 
 CCallableGamePlayerSummaryCheck *CGHostDBMySQL :: ThreadedGamePlayerSummaryCheck( std::string name )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableGamePlayerSummaryCheck *Callable = new CMySQLCallableGamePlayerSummaryCheck( name, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableGamePlayerSummaryCheck *Callable = new CMySQLCallableGamePlayerSummaryCheck( name, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -337,12 +303,10 @@ CCallableGamePlayerSummaryCheck *CGHostDBMySQL :: ThreadedGamePlayerSummaryCheck
 
 CCallableDotAGameAdd *CGHostDBMySQL :: ThreadedDotAGameAdd( uint32_t gameid, uint32_t winner, uint32_t min, uint32_t sec )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableDotAGameAdd *Callable = new CMySQLCallableDotAGameAdd( gameid, winner, min, sec, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableDotAGameAdd *Callable = new CMySQLCallableDotAGameAdd( gameid, winner, min, sec, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -350,12 +314,10 @@ CCallableDotAGameAdd *CGHostDBMySQL :: ThreadedDotAGameAdd( uint32_t gameid, uin
 
 CCallableDotAPlayerAdd *CGHostDBMySQL :: ThreadedDotAPlayerAdd( uint32_t gameid, uint32_t colour, uint32_t kills, uint32_t deaths, uint32_t creepkills, uint32_t creepdenies, uint32_t assists, uint32_t gold, uint32_t neutralkills, std::string item1, std::string item2, std::string item3, std::string item4, std::string item5, std::string item6, std::string hero, uint32_t newcolour, uint32_t towerkills, uint32_t raxkills, uint32_t courierkills )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableDotAPlayerAdd *Callable = new CMySQLCallableDotAPlayerAdd( gameid, colour, kills, deaths, creepkills, creepdenies, assists, gold, neutralkills, item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, raxkills, courierkills, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableDotAPlayerAdd *Callable = new CMySQLCallableDotAPlayerAdd( gameid, colour, kills, deaths, creepkills, creepdenies, assists, gold, neutralkills, item1, item2, item3, item4, item5, item6, hero, newcolour, towerkills, raxkills, courierkills, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -363,12 +325,10 @@ CCallableDotAPlayerAdd *CGHostDBMySQL :: ThreadedDotAPlayerAdd( uint32_t gameid,
 
 CCallableDotAPlayerSummaryCheck *CGHostDBMySQL :: ThreadedDotAPlayerSummaryCheck( std::string name )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableDotAPlayerSummaryCheck *Callable = new CMySQLCallableDotAPlayerSummaryCheck( name, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableDotAPlayerSummaryCheck *Callable = new CMySQLCallableDotAPlayerSummaryCheck( name, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -376,12 +336,10 @@ CCallableDotAPlayerSummaryCheck *CGHostDBMySQL :: ThreadedDotAPlayerSummaryCheck
 
 CCallableDownloadAdd *CGHostDBMySQL :: ThreadedDownloadAdd( std::string map, uint32_t mapsize, std::string name, std::string ip, uint32_t spoofed, std::string spoofedrealm, uint32_t downloadtime )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableDownloadAdd *Callable = new CMySQLCallableDownloadAdd( map, mapsize, name, ip, spoofed, spoofedrealm, downloadtime, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableDownloadAdd *Callable = new CMySQLCallableDownloadAdd( map, mapsize, name, ip, spoofed, spoofedrealm, downloadtime, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -389,12 +347,9 @@ CCallableDownloadAdd *CGHostDBMySQL :: ThreadedDownloadAdd( std::string map, uin
 
 CCallableScoreCheck *CGHostDBMySQL :: ThreadedScoreCheck( std::string category, std::string name, std::string server )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableScoreCheck *Callable = new CMySQLCallableScoreCheck( category, name, server, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+	CCallableScoreCheck *Callable = new CMySQLCallableScoreCheck( category, name, server, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -402,12 +357,10 @@ CCallableScoreCheck *CGHostDBMySQL :: ThreadedScoreCheck( std::string category, 
 
 CCallableW3MMDPlayerAdd *CGHostDBMySQL :: ThreadedW3MMDPlayerAdd( std::string category, uint32_t gameid, uint32_t pid, std::string name, std::string flag, uint32_t leaver, uint32_t practicing )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableW3MMDPlayerAdd *Callable = new CMySQLCallableW3MMDPlayerAdd( category, gameid, pid, name, flag, leaver, practicing, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableW3MMDPlayerAdd *Callable = new CMySQLCallableW3MMDPlayerAdd( category, gameid, pid, name, flag, leaver, practicing, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -415,12 +368,10 @@ CCallableW3MMDPlayerAdd *CGHostDBMySQL :: ThreadedW3MMDPlayerAdd( std::string ca
 
 CCallableW3MMDVarAdd *CGHostDBMySQL :: ThreadedW3MMDVarAdd( uint32_t gameid, std::map<VarP,int32_t> var_ints )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableW3MMDVarAdd *Callable = new CMySQLCallableW3MMDVarAdd( gameid, var_ints, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableW3MMDVarAdd *Callable = new CMySQLCallableW3MMDVarAdd( gameid, var_ints, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -428,12 +379,10 @@ CCallableW3MMDVarAdd *CGHostDBMySQL :: ThreadedW3MMDVarAdd( uint32_t gameid, std
 
 CCallableW3MMDVarAdd *CGHostDBMySQL :: ThreadedW3MMDVarAdd( uint32_t gameid, std::map<VarP,double> var_reals )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableW3MMDVarAdd *Callable = new CMySQLCallableW3MMDVarAdd( gameid, var_reals, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableW3MMDVarAdd *Callable = new CMySQLCallableW3MMDVarAdd( gameid, var_reals, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
@@ -441,30 +390,15 @@ CCallableW3MMDVarAdd *CGHostDBMySQL :: ThreadedW3MMDVarAdd( uint32_t gameid, std
 
 CCallableW3MMDVarAdd *CGHostDBMySQL :: ThreadedW3MMDVarAdd( uint32_t gameid, std::map<VarP,std::string> var_strings )
 {
-	void *Connection = GetIdleConnection( );
 
-	if( !Connection )
-		++m_NumConnections;
 
-	CCallableW3MMDVarAdd *Callable = new CMySQLCallableW3MMDVarAdd( gameid, var_strings, Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
+
+	CCallableW3MMDVarAdd *Callable = new CMySQLCallableW3MMDVarAdd( gameid, var_strings, m_Connection, m_BotID, m_Server, m_Database, m_User, m_Password, m_Port );
 	CreateThread( Callable );
 	++m_OutstandingCallables;
 	return Callable;
 }
 
-void *CGHostDBMySQL :: GetIdleConnection( )
-{
-	m_DatabaseMutex.lock();
-	void *Connection = NULL;
-
-	if( !m_IdleConnections.empty( ) )
-	{
-		Connection = m_IdleConnections.front( );
-		m_IdleConnections.pop( );
-	}
-	m_DatabaseMutex.unlock();
-	return Connection;
-}
 
 //
 // unprototyped global helper functions
